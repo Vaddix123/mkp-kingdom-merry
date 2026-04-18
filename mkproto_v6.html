@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MK PROTO v6 // KINGDOM MERRY PROTOCOL — MERCHANT INFRASTRUCTURE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg:      #02050e;
+    --deep:    #060d1a;
+    --panel:   #080f1e;
+    --border:  #1a2540;
+    --luffy:   #e8341c;
+    --sora:    #4a9eff;
+    --nami:    #f5c842;
+    --zoro:    #2dce6e;
+    --kingdom: #c084fc;
+    --sea:     #00c8e8;
+    --heart:   #ff4d8d;
+    --text:    #d4e8ff;
+    --dim:     #3a5070;
+    --kalina:  #ff9500;
+    --steam:   #e0e0ff;
+    --mfc:     #39ff14;
+    --evac:    #ffe566;
+    --pitch:   #ff3366;
+    --money:   #00ff99;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Rajdhani',sans-serif; font-size:14px;
+    min-height:100vh; overflow-x:hidden;
+  }
+
+  body::after {
+    content:''; position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 85%, rgba(74,158,255,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 85% 15%, rgba(192,132,252,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,51,102,0.03) 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events:none; z-index:999;
+  }
+
+  header {
+    padding:12px 20px;
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    background:linear-gradient(90deg, rgba(255,51,102,0.08), rgba(0,255,153,0.05), rgba(74,158,255,0.05));
+    position:relative; overflow:hidden;
+  }
+
+  header::before { content:'⚓'; position:absolute; right:320px; top:50%; transform:translateY(-50%); font-size:55px; opacity:0.04; pointer-events:none; }
+  header::after  { content:'♡'; position:absolute; right:230px; top:50%; transform:translateY(-50%); font-size:45px; opacity:0.05; color:var(--heart); pointer-events:none; }
+
+  .hd-title {
+    font-family:'Cinzel',serif; font-size:16px; font-weight:900;
+    background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money), var(--sora));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 8px rgba(255,51,102,0.4));
+  }
+
+  .hd-sub { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--dim); letter-spacing:2px; margin-top:3px; }
+
+  .hd-right { display:flex; gap:14px; align-items:center; font-family:'Share Tech Mono',monospace; font-size:10px; }
+
+  .pip { width:8px;height:8px;border-radius:50%; display:inline-block; margin-right:5px; }
+  .pip.green { background:var(--zoro); box-shadow:0 0 8px var(--zoro); animation:hb 2s infinite; }
+  .pip.pitch { background:var(--pitch); box-shadow:0 0 8px var(--pitch); animation:hb 1.3s infinite; }
+  @keyframes hb { 0%,100%{transform:scale(1)}50%{transform:scale(1.4)} }
+
+  .layout { display:grid; grid-template-columns:1fr 320px; height:calc(100vh - 54px); overflow:hidden; }
+  .left { display:flex; flex-direction:column; overflow:hidden; }
+
+  /* ── PITCH BANNER (v6 lead) ── */
+  .pitch-bar {
+    display:grid; grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:8px; padding:10px 16px;
+    border-bottom:2px solid var(--pitch);
+    background:linear-gradient(90deg, rgba(255,51,102,0.08), rgba(0,255,153,0.04));
+    flex:0 0 auto;
+  }
+
+  .pitch-lead {
+    background:var(--panel); border:1px solid var(--pitch); border-radius:4px;
+    padding:12px 14px; position:relative; overflow:hidden;
+  }
+  .pitch-lead::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:var(--pitch); }
+  .pitch-lead-hdr { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--pitch); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+  .pitch-lead-big { font-family:'Cinzel',serif; font-size:22px; font-weight:900; color:var(--text); line-height:1.1; }
+  .pitch-lead-sub { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--dim); margin-top:6px; line-height:1.5; }
+
+  .pitch-card {
+    background:var(--panel); border:1px solid var(--border); border-radius:3px;
+    padding:10px 12px; position:relative; overflow:hidden;
+  }
+  .pitch-card::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
+  .pitch-card.speed::before { background:var(--money); }
+  .pitch-card.water::before { background:var(--sea); }
+  .pitch-card.esg::before   { background:var(--zoro); }
+
+  .pitch-lbl { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
+  .pitch-val { font-family:'Cinzel',serif; font-size:15px; font-weight:700; line-height:1; margin-bottom:3px; }
+  .pitch-desc { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); line-height:1.4; }
+
+  /* ── TABS ── */
+  .tabs { display:flex; border-bottom:1px solid var(--border); flex:0 0 auto; background:rgba(0,0,0,0.3); }
+  .tab {
+    padding:10px 16px;
+    font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1.5px;
+    color:var(--dim); cursor:pointer; border-bottom:2px solid transparent;
+    transition:all 0.2s; text-transform:uppercase;
+  }
+  .tab.active { color:var(--pitch); border-bottom-color:var(--pitch); }
+  .tab:hover { color:var(--text); }
+
+  .tab-pane { display:none; flex:1; overflow:hidden; }
+  .tab-pane.active { display:flex; flex-direction:column; }
+
+  /* ── DIAGRAM ── */
+  .diagram-wrap { padding:12px 16px; flex:0 0 auto; }
+  .section-lbl { font-family:'Cinzel',serif; font-size:8px; letter-spacing:3px; color:var(--dim); margin-bottom:8px; text-transform:uppercase; }
+  svg#diag { width:100%; height:360px; }
+
+  .flow { fill:none; stroke-width:2; stroke-dasharray:8 5; animation:fd 1.6s linear infinite; }
+  @keyframes fd { to { stroke-dashoffset:-52; } }
+
+  /* ── METRICS ── */
+  .metrics { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; padding:8px 16px; border-bottom:1px solid var(--border); flex:0 0 auto; }
+  .mc { background:var(--panel); border:1px solid var(--border); border-radius:3px; padding:8px 10px; position:relative; overflow:hidden; }
+  .mc::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
+  .mc.blue::before  { background:var(--sora); }
+  .mc.red::before   { background:var(--luffy); }
+  .mc.green::before { background:var(--zoro); }
+  .mc.gold::before  { background:var(--nami); }
+  .mc.pink::before  { background:var(--heart); }
+  .mc.orange::before{ background:var(--kalina); }
+  .mc.steam::before { background:var(--steam); }
+  .mc.money::before { background:var(--money); }
+  .mc-lbl { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+  .mc-val { font-family:'Cinzel',serif; font-size:16px; font-weight:700; line-height:1; }
+  .mc-unit { font-size:9px; font-weight:400; color:var(--dim); }
+  .mc-sub  { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); margin-top:3px; }
+  .mbar { height:2px; background:var(--border); border-radius:1px; margin-top:4px; overflow:hidden; }
+  .mbar-fill { height:100%; border-radius:1px; transition:width 0.5s; }
+
+  /* ── LOG ── */
+  .log-area { flex:1; overflow-y:auto; padding:8px 16px; }
+  .le { display:flex; gap:8px; padding:2px 0; border-bottom:1px solid rgba(26,37,64,0.4); font-family:'Share Tech Mono',monospace; font-size:9px; }
+  .lt { color:var(--dim); min-width:65px; }
+  .ls { min-width:100px; }
+  .ls.cooling { color:var(--sora); }
+  .ls.kalina  { color:var(--kalina); }
+  .ls.steam   { color:var(--steam); }
+  .ls.sofc    { color:var(--nami); }
+  .ls.wetland { color:var(--kingdom); }
+  .ls.water   { color:var(--zoro); }
+  .ls.deal    { color:var(--money); }
+  .ls.pitch   { color:var(--pitch); }
+  .lm { color:var(--text); }
+  .lm.ok   { color:var(--zoro); }
+  .lm.warn { color:var(--nami); }
+  .lm.err  { color:var(--luffy); }
+  .lm.new  { color:var(--pitch); }
+  .lm.money{ color:var(--money); }
+
+  /* ── FINANCE TAB ── */
+  .finance-area { padding:16px; overflow-y:auto; flex:1; }
+  .path-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:14px; }
+  .path-card { background:var(--panel); border:1px solid var(--border); border-radius:4px; padding:14px; position:relative; overflow:hidden; }
+  .path-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+  .path-card.p1::before { background:var(--money); }
+  .path-card.p2::before { background:var(--kingdom); }
+  .path-card.p3::before { background:var(--kalina); }
+  .path-hdr { font-family:'Cinzel',serif; font-size:13px; font-weight:900; margin-bottom:3px; }
+  .path-tag { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:1.5px; margin-bottom:10px; text-transform:uppercase; }
+
+  .pl-table { width:100%; font-family:'Share Tech Mono',monospace; font-size:10px; margin-bottom:8px; }
+  .pl-table tr td { padding:3px 0; border-bottom:1px solid rgba(26,37,64,0.4); }
+  .pl-table tr td:last-child { text-align:right; color:var(--text); }
+  .pl-table tr.sum td { border-top:1px solid var(--border); border-bottom:none; padding-top:5px; font-family:'Cinzel',serif; font-size:11px; }
+  .pl-table tr.sum td:last-child { font-weight:700; }
+  .pl-positive { color:var(--money) !important; }
+  .pl-negative { color:var(--luffy) !important; }
+
+  .path-payback { text-align:center; padding:8px; border:1px solid var(--border); border-radius:3px; background:var(--bg); margin-top:8px; }
+  .path-payback-val { font-family:'Cinzel',serif; font-size:20px; font-weight:900; }
+  .path-payback-lbl { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); letter-spacing:1.5px; }
+
+  .finance-note {
+    padding:12px 14px; border-left:3px solid var(--pitch); background:rgba(255,51,102,0.05);
+    font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--text); line-height:1.6;
+    margin-bottom:12px;
+  }
+  .finance-note b { color:var(--pitch); font-family:'Cinzel',serif; }
+
+  /* ── DEAL STRUCTURE TAB ── */
+  .deal-area { padding:16px; overflow-y:auto; flex:1; }
+  .deal-hero {
+    padding:16px; border:1px solid var(--money); border-radius:4px;
+    background:linear-gradient(135deg, rgba(0,255,153,0.08), rgba(255,51,102,0.05));
+    margin-bottom:14px; position:relative; overflow:hidden;
+  }
+  .deal-hero-hdr { font-family:'Cinzel',serif; font-size:11px; color:var(--money); letter-spacing:2px; margin-bottom:8px; text-transform:uppercase; }
+  .deal-hero-big { font-family:'Cinzel',serif; font-size:32px; font-weight:900; color:var(--money); line-height:1; text-shadow:0 0 15px rgba(0,255,153,0.4); }
+  .deal-hero-sub { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--dim); margin-top:6px; letter-spacing:1px; }
+
+  .deal-models { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+  .deal-model { background:var(--panel); border:1px solid var(--border); border-radius:4px; padding:12px; }
+  .deal-model-hdr { font-family:'Cinzel',serif; font-size:11px; font-weight:700; margin-bottom:6px; }
+  .deal-model-val { font-family:'Cinzel',serif; font-size:18px; font-weight:900; color:var(--money); margin:6px 0; }
+  .deal-model-desc { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--dim); line-height:1.5; }
+
+  .buyer-list { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+  .buyer { background:var(--bg); border:1px solid var(--border); border-radius:3px; padding:8px 10px; font-family:'Share Tech Mono',monospace; font-size:9px; }
+  .buyer-name { color:var(--text); font-weight:700; font-size:11px; font-family:'Cinzel',serif; }
+  .buyer-spec { color:var(--dim); margin-top:3px; line-height:1.4; }
+
+  /* ── RIGHT PANEL ── */
+  .right { border-left:1px solid var(--border); background:var(--panel); overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:12px; }
+
+  .ctrl-title { font-family:'Cinzel',serif; font-size:8px; letter-spacing:3px; color:var(--dim); padding-bottom:6px; border-bottom:1px solid var(--border); text-transform:uppercase; }
+
+  .ctrl-group label { display:block; font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:1px; margin-bottom:5px; text-transform:uppercase; }
+  .sl-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  input[type=range] { flex:1; -webkit-appearance:none; height:2px; background:var(--border); border-radius:1px; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:11px;height:11px; background:var(--pitch); border-radius:50%; cursor:pointer; box-shadow:0 0 6px var(--pitch); }
+  .sv { font-family:'Cinzel',serif; font-size:10px; color:var(--pitch); min-width:55px; text-align:right; }
+
+  .deco { display:flex; align-items:center; gap:6px; font-size:9px; color:var(--dim); opacity:0.4; margin:2px 0; }
+  .deco::before,.deco::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .score-box { border:1px solid var(--border); border-radius:3px; padding:10px; text-align:center; background:var(--bg); position:relative; overflow:hidden; }
+  .score-box::before { content:'⚓'; position:absolute; right:6px;bottom:2px; font-size:28px;opacity:0.05;pointer-events:none; }
+  .score-lbl { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); letter-spacing:1px; margin-bottom:3px; }
+  .score-val { font-family:'Cinzel',serif; font-size:24px; font-weight:900; }
+  .score-sub { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); margin-top:2px; }
+
+  .source-note {
+    font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim);
+    line-height:1.5; padding:6px 8px; background:var(--bg); border-left:2px solid var(--sora);
+  }
+
+  ::-webkit-scrollbar { width:3px;height:3px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="hd-title">⚓ KINGDOM MERRY PROTOCOL  ✦  MKP v6  ✦  MERCHANT INFRASTRUCTURE</div>
+    <div class="hd-sub">MK PROTO v6 · THE GRID-QUEUE SKIP · BEHIND-THE-METER · BIOGAS CHP · WATER POSITIVE · METHANE-NEGATIVE</div>
+  </div>
+  <div class="hd-right">
+    <span><span class="pip green"></span>MKP ONLINE</span>
+    <span><span class="pip pitch"></span>24-MO T2P</span>
+    <span id="clock" style="color:var(--dim)">T+0:00:00</span>
+  </div>
+</header>
+
+<div class="layout">
+<div class="left">
+
+  <!-- ── THE PITCH (v6 lead) ── -->
+  <div class="pitch-bar">
+    <div class="pitch-lead">
+      <div class="pitch-lead-hdr">▲ THE PITCH</div>
+      <div class="pitch-lead-big">The only 100 MW data center that ships in 24 months.</div>
+      <div class="pitch-lead-sub">PJM queue: 5–7 yr · CAISO: 6–8 yr · ERCOT: 2–3 yr &amp; saturating<br>MKP generates behind-the-meter → skip the queue · ship first · capture 2027 demand</div>
+    </div>
+    <div class="pitch-card speed">
+      <div class="pitch-lbl">TIME TO POWER</div>
+      <div class="pitch-val" style="color:var(--money)">24 mo</div>
+      <div class="pitch-desc">vs 60+ mo grid-dependent · FERC/LMP 2025</div>
+    </div>
+    <div class="pitch-card water">
+      <div class="pitch-lbl">WATER POSITION</div>
+      <div class="pitch-val" style="color:var(--sea)">+170K gal/d</div>
+      <div class="pitch-desc">Produces vs. consumes · bypasses AZ/NV water bans</div>
+    </div>
+    <div class="pitch-card esg">
+      <div class="pitch-lbl">METHANE DESTROYED</div>
+      <div class="pitch-val" style="color:var(--zoro)">122K tCO₂e/yr</div>
+      <div class="pitch-desc">LFG capture · GWP-28 basis · ESG anchor</div>
+    </div>
+  </div>
+
+  <!-- ── TABS ── -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('flow',this)">▲ FLOW DIAGRAM</div>
+    <div class="tab" onclick="switchTab('finance',this)">$ FINANCIALS</div>
+    <div class="tab" onclick="switchTab('deal',this)">⚓ DEAL STRUCTURE</div>
+  </div>
+
+  <!-- ── TAB: FLOW DIAGRAM ── -->
+  <div class="tab-pane active" id="pane-flow">
+    <div class="diagram-wrap">
+      <div class="section-lbl">♡ MK Proto v6 — Behind-the-Meter Merchant Loop ⚓</div>
+      <svg id="diag" viewBox="0 0 900 340">
+
+        <!-- FLOWS -->
+        <!-- LFG → Cleanup → SOFC -->
+        <path class="flow" style="stroke:var(--kalina)" d="M 40 80 L 90 80"/>
+        <path class="flow" style="stroke:var(--nami)" d="M 195 80 L 640 80"/>
+        <!-- SOFC → Steam Turbine (hot exhaust) -->
+        <path class="flow" style="stroke:var(--steam)" d="M 720 118 L 720 160 L 590 160"/>
+        <!-- ST → Kalina bottoming -->
+        <path class="flow" style="stroke:var(--kalina)" d="M 475 195 L 400 195 L 400 220"/>
+        <!-- SOFC + ST → Power Bus -->
+        <path class="flow" style="stroke:var(--money)" d="M 720 125 L 720 245 L 575 245"/>
+        <path class="flow" style="stroke:var(--money)" d="M 530 218 L 530 245"/>
+        <path class="flow" style="stroke:var(--money)" d="M 400 275 L 470 275 L 470 258 L 510 258"/>
+        <!-- Power Bus → Data Center -->
+        <path class="flow" style="stroke:var(--money)" d="M 510 252 L 270 252 L 270 170"/>
+        <!-- Data Center → Heat Exchanger -->
+        <path class="flow" style="stroke:var(--sora)" d="M 270 118 L 270 90 L 230 90"/>
+        <!-- SOFC water exhaust → MD condenser -->
+        <path class="flow" style="stroke:var(--zoro)" d="M 680 118 L 680 100 L 660 100 L 660 305 L 480 305"/>
+        <!-- MD → Pure water out -->
+        <path class="flow" style="stroke:var(--zoro)" d="M 380 305 L 305 305"/>
+        <!-- Gray water → Wetland -->
+        <path class="flow" style="stroke:var(--kingdom)" d="M 205 175 L 130 175 L 130 265 L 105 265"/>
+        <!-- Wetland discharge -->
+        <path class="flow" style="stroke:var(--kingdom);stroke-dasharray:4 4" d="M 90 290 L 60 290 L 60 310 L 100 310"/>
+        <!-- Surplus export -->
+        <path class="flow" style="stroke:var(--money);stroke-width:3" d="M 500 248 L 500 320"/>
+
+        <!-- ─── NODES ─── -->
+
+        <!-- LFG SOURCE (stranded gas) -->
+        <g>
+          <rect x="10" y="50" width="80" height="62" fill="#080f1e" stroke="var(--kalina)" stroke-width="1.5" rx="4"/>
+          <text x="50" y="68" text-anchor="middle" font-size="9" fill="var(--kalina)" font-family="Cinzel,serif" font-weight="700">LFG</text>
+          <text x="50" y="80" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">STRANDED</text>
+          <text x="50" y="90" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">$2/MMBtu</text>
+          <text x="50" y="103" text-anchor="middle" font-size="7" fill="var(--zoro)" font-family="Share Tech Mono,monospace">Path 1</text>
+        </g>
+
+        <!-- GAS CLEANUP -->
+        <g>
+          <rect x="95" y="50" width="100" height="62" fill="#0a0a14" stroke="var(--heart)" stroke-width="1.5" rx="4"/>
+          <text x="145" y="68" text-anchor="middle" font-size="9" fill="var(--heart)" font-family="Cinzel,serif" font-weight="700">GAS CLEANUP</text>
+          <text x="145" y="80" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">H₂S + SILOXANE</text>
+          <text x="145" y="92" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">&lt;0.5 ppm output</text>
+          <text x="145" y="104" text-anchor="middle" font-size="7" fill="var(--heart)" font-family="Share Tech Mono,monospace" id="gc-capex">CapEx: $30M</text>
+        </g>
+
+        <!-- DATA CENTER -->
+        <g>
+          <rect x="200" y="118" width="140" height="58" fill="#080f1e" stroke="var(--sora)" stroke-width="1.5" rx="4"/>
+          <text x="270" y="136" text-anchor="middle" font-size="9" fill="var(--sora)" font-family="Cinzel,serif" font-weight="700">DATA CENTER</text>
+          <text x="270" y="146" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace" id="dc-lbl">100 MW IT · PUE 1.15</text>
+          <text x="270" y="158" text-anchor="middle" font-size="7" fill="var(--text)">Two-Phase Immersion</text>
+          <text x="270" y="170" text-anchor="middle" font-size="7" fill="var(--kalina)" font-family="Share Tech Mono,monospace" id="dc-temp">60°C waste · 85 MWth</text>
+        </g>
+
+        <!-- SOFC -->
+        <g>
+          <rect x="640" y="50" width="160" height="72" fill="#080f1e" stroke="var(--nami)" stroke-width="1.5" rx="4"/>
+          <text x="720" y="68" text-anchor="middle" font-size="9" fill="var(--nami)" font-family="Cinzel,serif" font-weight="700">SOFC CHP</text>
+          <text x="720" y="80" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace" id="sofc-cap">100 MWe · η = 55% LHV</text>
+          <line x1="650" y1="86" x2="790" y2="86" stroke="var(--border)" stroke-width="1"/>
+          <text x="720" y="98" text-anchor="middle" font-size="7" fill="var(--text)" id="sofc-h2">13,100 kg CH₄/hr in</text>
+          <text x="720" y="110" text-anchor="middle" font-size="7" fill="var(--zoro)" font-family="Cinzel,serif" id="sofc-w">29.4K L/hr H₂O exhaust</text>
+        </g>
+
+        <!-- STEAM TURBINE -->
+        <g>
+          <rect x="470" y="160" width="120" height="60" fill="#0a0a14" stroke="var(--steam)" stroke-width="1.5" rx="4"/>
+          <text x="530" y="178" text-anchor="middle" font-size="9" fill="var(--steam)" font-family="Cinzel,serif" font-weight="700">STEAM TURBINE</text>
+          <text x="530" y="189" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">680°C inlet · η = 30%</text>
+          <line x1="480" y1="195" x2="580" y2="195" stroke="rgba(224,224,255,0.15)" stroke-width="1"/>
+          <text x="530" y="207" text-anchor="middle" font-size="10" fill="var(--steam)" font-family="Cinzel,serif" id="st-out">→ 24.6 MWe</text>
+        </g>
+
+        <!-- KALINA BOTTOMING -->
+        <g>
+          <rect x="345" y="218" width="110" height="54" fill="#0d0a00" stroke="var(--kalina)" stroke-width="1.5" rx="4"/>
+          <text x="400" y="235" text-anchor="middle" font-size="9" fill="var(--kalina)" font-family="Cinzel,serif" font-weight="700">KALINA</text>
+          <text x="400" y="246" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">ST CONDENSATE 180°C</text>
+          <text x="400" y="260" text-anchor="middle" font-size="10" fill="var(--kalina)" font-family="Cinzel,serif" id="k-out">→ 4.5 MWe</text>
+        </g>
+
+        <!-- POWER BUS -->
+        <g>
+          <rect x="495" y="232" width="90" height="36" fill="#080f1e" stroke="var(--money)" stroke-width="2" rx="4"/>
+          <text x="540" y="248" text-anchor="middle" font-size="9" fill="var(--money)" font-family="Cinzel,serif" font-weight="700">POWER BUS</text>
+          <text x="540" y="262" text-anchor="middle" font-size="10" fill="var(--text)" font-family="Cinzel,serif" id="bus-gen">129 MW GROSS</text>
+        </g>
+
+        <!-- MD / WATER RECOVERY -->
+        <g>
+          <rect x="380" y="285" width="100" height="40" fill="#040a10" stroke="var(--sea)" stroke-width="1.5" rx="4"/>
+          <text x="430" y="302" text-anchor="middle" font-size="9" fill="var(--sea)" font-family="Cinzel,serif" font-weight="700">MD + CONDENSER</text>
+          <text x="430" y="315" text-anchor="middle" font-size="8" fill="var(--zoro)" font-family="Cinzel,serif" id="md-out">→ 27K L/hr</text>
+        </g>
+
+        <!-- PURE WATER OUT -->
+        <g>
+          <rect x="210" y="290" width="95" height="34" fill="#030c10" stroke="var(--zoro)" stroke-width="1.5" rx="4"/>
+          <text x="257" y="305" text-anchor="middle" font-size="9" fill="var(--zoro)" font-family="Cinzel,serif" font-weight="700">⚓ PURE H₂O</text>
+          <text x="257" y="318" text-anchor="middle" font-size="10" fill="var(--zoro)" font-family="Cinzel,serif" id="water-out">170K gal/day</text>
+        </g>
+
+        <!-- WETLAND -->
+        <g>
+          <rect x="20" y="248" width="85" height="58" fill="#080f1e" stroke="var(--kingdom)" stroke-width="1.5" rx="4"/>
+          <text x="62" y="265" text-anchor="middle" font-size="8" fill="var(--kingdom)" font-family="Cinzel,serif" font-weight="700">WETLAND</text>
+          <text x="62" y="277" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">NPDES</text>
+          <text x="62" y="289" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">5000 m³</text>
+          <text x="62" y="301" text-anchor="middle" font-size="7" fill="var(--mfc)" font-family="Share Tech Mono,monospace" id="mfc-out">MFC: +8 kW</text>
+        </g>
+
+        <!-- SURPLUS EXPORT -->
+        <g>
+          <rect x="460" y="320" width="80" height="15" fill="#001a11" stroke="var(--money)" stroke-width="1" rx="2"/>
+          <text x="500" y="331" text-anchor="middle" font-size="8" fill="var(--money)" font-family="Cinzel,serif" font-weight="700" id="export-lbl">EXPORT 25 MW</text>
+        </g>
+
+        <!-- LABELS -->
+        <text x="150" y="43" font-size="7" fill="var(--kalina)" font-family="Share Tech Mono,monospace">BIOGAS FEED</text>
+        <text x="450" y="75" font-size="7" fill="var(--nami)" font-family="Share Tech Mono,monospace">CLEANED CH₄</text>
+        <text x="615" y="155" font-size="7" fill="var(--steam)" font-family="Share Tech Mono,monospace">680°C EXHAUST</text>
+        <text x="580" y="310" font-size="7" fill="var(--zoro)" font-family="Share Tech Mono,monospace">CONDENSATE</text>
+      </svg>
+    </div>
+
+    <!-- ── METRICS ── -->
+    <div class="metrics">
+      <div class="mc gold">
+        <div class="mc-lbl">SOFC POWER</div>
+        <div class="mc-val" id="m-sofc" style="color:var(--nami)">100.0<span class="mc-unit">MW</span></div>
+        <div class="mc-sub" id="m-sofc-sub">η = 55% LHV</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-sofc" style="background:var(--nami);width:100%"></div></div>
+      </div>
+      <div class="mc steam">
+        <div class="mc-lbl">STEAM TURBINE</div>
+        <div class="mc-val" id="m-steam" style="color:var(--steam)">24.6<span class="mc-unit">MW</span></div>
+        <div class="mc-sub">Bottoming · 680°C</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-steam" style="background:var(--steam);width:60%"></div></div>
+      </div>
+      <div class="mc orange">
+        <div class="mc-lbl">KALINA</div>
+        <div class="mc-val" id="m-kalina" style="color:var(--kalina)">4.5<span class="mc-unit">MW</span></div>
+        <div class="mc-sub" id="m-kalina-sub">ST condenser · 180°C</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-kalina" style="background:var(--kalina);width:25%"></div></div>
+      </div>
+      <div class="mc money">
+        <div class="mc-lbl">NET EXPORT</div>
+        <div class="mc-val" id="m-surplus" style="color:var(--money)">+25.0<span class="mc-unit">MW</span></div>
+        <div class="mc-sub" id="m-surplus-sub">behind-the-meter ✓</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-surplus" style="background:var(--money);width:100%"></div></div>
+      </div>
+      <div class="mc green">
+        <div class="mc-lbl">WATER OUT</div>
+        <div class="mc-val" id="m-water" style="color:var(--zoro)">27.0K<span class="mc-unit">L/hr</span></div>
+        <div class="mc-sub">SOFC + MD + wetland</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-water" style="background:var(--zoro);width:70%"></div></div>
+      </div>
+      <div class="mc pink">
+        <div class="mc-lbl">CO₂e AVOIDED</div>
+        <div class="mc-val" id="m-co2" style="color:var(--heart)">122<span class="mc-unit">kt/yr</span></div>
+        <div class="mc-sub">LFG methane destroyed</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-co2" style="background:var(--heart);width:80%"></div></div>
+      </div>
+    </div>
+
+    <!-- ── LOG ── -->
+    <div class="log-area" id="log-area">
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls pitch">MKP v6</span><span class="lm new">Merchant infrastructure framing active. 24-mo time-to-power vs 60+ mo grid.</span></div>
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls sofc">SOFC CHP</span><span class="lm ok">100 MW nameplate at 55% LHV on cleaned biogas. Bloom ES-5710 spec.</span></div>
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls steam">STEAM TURBINE</span><span class="lm ok">680°C exhaust bottoming cycle. +24.6 MW. Mitsubishi MEGAMIE precedent.</span></div>
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls kalina">KALINA</span><span class="lm ok">ST condenser at 180°C. +4.5 MW. Relocated from v5 DC-waste configuration.</span></div>
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls water">WATER LOOP</span><span class="lm ok">SOFC stoichiometric water 29.4K L/hr + MD reclaim. Net water-positive.</span></div>
+    </div>
+  </div>
+
+  <!-- ── TAB: FINANCIALS ── -->
+  <div class="tab-pane" id="pane-finance">
+    <div class="finance-area">
+
+      <div class="finance-note">
+        <b>▲ Read first:</b> All three paths model a 100 MW behind-the-meter merchant DC on biogas CHP. They differ only in fuel-source structure. <b>Path 1 (LFG co-location)</b> is the primary entry point — lowest execution risk, highest 2025–26 market fit. Path 2 requires municipal partnership. Path 3 requires operating an anaerobic digester — highest ceiling, highest operational complexity.
+      </div>
+
+      <div class="path-grid">
+
+        <!-- PATH 1 -->
+        <div class="path-card p1">
+          <div class="path-hdr" style="color:var(--money)">Path 1 · LFG Co-Location</div>
+          <div class="path-tag">Primary · 580 US LFG sites available</div>
+          <table class="pl-table">
+            <tr><td>Colo $170/kW/mo · 90% occ</td><td class="pl-positive">+$184M</td></tr>
+            <tr><td>Surplus export · 25 MW · $60/MWh</td><td class="pl-positive">+$13M</td></tr>
+            <tr><td>45Q methane destruction credit</td><td class="pl-positive">+$4M</td></tr>
+            <tr><td>Water offtake · municipal</td><td class="pl-positive">+$3M</td></tr>
+            <tr class="sum"><td>Revenue</td><td class="pl-positive">$204M/yr</td></tr>
+            <tr><td>LFG fuel · $2/MMBtu</td><td class="pl-negative">-$11M</td></tr>
+            <tr><td>O&amp;M · 2.5% CapEx</td><td class="pl-negative">-$44M</td></tr>
+            <tr><td>SOFC stack amortized</td><td class="pl-negative">-$13M</td></tr>
+            <tr><td>Grid standby · 10% rider</td><td class="pl-negative">-$7M</td></tr>
+            <tr><td>Staffing · 60 FTE</td><td class="pl-negative">-$7M</td></tr>
+            <tr><td>Consumables</td><td class="pl-negative">-$3M</td></tr>
+            <tr class="sum"><td>OpEx</td><td class="pl-negative">$85M/yr</td></tr>
+            <tr class="sum"><td>EBITDA · 58% margin</td><td class="pl-positive">$119M/yr</td></tr>
+          </table>
+          <div class="path-payback">
+            <div class="path-payback-val" style="color:var(--money)" id="p1-payback">14.7 yr</div>
+            <div class="path-payback-lbl">$1,750M CapEx ÷ EBITDA</div>
+          </div>
+        </div>
+
+        <!-- PATH 2 -->
+        <div class="path-card p2">
+          <div class="path-hdr" style="color:var(--kingdom)">Path 2 · WWTP Partnership</div>
+          <div class="path-tag">Municipal · fast permits · ESG halo</div>
+          <table class="pl-table">
+            <tr><td>Colo $175/kW/mo · ESG premium</td><td class="pl-positive">+$189M</td></tr>
+            <tr><td>Surplus export</td><td class="pl-positive">+$13M</td></tr>
+            <tr><td>Water treatment contract</td><td class="pl-positive">+$8M</td></tr>
+            <tr><td>Carbon credits</td><td class="pl-positive">+$3M</td></tr>
+            <tr class="sum"><td>Revenue</td><td class="pl-positive">$213M/yr</td></tr>
+            <tr><td>Digester biogas · $5/MMBtu</td><td class="pl-negative">-$27M</td></tr>
+            <tr><td>O&amp;M · 2.5% CapEx</td><td class="pl-negative">-$44M</td></tr>
+            <tr><td>SOFC stack amortized</td><td class="pl-negative">-$13M</td></tr>
+            <tr><td>Grid standby</td><td class="pl-negative">-$7M</td></tr>
+            <tr><td>Staffing + WWTP ops</td><td class="pl-negative">-$9M</td></tr>
+            <tr><td>Revenue share to municipality</td><td class="pl-negative">-$15M</td></tr>
+            <tr class="sum"><td>OpEx</td><td class="pl-negative">$115M/yr</td></tr>
+            <tr class="sum"><td>EBITDA · 46% margin</td><td class="pl-positive">$98M/yr</td></tr>
+          </table>
+          <div class="path-payback">
+            <div class="path-payback-val" style="color:var(--kingdom)" id="p2-payback">17.9 yr</div>
+            <div class="path-payback-lbl">$1,750M CapEx ÷ EBITDA</div>
+          </div>
+        </div>
+
+        <!-- PATH 3 -->
+        <div class="path-card p3">
+          <div class="path-hdr" style="color:var(--kalina)">Path 3 · Own the Digester</div>
+          <div class="path-tag">Tipping fees flip fuel to revenue</div>
+          <table class="pl-table">
+            <tr><td>Colo $170/kW/mo · 90% occ</td><td class="pl-positive">+$184M</td></tr>
+            <tr><td>Surplus export</td><td class="pl-positive">+$13M</td></tr>
+            <tr><td>Tipping fees · $55/tonne net</td><td class="pl-positive">+$134M</td></tr>
+            <tr><td>Digestate sale · compost</td><td class="pl-positive">+$6M</td></tr>
+            <tr><td>LCFS/RIN credits · RNG path</td><td class="pl-positive">+$22M</td></tr>
+            <tr class="sum"><td>Revenue</td><td class="pl-positive">$359M/yr</td></tr>
+            <tr><td>Feedstock haul rebates</td><td class="pl-negative">-$12M</td></tr>
+            <tr><td>Digester O&amp;M · 4% CapEx</td><td class="pl-negative">-$70M</td></tr>
+            <tr><td>SOFC stack amortized</td><td class="pl-negative">-$13M</td></tr>
+            <tr><td>Grid standby</td><td class="pl-negative">-$7M</td></tr>
+            <tr><td>Staffing · 95 FTE</td><td class="pl-negative">-$12M</td></tr>
+            <tr><td>Permits · NPDES + air</td><td class="pl-negative">-$4M</td></tr>
+            <tr class="sum"><td>OpEx</td><td class="pl-negative">$118M/yr</td></tr>
+            <tr class="sum"><td>EBITDA · 67% margin</td><td class="pl-positive">$241M/yr</td></tr>
+          </table>
+          <div class="path-payback">
+            <div class="path-payback-val" style="color:var(--kalina)" id="p3-payback">12.8 yr</div>
+            <div class="path-payback-lbl">$3,080M CapEx ÷ EBITDA</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="finance-note">
+        <b>▲ Why payback matters less than it looks:</b> Hyperscale tenants (Google, MSFT, AWS, Meta) underwrite 10–15 yr PPAs and sign 15-yr colo leases. DSCR at Path 1 with 60/40 debt/equity and 6.5% debt service = 1.81×. Institutional term-debt threshold is 1.35×. Path 1 is financeable with standard infrastructure debt. The <b>true pitch value</b> is the 3–4 year head-start on grid-dependent competitors, which translates to ~$400–600M of NPV-advantaged early revenue at a hyperscaler's WACC.
+      </div>
+
+      <div class="finance-note" style="border-left-color:var(--money)">
+        <b style="color:var(--money)">▲ Market context (Q4 2025):</b> Ashburn colo $215+/kW/mo · Phoenix $180 · tier-2 markets $140–160. MKP targets tier-2 with ESG premium at $170 blended. CBRE H2 2025 Data Center Trends: sub-3% vacancy in all tier-1 markets, 70–90% pre-leasing before COD. LFG carbon credit: CARB LCFS Q3 2025 $67/tonne CO₂e · Verra VM0041 voluntary $18–22/tonne.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: DEAL STRUCTURE ── -->
+  <div class="tab-pane" id="pane-deal">
+    <div class="deal-area">
+
+      <div class="deal-hero">
+        <div class="deal-hero-hdr">⚓ YOUR BUSINESS — NOT THE FACILITY</div>
+        <div class="deal-hero-big" id="deal-total">$220M</div>
+        <div class="deal-hero-sub">gross fees · 5 deals × 2.5% × $1.75B avg ticket · 10-year horizon</div>
+      </div>
+
+      <div class="finance-note">
+        <b>▲ You do not build this.</b> You assemble it. Identify stranded biogas → match with hyperscale developer or infrastructure REIT → structure co-development with MKP as licensed IP → extract transaction fee or royalty stream. This is an MCA-underwriter skillset applied to $1.75B tickets instead of $250K ones. Same deal mechanics, four orders of magnitude larger notional.
+      </div>
+
+      <div class="deal-models">
+
+        <div class="deal-model">
+          <div class="deal-model-hdr" style="color:var(--money)">▲ Transaction Fee</div>
+          <div class="deal-model-val" id="dm-fee">$44M per deal</div>
+          <div class="deal-model-desc">
+            2.5% of $1.75B closing notional. Paid at financial close. Comparable to infrastructure M&amp;A advisory at 1–3%. Zero post-close exposure. Simplest to execute.
+          </div>
+        </div>
+
+        <div class="deal-model">
+          <div class="deal-model-hdr" style="color:var(--kalina)">▲ Royalty Stream</div>
+          <div class="deal-model-val" id="dm-royalty">$2.0M/yr × site</div>
+          <div class="deal-model-desc">
+            1% of gross revenue in perpetuity. 20-yr NPV at 8% ≈ $19.6M per site. Lower upfront, higher lifetime value. Aligns with IP licensing norms.
+          </div>
+        </div>
+
+        <div class="deal-model">
+          <div class="deal-model-hdr" style="color:var(--heart)">▲ Equity Carry</div>
+          <div class="deal-model-val" id="dm-equity">5% · $87M/deal</div>
+          <div class="deal-model-desc">
+            Minority equity at sponsor-cost. Held to operating-asset flip or 10-yr recap. Highest upside, requires co-invest capital or earn-in. Tax-advantaged.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="finance-note" style="border-left-color:var(--money)">
+        <b style="color:var(--money)">▲ Execution sequence:</b>
+        <br>1. Lock IP — patent the specific SOFC+ST+Kalina integration topology and the LFG-to-DC site-selection algorithm.
+        <br>2. Build reference-site LOI package — demonstrates deal thesis without requiring buildout.
+        <br>3. Approach top-tier infrastructure funds (Brookfield, KKR, Blackstone Infra, Stonepeak) with closed LOI. Fund provides capital; you provide IP + deal origination.
+        <br>4. Concurrent outreach to landfill operator groups (Waste Management, Republic Services, Waste Connections) for stranded-gas inventory.
+        <br>5. Close site #1 as proof-of-concept with reduced fee (1.5% = $26M). Use as referenceable deal.
+        <br>6. Sites #2–5 at full 2.5% fee.
+      </div>
+
+      <div class="section-lbl" style="margin-top:14px">▲ TARGET COUNTERPARTIES</div>
+      <div class="buyer-list">
+        <div class="buyer">
+          <div class="buyer-name">Hyperscalers</div>
+          <div class="buyer-spec">Google ($75B 2025), MSFT ($80B), AWS ($100B), Meta ($40B) · sustainability mandates + capacity starvation = perfect fit</div>
+        </div>
+        <div class="buyer">
+          <div class="buyer-name">Infrastructure Funds</div>
+          <div class="buyer-spec">Brookfield ($108B AUM), KKR Infra ($79B), Stonepeak ($72B), EQT Infra · actively seeking behind-the-meter DC plays</div>
+        </div>
+        <div class="buyer">
+          <div class="buyer-name">DC Operators</div>
+          <div class="buyer-spec">Equinix, Digital Realty, CoreSite, QTS · will license MKP design for ESG-premium facilities at $20–30/kW/mo uplift</div>
+        </div>
+        <div class="buyer">
+          <div class="buyer-name">Waste Sector</div>
+          <div class="buyer-spec">Waste Management (580 LFG sites), Republic Services (340), Waste Connections (220) · JV partners w/ site inventory</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- left -->
+
+<!-- ── RIGHT PANEL ── -->
+<div class="right">
+  <div style="text-align:center;font-size:11px;opacity:0.15;letter-spacing:4px">
+    ⚓ &nbsp; ♡ &nbsp; ✦ &nbsp; ♛
+  </div>
+
+  <div>
+    <div class="ctrl-title">// MKP v6 System Parameters</div>
+
+    <div class="ctrl-group">
+      <label>DC Load (MW)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-load" min="25" max="500" value="100" step="25">
+        <div class="sv"><span id="v-load">100</span> MW</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>SOFC Efficiency (%)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-sofc" min="50" max="60" value="55" step="1">
+        <div class="sv"><span id="v-sofc">55</span>%</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>ST Inlet Temp (°C)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-st-temp" min="550" max="780" value="680" step="10">
+        <div class="sv"><span id="v-st-temp">680</span>°C</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Biogas $/MMBtu</label>
+      <div class="sl-row">
+        <input type="range" id="sl-fuel" min="1" max="15" value="2" step="0.5">
+        <div class="sv"><span id="v-fuel">2.0</span></div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Colo $/kW/mo</label>
+      <div class="sl-row">
+        <input type="range" id="sl-colo" min="120" max="220" value="170" step="5">
+        <div class="sv"><span id="v-colo">170</span></div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Occupancy (%)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-occ" min="60" max="100" value="90" step="5">
+        <div class="sv"><span id="v-occ">90</span>%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deco">⚓</div>
+
+  <div>
+    <div class="ctrl-title">// Deal Structure</div>
+    <div class="ctrl-group">
+      <label>Transaction Fee (%)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-feepct" min="1" max="4" value="2.5" step="0.25">
+        <div class="sv"><span id="v-feepct">2.5</span>%</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Number of Deals</label>
+      <div class="sl-row">
+        <input type="range" id="sl-deals" min="1" max="10" value="5" step="1">
+        <div class="sv"><span id="v-deals">5</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deco">♡</div>
+
+  <div class="score-box">
+    <div class="score-lbl">PITCH STRENGTH</div>
+    <div class="score-val" id="score" style="color:var(--money)">A+</div>
+    <div class="score-sub" id="score-sub">⚓ Grid-queue skip · institutionally bankable</div>
+  </div>
+
+  <div class="source-note">
+    <b>SOURCES v6:</b><br>
+    SOFC 55% LHV: Bloom ES-5710 spec<br>
+    ST 30% real: GE industrial curves<br>
+    Kalina @180°C: Husavik scale-adjust<br>
+    LFG $2/MMBtu: EPA LMOP 2025<br>
+    Colo $170 t2: CBRE H2 2025<br>
+    45Q LCFS: CARB Q3 2025 $67/tCO₂e<br>
+    Queue: FERC/LMP Nov 2025
+  </div>
+
+</div><!-- right -->
+</div><!-- layout -->
+
+<script>
+// ── PHYSICS CONSTANTS v6 ──────────────────────────────
+const CH4_LHV = 50.0;           // MJ/kg lower heating value
+const CH4_LHV_KWH = CH4_LHV/3.6; // kWh/kg
+const MMBTU_PER_MWH = 3.412;
+const KG_H2O_PER_KG_CH4 = 2.25;  // stoichiometric
+const H2O_RECOVERY = 0.68;       // condenser recovery fraction
+const GAL_PER_L = 0.264172;
+
+// ST bottoming
+function stEff(T_hot_C) {
+  const Th = T_hot_C + 273.15;
+  const Tc = 150 + 273.15;
+  const carnot = 1 - Tc/Th;
+  return carnot * 0.55;  // 55% of Carnot, industrial scale
+}
+
+// Kalina bottoming on ST condensate
+function kalinaEff() {
+  const Th = 180 + 273.15;
+  const Tc = 35 + 273.15;
+  const carnot = 1 - Tc/Th;
+  return carnot * 0.45;  // 45% of Carnot at low ΔT, conservative
+}
+
+function inp() {
+  return {
+    load:    +document.getElementById('sl-load').value,
+    sofc_e:  +document.getElementById('sl-sofc').value / 100,
+    st_temp: +document.getElementById('sl-st-temp').value,
+    fuel:    +document.getElementById('sl-fuel').value,
+    colo:    +document.getElementById('sl-colo').value,
+    occ:     +document.getElementById('sl-occ').value / 100,
+    feepct:  +document.getElementById('sl-feepct').value / 100,
+    deals:   +document.getElementById('sl-deals').value,
+  };
+}
+
+function calc() {
+  const i = inp();
+  const loadKW = i.load * 1000;
+
+  // Fuel required
+  const thermalInKW = loadKW / i.sofc_e;
+  const ch4_kg_hr = thermalInKW * 3600 / (CH4_LHV * 1000);  // kg/hr
+  const mmbtu_yr = thermalInKW / 1000 * 8760 * MMBTU_PER_MWH;
+
+  // Waste heat from SOFC (thermal)
+  const sofcWasteKW = thermalInKW - loadKW;
+
+  // Steam turbine bottoming (on SOFC exhaust)
+  const steamEff = stEff(i.st_temp);
+  const steamKW = sofcWasteKW * 0.85 * steamEff;  // 85% heat transfer effectiveness
+
+  // Kalina on ST condensate (remaining heat)
+  const stCondenserHeat = sofcWasteKW * 0.85 * (1 - steamEff);
+  const kalinaKW = stCondenserHeat * 0.60 * kalinaEff();  // 60% usable
+
+  // Parasitic loads (cleanup, pumps, BOP, MD)
+  const parasiticKW = loadKW * 0.04 + 300;  // 4% + MD constant
+
+  // Net generation
+  const grossGenKW = loadKW + steamKW + kalinaKW;
+  const netExport = grossGenKW - loadKW - parasiticKW;
+
+  // Water
+  const sofcWaterLhr = ch4_kg_hr * KG_H2O_PER_KG_CH4 * H2O_RECOVERY;
+  const mdLhr = 5000;  // MD produces ~5000 L/hr from gray/reclaim using waste heat
+  const wetlandLhr = 2000;
+  const totalWaterLhr = sofcWaterLhr + mdLhr + wetlandLhr;
+  const totalWaterGalDay = totalWaterLhr * 24 * GAL_PER_L;
+
+  // CO2e
+  const ch4_yr_tonnes = ch4_kg_hr * 8760 / 1000;
+  const co2e_avoided = ch4_yr_tonnes * 28;  // GWP-100 conservative
+
+  // Financials — Path 1 (LFG)
+  const capex = 1750 + (i.load - 100) * 15;  // $M, scales with load
+  const revColo = i.load * i.colo * 12 * i.occ / 1000;  // $M/yr
+  const revExport = netExport / 1000 * 8760 * 60 / 1000;  // 60 $/MWh
+  const revCarbon = 4;
+  const revWater = 3;
+  const revenue = revColo + revExport + revCarbon + revWater;
+
+  const opexFuel = mmbtu_yr * i.fuel / 1e6;  // $M/yr
+  const opexOM = capex * 0.025;
+  const opexStack = 13 * (i.load/100);
+  const opexGrid = 7 * (i.load/100);
+  const opexStaff = 7 * Math.sqrt(i.load/100);
+  const opexCons = 3 * (i.load/100);
+  const opex = opexFuel + opexOM + opexStack + opexGrid + opexStaff + opexCons;
+
+  const ebitda = revenue - opex;
+  const margin = ebitda / revenue;
+  const payback = capex / ebitda;
+
+  // Deal structure
+  const feePerDeal = capex * i.feepct;
+  const totalFees = feePerDeal * i.deals;
+
+  return {
+    ch4_kg_hr, sofcWasteKW, steamKW, kalinaKW, grossGenKW, netExport,
+    sofcWaterLhr, totalWaterLhr, totalWaterGalDay, co2e_avoided,
+    capex, revenue, opex, opexFuel, ebitda, margin, payback,
+    feePerDeal, totalFees,
+    parasiticKW, mmbtu_yr, steamEff
+  };
+}
+
+function fmt(n, d=1) {
+  if (n >= 1e9) return (n/1e9).toFixed(d) + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(d) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(d) + 'K';
+  return n.toFixed(d);
+}
+function fR(n) { return n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function fM(n) { return '$' + n.toFixed(1) + 'M'; }
+function set(id, html) { const e=document.getElementById(id); if(e) e.innerHTML=html; }
+function sty(id, p, v) { const e=document.getElementById(id); if(e) e.style[p]=v; }
+
+function render() {
+  const r = calc();
+  const i = inp();
+
+  // Flow diagram
+  set('dc-lbl', `${i.load} MW IT · PUE 1.15`);
+  set('dc-temp', `60°C waste · ${(i.load*0.85).toFixed(0)} MWth`);
+  set('sofc-cap', `${i.load} MWe · η = ${(i.sofc_e*100).toFixed(0)}% LHV`);
+  set('sofc-h2', `${fR(r.ch4_kg_hr)} kg CH₄/hr in`);
+  set('sofc-w', `${fmt(r.ch4_kg_hr*KG_H2O_PER_KG_CH4)} L/hr H₂O exhaust`);
+  set('st-out', `→ ${(r.steamKW/1000).toFixed(1)} MWe`);
+  set('k-out', `→ ${(r.kalinaKW/1000).toFixed(1)} MWe`);
+  set('bus-gen', `${(r.grossGenKW/1000).toFixed(0)} MW GROSS`);
+  set('md-out', `→ ${fmt(r.totalWaterLhr)} L/hr`);
+  set('water-out', `${fR(r.totalWaterGalDay/1000)}K gal/day`);
+  set('export-lbl', `EXPORT ${(r.netExport/1000).toFixed(1)} MW`);
+
+  // Metrics
+  set('m-sofc', i.load.toFixed(1)+'<span class="mc-unit">MW</span>');
+  set('m-sofc-sub', `η = ${(i.sofc_e*100).toFixed(0)}% LHV`);
+  set('m-steam', (r.steamKW/1000).toFixed(1)+'<span class="mc-unit">MW</span>');
+  sty('bar-steam','width', Math.min(100,r.steamKW/30000*100)+'%');
+  set('m-kalina', (r.kalinaKW/1000).toFixed(1)+'<span class="mc-unit">MW</span>');
+  set('m-kalina-sub', `ST condenser · 180°C · η=${(kalinaEff()*100).toFixed(1)}%`);
+  sty('bar-kalina','width', Math.min(100,r.kalinaKW/8000*100)+'%');
+
+  const expPos = r.netExport >= 0;
+  set('m-surplus', (expPos?'+':'')+(r.netExport/1000).toFixed(1)+'<span class="mc-unit">MW</span>');
+  set('m-surplus-sub', expPos ? 'behind-the-meter ✓' : '⚠ DEFICIT');
+  sty('m-surplus', 'color', expPos ? 'var(--money)' : 'var(--luffy)');
+  sty('bar-surplus','width', Math.min(100,Math.max(0,r.netExport/35000*100))+'%');
+  sty('bar-surplus','background', expPos ? 'var(--money)' : 'var(--luffy)');
+
+  set('m-water', fmt(r.totalWaterLhr)+'<span class="mc-unit">L/hr</span>');
+  sty('bar-water','width', Math.min(100,r.totalWaterLhr/40000*100)+'%');
+
+  set('m-co2', fR(r.co2e_avoided/1000)+'<span class="mc-unit">kt/yr</span>');
+  sty('bar-co2','width', Math.min(100,r.co2e_avoided/200000*100)+'%');
+
+  // Financials (all three paths scale with load + colo + occ; fuel varies by path)
+  const scale = i.load / 100;
+  const occFactor = i.occ / 0.90;
+  const coloFactor = i.colo / 170;
+
+  // Path 1 (LFG)
+  const p1Cap = 1750 * scale;
+  const p1Rev = (184*coloFactor*occFactor + 13 + 4 + 3) * scale;
+  const p1Fuel = r.mmbtu_yr * i.fuel / 1e6;
+  const p1OpEx = p1Fuel + 44*scale + 13*scale + 7*scale + 7*Math.sqrt(scale) + 3*scale;
+  const p1Eb = p1Rev - p1OpEx;
+  const p1Pb = p1Cap / p1Eb;
+  set('p1-payback', p1Eb > 0 ? p1Pb.toFixed(1)+' yr' : 'N/A');
+
+  // Path 2 (WWTP) - fixed $5/MMBtu
+  const p2Cap = 1750 * scale;
+  const p2Rev = (189*coloFactor*occFactor + 13 + 8 + 3) * scale;
+  const p2Fuel = r.mmbtu_yr * 5 / 1e6;
+  const p2OpEx = p2Fuel + 44*scale + 13*scale + 7*scale + 9*Math.sqrt(scale) + 15*scale;
+  const p2Eb = p2Rev - p2OpEx;
+  const p2Pb = p2Cap / p2Eb;
+  set('p2-payback', p2Eb > 0 ? p2Pb.toFixed(1)+' yr' : 'N/A');
+
+  // Path 3 (digester) - much larger capex, tipping revenue
+  const p3Cap = 3080 * scale;
+  const p3Rev = (184*coloFactor*occFactor + 13 + 134 + 6 + 22) * scale;
+  const p3OpEx = 12*scale + 70*scale + 13*scale + 7*scale + 12*Math.sqrt(scale) + 4*scale;
+  const p3Eb = p3Rev - p3OpEx;
+  const p3Pb = p3Cap / p3Eb;
+  set('p3-payback', p3Eb > 0 ? p3Pb.toFixed(1)+' yr' : 'N/A');
+
+  // Deal structure
+  const feePerDeal = p1Cap * i.feepct;
+  const totalFees = feePerDeal * i.deals;
+  const royPerYr = p1Rev * 0.01;
+  const equityVal = p1Cap * 0.05;
+
+  set('deal-total', '$' + totalFees.toFixed(0) + 'M');
+  set('dm-fee', '$' + feePerDeal.toFixed(1) + 'M per deal');
+  set('dm-royalty', '$' + royPerYr.toFixed(1) + 'M/yr × site');
+  set('dm-equity', '5% · $' + equityVal.toFixed(0) + 'M/deal');
+}
+
+// ── TAB SWITCH ──
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pane-'+name).classList.add('active');
+}
+
+// ── LOG ──
+const LSYS = ['SOFC CHP','STEAM TURBINE','KALINA','WATER LOOP','MKP v6','DEAL FLOW'];
+const LCLS = ['sofc','steam','kalina','water','pitch','deal'];
+const LMSG = [
+  ['100 MW nameplate holding at 55% LHV.','Bloom stack temperature nominal.','Biogas feed within cleanup spec.','Electrochemical conversion stable.'],
+  ['680°C exhaust bottoming cycle active.','Mitsubishi-class ST nominal.','24.6 MW captured from SOFC waste.','Secondary heat routed to Kalina.'],
+  ['180°C ST condensate feed.','Kalina NH₃-H₂O separator stable.','+4.5 MW bottoming output.','Below 200°C operation stable.'],
+  ['SOFC stoichiometric water 29K L/hr.','MD producing 5K L/hr from reclaimed.','Net water-positive: +170K gal/day.','Wetland discharge within NPDES.'],
+  ['Grid-queue skip validated — 24-mo T2P.','Behind-the-meter merchant thesis active.','ESG anchor: 122 kt CO₂e destroyed/yr.','Siteable in tier-2 with tier-1 power.'],
+  ['Infra fund briefing pack prepared.','LFG operator outreach sequence active.','IP patent filing queue.','Target: site #1 LOI Q1 2027.'],
+];
+
+let simSec = 0;
+function addLog() {
+  const r = calc();
+  const ts = `T+${String(Math.floor(simSec/3600)).padStart(1,'0')}:${String(Math.floor(simSec%3600/60)).padStart(2,'0')}:${String(simSec%60).padStart(2,'0')}`;
+  const sys = Math.floor(Math.random()*6);
+  const msg = LMSG[sys][Math.floor(Math.random()*4)];
+  const area = document.getElementById('log-area');
+  if (!area) return;
+  const e = document.createElement('div');
+  e.className='le';
+  const cls = r.netExport<0?'err':sys===4||sys===5?'new':'ok';
+  e.innerHTML=`<span class="lt">${ts}</span><span class="ls ${LCLS[sys]}">${LSYS[sys]}</span><span class="lm ${cls}">${msg}</span>`;
+  area.appendChild(e);
+  if(area.children.length>40) area.removeChild(area.children[0]);
+  area.scrollTop=area.scrollHeight;
+}
+
+// ── SLIDERS ──
+['load','sofc','st-temp','fuel','colo','occ','feepct','deals'].forEach(id=>{
+  const el=document.getElementById('sl-'+id);
+  if(!el) return;
+  el.addEventListener('input',()=>{
+    const val = +el.value;
+    const display = id==='fuel' ? val.toFixed(1) :
+                    id==='feepct' ? val.toFixed(2) :
+                    el.value;
+    document.getElementById('v-'+id).textContent = display;
+    render();
+  });
+});
+
+// ── TICK ──
+function tick(){
+  simSec++;
+  const h=String(Math.floor(simSec/3600)).padStart(1,'0');
+  const m=String(Math.floor(simSec%3600/60)).padStart(2,'0');
+  const s=String(simSec%60).padStart(2,'0');
+  document.getElementById('clock').textContent=`T+${h}:${m}:${s}`;
+  if(simSec%3===0) addLog();
+}
+
+render();
+setInterval(tick,1000);
+</script>
+</body>
+</html>

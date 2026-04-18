@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MK PROTO v5 // KINGDOM MERRY PROTOCOL — AUDITED</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg:      #02050e;
+    --deep:    #060d1a;
+    --panel:   #080f1e;
+    --border:  #1a2540;
+    --luffy:   #e8341c;
+    --sora:    #4a9eff;
+    --nami:    #f5c842;
+    --zoro:    #2dce6e;
+    --kingdom: #c084fc;
+    --sea:     #00c8e8;
+    --heart:   #ff4d8d;
+    --text:    #d4e8ff;
+    --dim:     #3a5070;
+    /* V4 upgrade colors */
+    --kalina:  #ff9500;   /* Kalina cycle orange */
+    --steam:   #e0e0ff;   /* Steam turbine white-blue */
+    --mfc:     #39ff14;   /* MFC neon green */
+    --evac:    #ffe566;   /* Evacuated tube gold */
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Rajdhani',sans-serif; font-size:14px;
+    min-height:100vh; overflow-x:hidden;
+  }
+
+  body::after {
+    content:''; position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 85%, rgba(74,158,255,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 85% 15%, rgba(192,132,252,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,149,0,0.02) 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events:none; z-index:999;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding:12px 20px;
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    background:linear-gradient(90deg, rgba(232,52,28,0.07), rgba(255,149,0,0.05), rgba(74,158,255,0.05));
+    position:relative; overflow:hidden;
+  }
+
+  header::before { content:'⚓'; position:absolute; right:320px; top:50%; transform:translateY(-50%); font-size:55px; opacity:0.04; pointer-events:none; }
+  header::after  { content:'♡'; position:absolute; right:230px; top:50%; transform:translateY(-50%); font-size:45px; opacity:0.05; color:var(--heart); pointer-events:none; }
+
+  .hd-title {
+    font-family:'Cinzel',serif; font-size:16px; font-weight:900;
+    background:linear-gradient(90deg, var(--luffy), var(--kalina), var(--nami), var(--sora));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 8px rgba(255,149,0,0.4));
+  }
+
+  .hd-sub { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--dim); letter-spacing:2px; margin-top:3px; }
+
+  .hd-right { display:flex; gap:14px; align-items:center; font-family:'Share Tech Mono',monospace; font-size:10px; }
+
+  .pip { width:8px;height:8px;border-radius:50%; display:inline-block; margin-right:5px; }
+  .pip.green { background:var(--zoro); box-shadow:0 0 8px var(--zoro); animation:hb 2s infinite; }
+  .pip.orange { background:var(--kalina); box-shadow:0 0 8px var(--kalina); animation:hb 1.5s infinite; }
+  @keyframes hb { 0%,100%{transform:scale(1)}50%{transform:scale(1.4)} }
+
+  /* ── LAYOUT ── */
+  .layout { display:grid; grid-template-columns:1fr 300px; height:calc(100vh - 54px); overflow:hidden; }
+  .left { display:flex; flex-direction:column; overflow:hidden; }
+
+  /* ── COMPARISON BANNER ── */
+  .compare-bar {
+    display:grid; grid-template-columns:repeat(5,1fr);
+    gap:8px; padding:10px 16px;
+    border-bottom:1px solid var(--border);
+    background:rgba(255,149,0,0.03);
+    flex:0 0 auto;
+  }
+
+  .cmp-card {
+    background:var(--panel); border:1px solid var(--border); border-radius:3px;
+    padding:8px 10px; position:relative; overflow:hidden;
+  }
+
+  .cmp-card::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
+  .cmp-card.v3::before { background:var(--dim); }
+  .cmp-card.v4::before { background:var(--kalina); }
+
+  .cmp-lbl { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+  .cmp-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:2px; }
+  .cmp-tag { font-family:'Share Tech Mono',monospace; font-size:8px; }
+  .cmp-tag.old { color:var(--dim); }
+  .cmp-tag.new { color:var(--kalina); }
+  .cmp-val { font-family:'Cinzel',serif; font-size:13px; font-weight:700; }
+  .cmp-delta { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--zoro); text-align:right; }
+
+  /* ── TABS ── */
+  .tabs { display:flex; border-bottom:1px solid var(--border); flex:0 0 auto; }
+  .tab {
+    padding:8px 16px;
+    font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1.5px;
+    color:var(--dim); cursor:pointer; border-bottom:2px solid transparent;
+    transition:all 0.2s; text-transform:uppercase;
+  }
+  .tab.active { color:var(--kalina); border-bottom-color:var(--kalina); }
+  .tab:hover { color:var(--text); }
+
+  .tab-pane { display:none; flex:1; overflow:hidden; }
+  .tab-pane.active { display:flex; flex-direction:column; }
+
+  /* ── DIAGRAM ── */
+  .diagram-wrap { padding:12px 16px; flex:0 0 auto; }
+  .section-lbl { font-family:'Cinzel',serif; font-size:8px; letter-spacing:3px; color:var(--dim); margin-bottom:8px; text-transform:uppercase; }
+  svg#diag { width:100%; height:340px; }
+
+  .flow { fill:none; stroke-width:2; stroke-dasharray:8 5; animation:fd 1.6s linear infinite; }
+  @keyframes fd { to { stroke-dashoffset:-52; } }
+
+  /* ── METRICS ── */
+  .metrics { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; padding:8px 16px; border-bottom:1px solid var(--border); flex:0 0 auto; }
+  .mc { background:var(--panel); border:1px solid var(--border); border-radius:3px; padding:8px 10px; position:relative; overflow:hidden; }
+  .mc::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
+  .mc.blue::before  { background:var(--sora); }
+  .mc.red::before   { background:var(--luffy); }
+  .mc.green::before { background:var(--zoro); }
+  .mc.gold::before  { background:var(--nami); }
+  .mc.pink::before  { background:var(--heart); }
+  .mc.orange::before{ background:var(--kalina); }
+  .mc.steam::before { background:var(--steam); }
+  .mc-lbl { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+  .mc-val { font-family:'Cinzel',serif; font-size:16px; font-weight:700; line-height:1; }
+  .mc-unit { font-size:9px; font-weight:400; color:var(--dim); }
+  .mc-sub  { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); margin-top:3px; }
+  .mbar { height:2px; background:var(--border); border-radius:1px; margin-top:4px; overflow:hidden; }
+  .mbar-fill { height:100%; border-radius:1px; transition:width 0.5s; }
+
+  /* ── LOG ── */
+  .log-area { flex:1; overflow-y:auto; padding:8px 16px; }
+  .le { display:flex; gap:8px; padding:2px 0; border-bottom:1px solid rgba(26,37,64,0.4); font-family:'Share Tech Mono',monospace; font-size:9px; }
+  .lt { color:var(--dim); min-width:65px; }
+  .ls { min-width:100px; }
+  .ls.cooling { color:var(--sora); }
+  .ls.kalina  { color:var(--kalina); }
+  .ls.steam   { color:var(--steam); }
+  .ls.sofc    { color:var(--nami); }
+  .ls.wetland { color:var(--kingdom); }
+  .ls.water   { color:var(--zoro); }
+  .ls.flush   { color:var(--heart); }
+  .ls.mfc     { color:var(--mfc); }
+  .lm { color:var(--text); }
+  .lm.ok   { color:var(--zoro); }
+  .lm.warn { color:var(--nami); }
+  .lm.err  { color:var(--luffy); }
+  .lm.new  { color:var(--kalina); }
+
+  /* ── CHART TAB ── */
+  .chart-area { padding:16px; overflow-y:auto; flex:1; }
+  .chart-box { background:var(--panel); border:1px solid var(--border); border-radius:3px; padding:12px; margin-bottom:12px; }
+  .chart-title { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:var(--dim); margin-bottom:10px; text-transform:uppercase; }
+  canvas { display:block; width:100%; }
+
+  /* ── RIGHT PANEL ── */
+  .right { border-left:1px solid var(--border); background:var(--panel); overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:12px; }
+
+  .ctrl-title { font-family:'Cinzel',serif; font-size:8px; letter-spacing:3px; color:var(--dim); padding-bottom:6px; border-bottom:1px solid var(--border); text-transform:uppercase; }
+
+  .ctrl-group label { display:block; font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:1px; margin-bottom:5px; text-transform:uppercase; }
+  .sl-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  input[type=range] { flex:1; -webkit-appearance:none; height:2px; background:var(--border); border-radius:1px; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:11px;height:11px; background:var(--kalina); border-radius:50%; cursor:pointer; box-shadow:0 0 6px var(--kalina); }
+  .sv { font-family:'Cinzel',serif; font-size:10px; color:var(--kalina); min-width:48px; text-align:right; }
+
+  .tg-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .tg-lbl { font-family:'Rajdhani',sans-serif; font-weight:600; font-size:11px; }
+
+  .toggle { position:relative; width:34px;height:17px; }
+  .toggle input { opacity:0;width:0;height:0; }
+  .tsl { position:absolute; cursor:pointer; inset:0; background:var(--border); border-radius:17px; transition:0.3s; }
+  .tsl:before { content:''; position:absolute; width:11px;height:11px; left:3px;top:3px; background:var(--dim); border-radius:50%; transition:0.3s; }
+  .toggle input:checked + .tsl { background:var(--kalina); }
+  .toggle input:checked + .tsl:before { transform:translateX(17px); background:#fff; box-shadow:0 0 5px var(--kalina); }
+
+  .upgrade-badge {
+    display:inline-block; font-family:'Share Tech Mono',monospace; font-size:7px;
+    padding:1px 5px; border-radius:2px; letter-spacing:1px;
+    background:rgba(255,149,0,0.15); color:var(--kalina); border:1px solid rgba(255,149,0,0.3);
+    vertical-align:middle; margin-left:4px;
+  }
+
+  .score-box { border:1px solid var(--border); border-radius:3px; padding:10px; text-align:center; background:var(--bg); position:relative; overflow:hidden; }
+  .score-box::before { content:'⚓'; position:absolute; right:6px;bottom:2px; font-size:28px;opacity:0.05;pointer-events:none; }
+  .score-lbl { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); letter-spacing:1px; margin-bottom:3px; }
+  .score-val { font-family:'Cinzel',serif; font-size:24px; font-weight:900; }
+  .score-sub { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); margin-top:2px; }
+
+  .deco { display:flex; align-items:center; gap:6px; font-size:9px; color:var(--dim); opacity:0.4; margin:2px 0; }
+  .deco::before,.deco::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .ent-box { border:1px solid var(--border); border-radius:3px; padding:10px; background:var(--bg); }
+  .ent-title { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:var(--luffy); margin-bottom:6px; text-transform:uppercase; }
+
+  ::-webkit-scrollbar { width:3px;height:3px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="hd-title">⚓ KINGDOM MERRY PROTOCOL  ✦  MKP v5  ✦  MK PROTO AUDITED</div>
+    <div class="hd-sub">MK PROTO v5 · REAL-WORLD AUDITED · SOFC 55% · KALINA 6.48% · MD 1.0 kWh/m³ · ETSC 2.5× — ALL VALUES SOURCED</div>
+  </div>
+  <div class="hd-right">
+    <span><span class="pip green"></span>MKP ONLINE</span>
+    <span><span class="pip orange"></span>UPGRADES ACTIVE</span>
+    <span id="clock" style="color:var(--dim)">T+0:00:00</span>
+  </div>
+</header>
+
+<div class="layout">
+<div class="left">
+
+  <!-- COMPARISON BANNER -->
+  <div class="compare-bar">
+    <div class="cmp-card">
+      <div class="cmp-lbl">⚡ POWER SURPLUS</div>
+      <div class="cmp-row"><span class="cmp-tag old">v3</span><span class="cmp-val" style="color:var(--dim)" id="cmp-surplus-old">3,595 kW</span></div>
+      <div class="cmp-row"><span class="cmp-tag new">v5</span><span class="cmp-val" style="color:var(--kalina)" id="cmp-surplus-new">23,105 kW</span></div>
+      <div class="cmp-delta" id="cmp-surplus-delta">+6.4× improvement</div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-lbl">💧 WATER OUTPUT</div>
+      <div class="cmp-row"><span class="cmp-tag old">v3</span><span class="cmp-val" style="color:var(--dim)" id="cmp-water-old">55.3K L/hr</span></div>
+      <div class="cmp-row"><span class="cmp-tag new">v5</span><span class="cmp-val" style="color:var(--kalina)" id="cmp-water-new">78.6K L/hr</span></div>
+      <div class="cmp-delta" id="cmp-water-delta">+42% more water</div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-lbl">🔥 KALINA vs ORC</div>
+      <div class="cmp-row"><span class="cmp-tag old">v3 ORC</span><span class="cmp-val" style="color:var(--dim)" id="cmp-orc-old">3,782 kW</span></div>
+      <div class="cmp-row"><span class="cmp-tag new">v5 Kalina</span><span class="cmp-val" style="color:var(--kalina)" id="cmp-orc-new">6,484 kW</span></div>
+      <div class="cmp-delta" id="cmp-orc-delta">+71% heat recovery</div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-lbl">♨️ SOFC CASCADE</div>
+      <div class="cmp-row"><span class="cmp-tag old">v3</span><span class="cmp-val" style="color:var(--dim)">0 kW</span></div>
+      <div class="cmp-row"><span class="cmp-tag new">v5 Steam</span><span class="cmp-val" style="color:var(--kalina)" id="cmp-steam-new">16,657 kW</span></div>
+      <div class="cmp-delta">800°C exhaust captured</div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-lbl">☀️ SOLAR WATER</div>
+      <div class="cmp-row"><span class="cmp-tag old">v3 flat still</span><span class="cmp-val" style="color:var(--dim)" id="cmp-solar-old">1,667 L/hr</span></div>
+      <div class="cmp-row"><span class="cmp-tag new">v5 evac+VMD</span><span class="cmp-val" style="color:var(--kalina)" id="cmp-solar-new">25,000 L/hr</span></div>
+      <div class="cmp-delta">2.5× same footprint</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('flow',this)">FLOW DIAGRAM</div>
+    <div class="tab" onclick="switchTab('charts',this)">PERFORMANCE CHARTS</div>
+  </div>
+
+  <!-- TAB: FLOW DIAGRAM -->
+  <div class="tab-pane active" id="pane-flow">
+    <div class="diagram-wrap">
+      <div class="section-lbl">♡ MK Proto v5 — Kingdom Merry Protocol Audited Build ⚓</div>
+      <svg id="diag" viewBox="0 0 900 320">
+
+        <!-- FLOWS -->
+        <!-- DC → Kalina (hot) -->
+        <path class="flow" style="stroke:var(--kalina)" d="M 190 82 L 290 82 L 290 130"/>
+        <!-- Kalina → Power Bus -->
+        <path class="flow" style="stroke:var(--nami)" d="M 365 185 L 430 185 L 430 230"/>
+        <!-- DC cooling loop -->
+        <path class="flow" style="stroke:var(--sora)" d="M 190 118 C 95 118 95 275 165 275"/>
+        <path class="flow" style="stroke:var(--sora);animation-direction:reverse" d="M 165 258 C 95 258 95 102 190 102"/>
+        <!-- DC → MD filtration -->
+        <path class="flow" style="stroke:var(--sea)" d="M 190 138 L 155 138 L 155 210 L 185 210"/>
+        <!-- MD → Pure water -->
+        <path class="flow" style="stroke:var(--zoro)" d="M 310 220 L 390 220 L 390 260 L 440 260"/>
+        <!-- SOFC → Steam turbine (800°C cascade!) -->
+        <path class="flow" style="stroke:var(--steam)" d="M 650 100 L 580 100 L 580 130"/>
+        <!-- Steam turbine → Power bus -->
+        <path class="flow" style="stroke:var(--nami)" d="M 580 195 L 580 230 L 495 230"/>
+        <!-- Steam secondary → ORC secondary -->
+        <path class="flow" style="stroke:var(--kalina);opacity:0.6" d="M 555 165 L 490 165 L 490 140 L 420 140 L 420 130"/>
+        <!-- SOFC → H2O exhaust -->
+        <path class="flow" style="stroke:var(--zoro);animation-direction:reverse" d="M 680 115 L 680 200 L 480 200 L 480 260 L 455 260"/>
+        <!-- DC → Wetland (greywater) -->
+        <path class="flow" style="stroke:var(--kingdom)" d="M 190 155 L 162 155 L 162 290 L 192 290"/>
+        <!-- Wetland → Evac tube solar -->
+        <path class="flow" style="stroke:var(--evac)" d="M 305 300 L 380 300"/>
+        <!-- Solar → Pure water -->
+        <path class="flow" style="stroke:var(--zoro)" d="M 485 300 L 510 300 L 510 270 L 453 270"/>
+        <!-- Flush recovery -->
+        <path class="flow" style="stroke:var(--heart)" d="M 100 155 L 60 155 L 60 220 L 90 220"/>
+        <path class="flow" style="stroke:var(--sea);animation-direction:reverse" d="M 175 225 L 95 225 L 95 160 L 190 160"/>
+        <!-- MFC power out -->
+        <path class="flow" style="stroke:var(--mfc);stroke-dasharray:4 4" d="M 248 295 L 248 240 L 430 240 L 430 233"/>
+
+        <!-- ─── NODES ─── -->
+
+        <!-- DATA CENTER -->
+        <g>
+          <rect x="50" y="52" width="140" height="128" fill="#080f1e" stroke="var(--sora)" stroke-width="1.5" rx="4"/>
+          <text x="120" y="70" text-anchor="middle" font-size="9" fill="var(--sora)" font-family="Cinzel,serif" font-weight="700">DATA CENTER</text>
+          <text x="120" y="82" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace" id="dc-lbl">100 MW LOAD</text>
+          <line x1="62" y1="89" x2="178" y2="89" stroke="var(--border)" stroke-width="1"/>
+          <text x="120" y="101" text-anchor="middle" font-size="8" fill="var(--text)">Immersion Cooling</text>
+          <text x="120" y="112" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">Two-Phase Passive</text>
+          <text x="120" y="126" text-anchor="middle" font-size="8" fill="var(--text)">Waste Heat Out</text>
+          <text x="120" y="138" text-anchor="middle" font-size="7" fill="var(--kalina)" font-family="Share Tech Mono,monospace" id="dc-temp">60°C / 90 MW</text>
+          <text x="120" y="151" text-anchor="middle" font-size="7" fill="var(--heart)" font-family="Share Tech Mono,monospace" id="dc-flush-lbl">Flush vol: 40,000L</text>
+          <text x="120" y="164" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace" id="dc-age-lbl">Age: yr 0</text>
+        </g>
+
+        <!-- KALINA CYCLE (replaces ORC) -->
+        <g>
+          <rect x="268" y="120" width="150" height="90" fill="#0d0a00" stroke="var(--kalina)" stroke-width="1.5" rx="4"/>
+          <text x="343" y="138" text-anchor="middle" font-size="9" fill="var(--kalina)" font-family="Cinzel,serif" font-weight="700">KALINA CYCLE</text>
+          <text x="343" y="149" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">NH₃-H₂O WORKING FLUID</text>
+          <line x1="278" y1="156" x2="408" y2="156" stroke="rgba(255,149,0,0.2)" stroke-width="1"/>
+          <text x="343" y="168" text-anchor="middle" font-size="8" fill="var(--text)" id="k-eff">η = 7.20%</text>
+          <text x="343" y="181" text-anchor="middle" font-size="10" fill="var(--kalina)" font-family="Cinzel,serif" id="k-out">→ 6,484 kW</text>
+          <text x="343" y="192" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace" id="k-carnot">54% Carnot</text>
+          <text x="343" y="203" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">vs 35% ORC (v3)</text>
+        </g>
+
+        <!-- POWER BUS -->
+        <g>
+          <rect x="415" y="215" width="120" height="48" fill="#080f1e" stroke="var(--nami)" stroke-width="1.5" rx="4"/>
+          <text x="475" y="233" text-anchor="middle" font-size="9" fill="var(--nami)" font-family="Cinzel,serif" font-weight="700">POWER BUS</text>
+          <text x="475" y="247" text-anchor="middle" font-size="10" fill="var(--text)" font-family="Cinzel,serif" id="bus-s">+23,105 kW</text>
+          <text x="475" y="257" text-anchor="middle" font-size="7" fill="var(--zoro)" font-family="Share Tech Mono,monospace" id="bus-ok">SELF-POWERED ✓</text>
+        </g>
+
+        <!-- SOFC -->
+        <g>
+          <rect x="640" y="52" width="155" height="105" fill="#080f1e" stroke="var(--nami)" stroke-width="1.5" rx="4"/>
+          <text x="717" y="70" text-anchor="middle" font-size="9" fill="var(--nami)" font-family="Cinzel,serif" font-weight="700">SOFC CELLS</text>
+          <text x="717" y="81" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">BIOGAS FUEL SOURCE</text>
+          <line x1="650" y1="88" x2="785" y2="88" stroke="var(--border)" stroke-width="1"/>
+          <text x="717" y="100" text-anchor="middle" font-size="8" fill="var(--text)" id="sofc-h2">6,001 kg H₂/hr</text>
+          <text x="717" y="112" text-anchor="middle" font-size="9" fill="var(--zoro)" font-family="Cinzel,serif" id="sofc-w">42.56K L/hr H₂O</text>
+          <text x="717" y="124" text-anchor="middle" font-size="7" fill="var(--luffy)" font-family="Share Tech Mono,monospace">800°C exhaust → cascade</text>
+          <text x="717" y="136" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">2H₂ + O₂ → 2H₂O</text>
+          <text x="717" y="148" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace" id="sofc-eff">η = 55% (Bloom Energy spec)</text>
+        </g>
+
+        <!-- STEAM TURBINE (NEW!) -->
+        <g>
+          <rect x="540" y="120" width="130" height="88" fill="#0a0a14" stroke="var(--steam)" stroke-width="1.5" rx="4"/>
+          <text x="605" y="137" text-anchor="middle" font-size="7" fill="var(--steam)" opacity="0.5">★ NEW</text>
+          <text x="605" y="137" text-anchor="middle" font-size="9" fill="var(--steam)" font-family="Cinzel,serif" font-weight="700" dx="18">STEAM TURBINE</text>
+          <text x="605" y="149" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">SOFC 800°C CASCADE</text>
+          <line x1="550" y1="156" x2="660" y2="156" stroke="rgba(224,224,255,0.15)" stroke-width="1"/>
+          <text x="605" y="168" text-anchor="middle" font-size="8" fill="var(--text)" id="st-eff">η = 33.3%</text>
+          <text x="605" y="181" text-anchor="middle" font-size="10" fill="var(--steam)" font-family="Cinzel,serif" id="st-out">→ 16,657 kW</text>
+          <text x="605" y="193" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">Carnot: 60.6%</text>
+          <text x="605" y="204" text-anchor="middle" font-size="7" fill="var(--kalina)" font-family="Share Tech Mono,monospace">2° exhaust → Kalina</text>
+        </g>
+
+        <!-- MD FILTRATION (replaces RO) -->
+        <g>
+          <rect x="175" y="198" width="138" height="62" fill="#040a10" stroke="var(--sea)" stroke-width="1.5" rx="4"/>
+          <text x="244" y="215" text-anchor="middle" font-size="7" fill="var(--sea)" opacity="0.5">★ NEW</text>
+          <text x="244" y="215" text-anchor="middle" font-size="9" fill="var(--sea)" font-family="Cinzel,serif" font-weight="700" dx="16">MEMBRANE DISTILL</text>
+          <text x="244" y="226" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">HEAT-DRIVEN · ELEC: 1.0 kWh/m³</text>
+          <line x1="185" y1="233" x2="303" y2="233" stroke="rgba(0,200,232,0.15)" stroke-width="1"/>
+          <text x="244" y="245" text-anchor="middle" font-size="8" fill="var(--text)" id="md-sec">SEC: 1.00 kWh/m³</text>
+          <text x="244" y="256" text-anchor="middle" font-size="9" fill="var(--sea)" font-family="Cinzel,serif" id="md-power">→ 45 kW</text>
+        </g>
+
+        <!-- WETLAND + MFC -->
+        <g>
+          <rect x="178" y="272" width="132" height="50" fill="#080f1e" stroke="var(--kingdom)" stroke-width="1.5" rx="4"/>
+          <text x="244" y="289" text-anchor="middle" font-size="9" fill="var(--kingdom)" font-family="Cinzel,serif" font-weight="700">WETLAND + MFC</text>
+          <text x="244" y="300" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">BIOREMEDIATION + POWER</text>
+          <line x1="188" y1="306" x2="300" y2="306" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
+          <text x="244" y="316" text-anchor="middle" font-size="7" fill="var(--mfc)" font-family="Share Tech Mono,monospace" id="mfc-out">MFC: +10 kW generated</text>
+        </g>
+
+        <!-- EVACUATED TUBE + VMD (replaces flat solar still) -->
+        <g>
+          <rect x="368" y="278" width="130" height="46" fill="#100a00" stroke="var(--evac)" stroke-width="1.5" rx="4"/>
+          <text x="433" y="294" text-anchor="middle" font-size="7" fill="var(--evac)" opacity="0.5">★ NEW</text>
+          <text x="433" y="294" text-anchor="middle" font-size="9" fill="var(--evac)" font-family="Cinzel,serif" font-weight="700" dx="16">EVAC TUBE + VMD</text>
+          <text x="433" y="306" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">2.5× FLAT STILL (AUDITED)</text>
+          <line x1="378" y1="311" x2="488" y2="311" stroke="rgba(255,229,102,0.15)" stroke-width="1"/>
+          <text x="433" y="319" text-anchor="middle" font-size="8" fill="var(--evac)" id="evac-out">25,000 L/hr</text>
+        </g>
+
+        <!-- PURE WATER OUT -->
+        <g>
+          <rect x="440" y="248" width="130" height="36" fill="#030c10" stroke="var(--zoro)" stroke-width="1.5" rx="4"/>
+          <text x="505" y="263" text-anchor="middle" font-size="8" fill="var(--zoro)" font-family="Cinzel,serif" font-weight="700">⚓ PURE WATER</text>
+          <text x="505" y="277" text-anchor="middle" font-size="10" fill="var(--zoro)" font-family="Cinzel,serif" id="water-out">78.6K L/hr</text>
+        </g>
+
+        <!-- FLUSH RECOVERY -->
+        <g>
+          <rect x="58" y="208" width="115" height="48" fill="#0c060d" stroke="var(--heart)" stroke-width="1.5" rx="4"/>
+          <text x="115" y="224" text-anchor="middle" font-size="9" fill="var(--heart)" font-family="Cinzel,serif" font-weight="700">FLUID RECOVERY</text>
+          <text x="115" y="235" text-anchor="middle" font-size="7" fill="var(--dim)" font-family="Share Tech Mono,monospace">VACUUM DISTILL</text>
+          <line x1="68" y1="241" x2="163" y2="241" stroke="rgba(255,77,141,0.2)" stroke-width="1"/>
+          <text x="115" y="251" text-anchor="middle" font-size="7" fill="var(--sea)" id="flush-stat">4,500 L/yr reclaimed</text>
+        </g>
+
+        <!-- UPGRADE LABELS -->
+        <text x="273" y="116" font-size="7" fill="var(--kalina)" font-family="Share Tech Mono,monospace">60°C → KALINA →</text>
+        <text x="645" y="115" font-size="7" fill="var(--steam)" font-family="Share Tech Mono,monospace">800°C EXHAUST ↓</text>
+        <text x="314" y="246" font-size="7" fill="var(--sea)" font-family="Share Tech Mono,monospace">→ CLEAN</text>
+        <text x="260" y="240" font-size="7" fill="var(--mfc)" font-family="Share Tech Mono,monospace">⚡</text>
+      </svg>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics">
+      <div class="mc orange">
+        <div class="mc-lbl">KALINA OUT</div>
+        <div class="mc-val" id="m-kalina" style="color:var(--kalina)">6,484<span class="mc-unit">kW</span></div>
+        <div class="mc-sub" id="m-kalina-sub">η = 7.20% real</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-kalina" style="background:var(--kalina);width:30%"></div></div>
+      </div>
+      <div class="mc steam">
+        <div class="mc-lbl">STEAM CASCADE</div>
+        <div class="mc-val" id="m-steam" style="color:var(--steam)">16,657<span class="mc-unit">kW</span></div>
+        <div class="mc-sub">SOFC 800°C exhaust</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-steam" style="background:var(--steam);width:70%"></div></div>
+      </div>
+      <div class="mc red">
+        <div class="mc-lbl">MD DEMAND</div>
+        <div class="mc-val" id="m-md" style="color:var(--sea)">45<span class="mc-unit">kW</span></div>
+        <div class="mc-sub" id="m-md-sub">vs 187kW RO · 1.0 kWh/m³</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-md" style="background:var(--sea);width:2%"></div></div>
+      </div>
+      <div class="mc green">
+        <div class="mc-lbl">NET SURPLUS</div>
+        <div class="mc-val" id="m-surplus" style="color:var(--zoro)">+23,105<span class="mc-unit">kW</span></div>
+        <div class="mc-sub" id="m-surplus-sub">6.4× v3 ✓</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-surplus" style="background:var(--zoro);width:95%"></div></div>
+      </div>
+      <div class="mc gold">
+        <div class="mc-lbl">TOTAL WATER</div>
+        <div class="mc-val" id="m-water" style="color:var(--nami)">78.6K<span class="mc-unit">L/hr</span></div>
+        <div class="mc-sub">vs 55.3K v3 (+42%)</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-water" style="background:var(--nami);width:80%"></div></div>
+      </div>
+      <div class="mc" style="border-color:rgba(57,255,20,0.3)">
+        <div class="mc-lbl" style="color:var(--mfc)">MFC POWER</div>
+        <div class="mc-val" id="m-mfc" style="color:var(--mfc)">10<span class="mc-unit">kW</span></div>
+        <div class="mc-sub">Wetland generates</div>
+        <div class="mbar"><div class="mbar-fill" id="bar-mfc" style="background:var(--mfc);width:5%"></div></div>
+      </div>
+    </div>
+
+    <!-- LOG -->
+    <div class="log-area" id="log-area">
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls kalina">KALINA CYCLE</span><span class="lm new">Ammonia-water working fluid initialized. η=6.48% active. [Husavik/Kashima verified]</span></div>
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls steam">STEAM TURBINE</span><span class="lm new">SOFC 800°C exhaust cascade online. +14,991 kW captured. [v5 audited]</span></div>
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls cooling">MD FILTRATION</span><span class="lm new">Membrane distillation active. SEC: 1.0 kWh/m³ electrical. [Nature npj Clean Water]</span></div>
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls mfc">MFC WETLAND</span><span class="lm new">Microbial fuel cells embedded. BOD removal AND power generation. +10 kW.</span></div>
+      <div class="le"><span class="lt">T+0:00:00</span><span class="ls water">EVAC SOLAR</span><span class="lm new">Evacuated tube + VMD online. 4,167 L/hr. 2.5× flat still. [Sharma et al.]</span></div>
+    </div>
+  </div>
+
+  <!-- TAB: CHARTS -->
+  <div class="tab-pane" id="pane-charts">
+    <div class="chart-area">
+      <div class="chart-box">
+        <div class="chart-title">// Power Output — v3 vs v5 Audited by Load (MW) · SOFC 55% · Kalina 54% Carnot</div>
+        <canvas id="chart-power" height="160"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">// Water Output — v3 vs v5 Audited by Solar Irradiance · ETSC 2.5× [Sharma et al.]</div>
+        <canvas id="chart-water" height="140"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">// Entropy Degradation — All v5 Audited Subsystems over 20 Years</div>
+        <canvas id="chart-entropy" height="150"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div><!-- left -->
+
+<!-- RIGHT PANEL -->
+<div class="right">
+  <div style="text-align:center;font-size:11px;opacity:0.15;letter-spacing:4px">
+    ⚓ &nbsp; ♡ &nbsp; ✦ &nbsp; ♛
+  </div>
+
+  <div>
+    <div class="ctrl-title">// MKP System Parameters</div>
+
+    <div class="ctrl-group">
+      <label>DC Load (MW)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-load" min="10" max="500" value="100" step="10">
+        <div class="sv"><span id="v-load">100</span> MW</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Waste Heat Temp (°C)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-temp" min="35" max="80" value="60" step="1">
+        <div class="sv"><span id="v-temp">60</span>°C</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Ambient Temp (°C)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-ambient" min="5" max="40" value="20" step="1">
+        <div class="sv"><span id="v-ambient">20</span>°C</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Filter Flow (gpm)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-flow" min="100" max="5000" value="1000" step="100">
+        <div class="sv"><span id="v-flow">1,000</span></div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Solar (L/m²/day)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-solar" min="1" max="8" value="4" step="0.5">
+        <div class="sv"><span id="v-solar">4</span></div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Rack Count</label>
+      <div class="sl-row">
+        <input type="range" id="sl-racks" min="50" max="2000" value="500" step="50">
+        <div class="sv"><span id="v-racks">500</span></div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>SOFC Efficiency (%)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-sofc" min="45" max="65" value="55" step="1">
+        <div class="sv"><span id="v-sofc">55</span>%</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <label>Kalina Fraction (% Carnot)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-kalina" min="35" max="65" value="54" step="1">
+        <div class="sv"><span id="v-kalina">54</span>%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deco">⚓</div>
+
+  <div>
+    <div class="ctrl-title">// System Toggles</div>
+    <div class="tg-row">
+      <span class="tg-lbl">Kalina Cycle <span class="upgrade-badge">v4</span></span>
+      <label class="toggle"><input type="checkbox" id="tog-kalina" checked><span class="tsl"></span></label>
+    </div>
+    <div class="tg-row">
+      <span class="tg-lbl">Steam Cascade <span class="upgrade-badge">v4</span></span>
+      <label class="toggle"><input type="checkbox" id="tog-steam" checked><span class="tsl"></span></label>
+    </div>
+    <div class="tg-row">
+      <span class="tg-lbl">SOFC Fuel Cells</span>
+      <label class="toggle"><input type="checkbox" id="tog-sofc" checked><span class="tsl"></span></label>
+    </div>
+    <div class="tg-row">
+      <span class="tg-lbl">MD Filtration <span class="upgrade-badge">v4</span></span>
+      <label class="toggle"><input type="checkbox" id="tog-md" checked><span class="tsl"></span></label>
+    </div>
+    <div class="tg-row">
+      <span class="tg-lbl">MFC Wetland <span class="upgrade-badge">v4</span></span>
+      <label class="toggle"><input type="checkbox" id="tog-mfc" checked><span class="tsl"></span></label>
+    </div>
+    <div class="tg-row">
+      <span class="tg-lbl">Evac Tube+VMD <span class="upgrade-badge">v4</span></span>
+      <label class="toggle"><input type="checkbox" id="tog-evac" checked><span class="tsl"></span></label>
+    </div>
+    <div class="tg-row">
+      <span class="tg-lbl">Fluid Recovery</span>
+      <label class="toggle"><input type="checkbox" id="tog-flush" checked><span class="tsl"></span></label>
+    </div>
+    <div class="tg-row">
+      <span class="tg-lbl">Thermal Pre-cooler</span>
+      <label class="toggle"><input type="checkbox" id="tog-thermal" checked><span class="tsl"></span></label>
+    </div>
+  </div>
+
+  <div class="deco">♡</div>
+
+  <div>
+    <div class="ctrl-title">// Entropy — Law of the Sea</div>
+    <div class="ctrl-group">
+      <label>System Age (years)</label>
+      <div class="sl-row">
+        <input type="range" id="sl-age" min="0" max="20" value="0" step="0.5">
+        <div class="sv"><span id="v-age">0</span> yr</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ent-box">
+    <div class="ent-title">⚙ Second Law Monitor</div>
+    <div id="ent-detail" style="font-family:'Share Tech Mono',monospace;font-size:8px;line-height:2;"></div>
+    <div id="ent-msg" style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);margin-top:4px;line-height:1.7;"></div>
+  </div>
+
+  <div class="score-box">
+    <div class="score-lbl">SYSTEM INTEGRITY</div>
+    <div class="score-val" id="score" style="color:var(--zoro)">100%</div>
+    <div class="score-sub" id="score-sub">MKP at full strength 🏴‍☠️</div>
+  </div>
+
+</div><!-- right -->
+</div><!-- layout -->
+
+<script>
+// ─── PHYSICS CONSTANTS ────────────────────────────────
+const H2_LHV      = 33.33;
+const H2O_MOLAR   = 18.01528;
+const H2_MOLAR    = 2.01568;
+const WATER_RATIO = H2O_MOLAR / H2_MOLAR;
+const GPM_M3H     = 0.227125;
+const MD_SEC      = 1.00;   // kWh/m³ electrical — Nature npj Clean Water: 0.6-1.8 kWh/m³
+const STEAM_T_HOT = 800 + 273.15;
+const STEAM_T_COL = 150 + 273.15;
+const STEAM_CARNOT = 1 - STEAM_T_COL/STEAM_T_HOT;
+const STEAM_REAL   = STEAM_CARNOT * 0.55;  // 55% of Carnot
+const EVAC_MULT    = 2.5;    // evacuated tube × flat still — Sharma et al.: 3.2-4.5 vs 3-5 L/m²/day
+const MFC_W_M3     = 2;     // W/m³ wetland conservative
+const WETLAND_VOL  = 5000;  // m³
+const LITERS_RACK  = 80;
+const FLUSH_CYCLE  = 8;
+
+// V3 baseline for comparison
+const V3_SURPLUS   = 3595;
+const V3_WATER_SOLAR = 1667;
+
+const DEG = { kalina:0.025, steam:0.015, sofc:0.01, md:0.02, mfc:0.03, evac:0.02, flush:0.01 };
+
+let simSec = 0;
+
+function inp() {
+  return {
+    load:    +document.getElementById('sl-load').value,
+    temp:    +document.getElementById('sl-temp').value,
+    ambient: +document.getElementById('sl-ambient').value,
+    flow:    +document.getElementById('sl-flow').value,
+    solar:   +document.getElementById('sl-solar').value,
+    racks:   +document.getElementById('sl-racks').value,
+    sofc_e:  +document.getElementById('sl-sofc').value / 100,
+    kFrac:   +document.getElementById('sl-kalina').value / 100,
+    age:     +document.getElementById('sl-age').value,
+    tKalina: document.getElementById('tog-kalina').checked,
+    tSteam:  document.getElementById('tog-steam').checked,
+    tSofc:   document.getElementById('tog-sofc').checked,
+    tMD:     document.getElementById('tog-md').checked,
+    tMFC:    document.getElementById('tog-mfc').checked,
+    tEvac:   document.getElementById('tog-evac').checked,
+    tFlush:  document.getElementById('tog-flush').checked,
+    tTherm:  document.getElementById('tog-thermal').checked,
+  };
+}
+
+function calc() {
+  const i = inp();
+  const age = i.age;
+
+  // Degradation
+  const dK  = Math.max(0.6, 1 - age * DEG.kalina);
+  const dSt = Math.max(0.7, 1 - age * DEG.steam);
+  const dSo = Math.max(0.8, 1 - age * DEG.sofc);
+  const dMD = Math.max(0.7, 1 - age * DEG.md);
+  const dMF = Math.max(0.6, 1 - age * DEG.mfc);
+  const dEv = Math.max(0.6, 1 - age * DEG.evac);
+  const dFl = Math.max(0.8, 1 - age * DEG.flush);
+
+  // Carnot
+  const Thot = i.temp + 273.15, Tcold = i.ambient + 273.15;
+  const carnot = 1 - Tcold/Thot;
+
+  // Kalina cycle
+  const thermal = i.load * 0.9 * 1000; // kW
+  const kalinaEff = i.tKalina ? carnot * i.kFrac * dK : 0;
+  const kalinaOut = thermal * kalinaEff;
+
+  // SOFC
+  const h2Hour  = i.tSofc ? (i.load * 1000) / (H2_LHV * i.sofc_e) * dSo : 0;
+  const sofcWater = h2Hour * WATER_RATIO; // L/hr (no *1000 bug)
+  const sofcThermalWaste = i.load * 1000 * (1 - i.sofc_e); // kW thermal at 800°C
+
+  // Steam turbine cascade from SOFC exhaust
+  const steamOut = i.tSteam && i.tSofc ? sofcThermalWaste * STEAM_REAL * dSt : 0;
+  // Secondary heat from steam (150°C) → Kalina secondary loop
+  const steamSecondary = i.tSteam && i.tSofc ? sofcThermalWaste * (1 - STEAM_REAL) * carnot * i.kFrac * 0.5 * dK : 0;
+
+  // MD filtration (heat-driven, electrical SEC only)
+  const flowM3h = i.flow * GPM_M3H;
+  const mdPower = i.tMD ? flowM3h * MD_SEC * dMD : flowM3h * 1.5 * 0.825; // fallback to RO
+
+  // MFC in wetland
+  const mfcPower = i.tMFC ? WETLAND_VOL * MFC_W_M3 / 1000 * dMF : 0; // kW
+
+  // Total generated
+  const totalGen = kalinaOut + steamOut + steamSecondary + mfcPower;
+  const surplus  = totalGen - mdPower;
+
+  // Water
+  const solarBase = i.solar * 10000 / 24; // L/hr flat still
+  const solarWater = i.tEvac ? solarBase * EVAC_MULT * dEv : solarBase;
+  const totalWater = sofcWater + solarWater;
+
+  // Flush
+  const totalFluid = i.racks * LITERS_RACK;
+  const annualFlush = totalFluid / FLUSH_CYCLE;
+  const recoveredL  = i.tFlush ? annualFlush * 0.90 * dFl : 0;
+  const sludgeL     = annualFlush * 0.10;
+
+  // Wetland status
+  const wetlandOK = i.tTherm
+    ? (i.temp > 35 ? "Pre-cooled: <35°C ✓" : "Direct feed safe ✓")
+    : "⚠ THERMAL RISK";
+
+  // Score
+  const comps = [dK, dSt, dSo, dMD, dMF, dEv];
+  const score = Math.round(comps.reduce((a,b)=>a+b,0)/comps.length*100);
+
+  return {
+    carnot, kalinaEff, kalinaOut, steamOut, steamSecondary,
+    h2Hour, sofcWater, mdPower, mfcPower, totalGen, surplus,
+    solarWater, totalWater, flowM3h,
+    totalFluid, recoveredL, sludgeL, wetlandOK,
+    dK, dSt, dSo, dMD, dMF, dEv, dFl, score, age,
+    sofcThermalWaste
+  };
+}
+
+function fmt(n, d=2) {
+  if (n >= 1e9) return (n/1e9).toFixed(d) + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(d) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(d) + 'K';
+  return n.toFixed(d);
+}
+
+function fR(n) { return n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+
+function set(id, html) { const e=document.getElementById(id); if(e) e.innerHTML=html; }
+function sty(id, p, v) { const e=document.getElementById(id); if(e) e.style[p]=v; }
+
+function render() {
+  const r = calc();
+  const i = inp();
+
+  // Kalina
+  set('m-kalina', fmt(r.kalinaOut,0)+'<span class="mc-unit">kW</span>');
+  set('m-kalina-sub', `η = ${(r.kalinaEff*100).toFixed(2)}% real`);
+  sty('bar-kalina','width', Math.min(100,r.kalinaOut/15000*100)+'%');
+
+  // Steam
+  set('m-steam', fmt(r.steamOut,0)+'<span class="mc-unit">kW</span>');
+  sty('bar-steam','width', Math.min(100,r.steamOut/25000*100)+'%');
+
+  // MD
+  set('m-md', fmt(r.mdPower,0)+'<span class="mc-unit">kW</span>');
+  const roPower = r.flowM3h * 1.5;
+  set('m-md-sub', `vs ${fmt(roPower,0)}kW RO · saves ${fmt(roPower-r.mdPower,0)}kW`);
+  sty('bar-md','width', Math.min(100,r.mdPower/500*100)+'%');
+
+  // Surplus
+  const sPos = r.surplus >= 0;
+  const sEl = document.getElementById('m-surplus');
+  sEl.innerHTML = (sPos?'+':'')+fmt(r.surplus,0)+'<span class="mc-unit">kW</span>';
+  sEl.style.color = sPos ? 'var(--zoro)' : 'var(--luffy)';
+  const v3mult = r.surplus > 0 && V3_SURPLUS > 0 ? (r.surplus/V3_SURPLUS).toFixed(1)+'× v3' : sPos?'SELF-POWERED':'⚠ DEFICIT';
+  set('m-surplus-sub', v3mult);
+  sty('bar-surplus','width', Math.min(100,Math.max(0,r.surplus/40000*100))+'%');
+  sty('bar-surplus','background', sPos ? 'var(--zoro)' : 'var(--luffy)');
+
+  // Water
+  set('m-water', fmt(r.totalWater)+'<span class="mc-unit">L/hr</span>');
+  sty('bar-water','width', Math.min(100,r.totalWater/120000*100)+'%');
+
+  // MFC
+  set('m-mfc', fmt(r.mfcPower,1)+'<span class="mc-unit">kW</span>');
+  sty('bar-mfc','width', Math.min(100,r.mfcPower/15*100)+'%');
+
+  // SVG nodes
+  set('dc-lbl', `${i.load} MW LOAD`);
+  set('dc-temp', `${i.temp}°C / ${(i.load*0.9).toFixed(0)} MW thermal`);
+  set('dc-flush-lbl', `Flush vol: ${fR(r.totalFluid)} L`);
+  set('dc-age-lbl', `Age: yr ${i.age}`);
+  set('k-eff', `η = ${(r.kalinaEff*100).toFixed(2)}%`);
+  set('k-out', `→ ${fmt(r.kalinaOut,0)} kW`);
+  set('k-carnot', `${(i.kFrac*100).toFixed(0)}% Carnot`);
+  set('st-eff', `η = ${(STEAM_REAL*100).toFixed(1)}%`);
+  set('st-out', `→ ${fmt(r.steamOut,0)} kW`);
+  set('sofc-h2', `${fmt(r.h2Hour,1)} kg H₂/hr`);
+  set('sofc-w', `${fmt(r.sofcWater)} L/hr H₂O`);
+  set('sofc-eff', `η = ${(i.sofc_e*100).toFixed(0)}% [Bloom ES-5710 biogas]`);
+  set('md-sec', `SEC: ${MD_SEC.toFixed(2)} kWh/m³`);
+  set('md-power', `→ ${fmt(r.mdPower,0)} kW`);
+  set('mfc-out', `MFC: +${fmt(r.mfcPower,1)} kW generated`);
+  set('evac-out', `${fmt(r.solarWater)} L/hr`);
+  set('water-out', fmt(r.totalWater)+' L/hr');
+  set('bus-s', (sPos?'+':'')+fmt(r.surplus,0)+' kW');
+  set('bus-ok', sPos ? 'SELF-POWERED ✓' : '⚠ POWER DEFICIT');
+  set('flush-stat', `${fR(r.recoveredL)} L/yr reclaimed`);
+
+  // Comparison bar
+  set('cmp-surplus-old', fR(V3_SURPLUS)+' kW');
+  set('cmp-surplus-new', fmt(r.surplus,0)+' kW');
+  set('cmp-surplus-delta', r.surplus>0?`+${(r.surplus/V3_SURPLUS).toFixed(1)}× improvement`:'Deficit');
+  set('cmp-orc-old', '3,782 kW');
+  set('cmp-orc-new', fmt(r.kalinaOut,0)+' kW');
+  set('cmp-orc-delta', `+${((r.kalinaOut/3782-1)*100).toFixed(0)}% heat recovery`);
+  set('cmp-steam-new', fmt(r.steamOut,0)+' kW');
+  set('cmp-water-old', fmt(55297)+' L/hr');
+  set('cmp-water-new', fmt(r.totalWater)+' L/hr');
+  set('cmp-water-delta', `+${((r.totalWater/55297-1)*100).toFixed(0)}% more water`);
+  set('cmp-solar-old', '1,667 L/hr');
+  set('cmp-solar-new', fmt(r.solarWater)+' L/hr');
+
+  // Entropy
+  const defs = [
+    ['Kalina cycle    ', r.dK,  0.85, 'var(--kalina)'],
+    ['Steam turbine   ', r.dSt, 0.85, 'var(--steam)'],
+    ['SOFC stack      ', r.dSo, 0.85, 'var(--nami)'],
+    ['MD membranes    ', r.dMD, 0.80, 'var(--sea)'],
+    ['MFC wetland     ', r.dMF, 0.75, 'var(--mfc)'],
+    ['Evac tube array ', r.dEv, 0.80, 'var(--evac)'],
+  ];
+
+  document.getElementById('ent-detail').innerHTML = defs.map(([l,v,t,c]) =>
+    `<div>${l} <span style="color:${v>t?c:'var(--luffy)'}">${(v*100).toFixed(0)}%</span></div>`
+  ).join('');
+
+  const warns = defs.filter(([,v,t])=>v<t);
+  const em = document.getElementById('ent-msg');
+  em.textContent = warns.length
+    ? warns.map(([l,v])=>`${l.trim()}: ${(v*100).toFixed(0)}% – service needed`).join(' | ')
+    : i.age===0 ? 'MKP systems nominal. Protocol at full power 🏴‍☠️' : `Year ${i.age}: MK Proto within tolerance.`;
+  em.style.color = warns.length>2 ? 'var(--luffy)' : warns.length>0 ? 'var(--nami)' : 'var(--dim)';
+
+  const sc = document.getElementById('score');
+  sc.textContent = r.score+'%';
+  sc.style.color = r.score>=85?'var(--zoro)':r.score>=65?'var(--nami)':'var(--luffy)';
+  set('score-sub', r.score>=85?'⚓ MKP at full strength':r.score>=65?'♡ MK Proto needs service':'⚠ Emergency — MKP critical');
+}
+
+// ─── TAB SWITCH ──────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pane-'+name).classList.add('active');
+  if (name==='charts') drawCharts();
+}
+
+// ─── CHARTS ──────────────────────────────────────────
+function drawCharts() {
+  drawPowerChart();
+  drawWaterChart();
+  drawEntropyChart();
+}
+
+function drawPowerChart() {
+  const canvas = document.getElementById('chart-power');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth||800; canvas.width=W;
+  const H = 160; canvas.height=H;
+  ctx.clearRect(0,0,W,H);
+  const pad={l:55,r:20,t:15,b:30};
+  const w=W-pad.l-pad.r, h=H-pad.t-pad.b;
+
+  const loads = Array.from({length:50},(_,i)=>(i+1)*10);
+  const Thot=333.15,Tcold=293.15,carnot=1-Tcold/Thot;
+
+  const v3 = loads.map(L => {
+    const orc = L*0.9*1000*carnot*0.35;
+    const filt = L*10*0.227125*0.825;
+    return orc - filt;
+  });
+
+  const v4 = loads.map(L => {
+    const kalina = L*0.9*1000*carnot*0.54;   // v5: 54% of Carnot [Husavik/Kashima]
+    const sofc_therm = L*1000*(1-0.55);       // v5: 55% SOFC [Bloom ES-5710 biogas]
+    const steam = sofc_therm*STEAM_REAL;
+    const filt = L*10*0.227125*MD_SEC;
+    const mfc = WETLAND_VOL*MFC_W_M3/1000;
+    return kalina + steam + mfc - filt;
+  });
+
+  const maxV = Math.max(...v4);
+  const minV = Math.min(...v3,0);
+  const range = maxV - minV;
+
+  ctx.strokeStyle='#1a2540'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+h*i/4;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+w,y); ctx.stroke();
+    ctx.fillStyle='#3a5070'; ctx.font='9px Share Tech Mono'; ctx.textAlign='right';
+    ctx.fillText(fmt(maxV-(range)*i/4,0), pad.l-4, y+3);
+  }
+
+  // Zero line
+  const zeroY = pad.t + h*(maxV/range);
+  ctx.setLineDash([4,4]); ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(pad.l,zeroY); ctx.lineTo(pad.l+w,zeroY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // V3 fill + line
+  ctx.beginPath();
+  loads.forEach((L,i)=>{ const x=pad.l+w*i/49; const y=pad.t+h*(maxV-v3[i])/range; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.lineTo(pad.l+w,pad.t+h); ctx.lineTo(pad.l,pad.t+h); ctx.closePath();
+  ctx.fillStyle='rgba(58,80,112,0.15)'; ctx.fill();
+  ctx.beginPath(); ctx.strokeStyle='#3a5070'; ctx.lineWidth=1.5;
+  loads.forEach((L,i)=>{ const x=pad.l+w*i/49; const y=pad.t+h*(maxV-v3[i])/range; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.stroke();
+
+  // V4 fill + line
+  ctx.beginPath();
+  loads.forEach((L,i)=>{ const x=pad.l+w*i/49; const y=pad.t+h*(maxV-v4[i])/range; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.lineTo(pad.l+w,pad.t+h*(maxV-Math.min(0,minV))/range); ctx.lineTo(pad.l,pad.t+h*(maxV-Math.min(0,minV))/range); ctx.closePath();
+  ctx.fillStyle='rgba(255,149,0,0.1)'; ctx.fill();
+  ctx.beginPath(); ctx.strokeStyle='var(--kalina)'; ctx.lineWidth=2;
+  loads.forEach((L,i)=>{ const x=pad.l+w*i/49; const y=pad.t+h*(maxV-v4[i])/range; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.stroke();
+
+  // Legend
+  ctx.fillStyle='#3a5070'; ctx.font='9px Share Tech Mono'; ctx.fillRect(pad.l+4,pad.t+4,10,2); ctx.fillText('v3 surplus',pad.l+18,pad.t+8);
+  ctx.fillStyle='var(--kalina)'; ctx.fillRect(pad.l+80,pad.t+4,10,2); ctx.fillText('v5 audited',pad.l+94,pad.t+8);
+
+  ctx.fillStyle='#3a5070'; ctx.textAlign='center'; ctx.font='9px Share Tech Mono';
+  [50,100,200,300,400,500].forEach(L => { const i=loads.indexOf(L); if(i>=0) ctx.fillText(L+'MW',pad.l+w*i/49,H-8); });
+}
+
+function drawWaterChart() {
+  const canvas = document.getElementById('chart-water');
+  const ctx = canvas.getContext('2d');
+  const W=canvas.offsetWidth||800; canvas.width=W;
+  const H=140; canvas.height=H;
+  ctx.clearRect(0,0,W,H);
+  const pad={l:60,r:20,t:15,b:30};
+  const w=W-pad.l-pad.r, h=H-pad.t-pad.b;
+
+  const irr = Array.from({length:16},(_,i)=>(i+1)*0.5);
+  const v3w = irr.map(s => s*10000/24 + 42562);  // v3: SOFC at 63% eff → 42,562 L/hr H2O
+  const v4w = irr.map(s => s*10000*EVAC_MULT/24 + 48762);  // v5: 48,762 L/hr SOFC water at 55% eff
+  const maxW = Math.max(...v4w);
+
+  ctx.strokeStyle='#1a2540'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+h*i/4;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+w,y); ctx.stroke();
+    ctx.fillStyle='#3a5070'; ctx.font='9px Share Tech Mono'; ctx.textAlign='right';
+    ctx.fillText(fmt(maxW*(1-i/4),0),pad.l-4,y+3);
+  }
+
+  const drawLine = (vals, color, dash) => {
+    if(dash) ctx.setLineDash(dash); else ctx.setLineDash([]);
+    ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2;
+    vals.forEach((v,i)=>{ const x=pad.l+w*i/15; const y=pad.t+h*(1-v/maxW); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+    ctx.stroke(); ctx.setLineDash([]);
+  };
+
+  drawLine(v3w,'#3a5070',[6,3]);
+  drawLine(v4w,'var(--kalina)');
+
+  ctx.fillStyle='#3a5070'; ctx.textAlign='center'; ctx.font='9px Share Tech Mono';
+  [1,2,4,6,8].forEach(s=>{ const i=irr.indexOf(s); if(i>=0) ctx.fillText(s+' L/m²/d',pad.l+w*i/15,H-8); });
+
+  ctx.fillStyle='#3a5070'; ctx.fillRect(pad.l+4,pad.t+4,10,2); ctx.fillText('v3',pad.l+18,pad.t+8);
+  ctx.fillStyle='var(--kalina)'; ctx.fillRect(pad.l+40,pad.t+4,10,2); ctx.fillText('v5',pad.l+54,pad.t+8);
+}
+
+function drawEntropyChart() {
+  const canvas = document.getElementById('chart-entropy');
+  const ctx = canvas.getContext('2d');
+  const W=canvas.offsetWidth||800; canvas.width=W;
+  const H=150; canvas.height=H;
+  ctx.clearRect(0,0,W,H);
+  const pad={l:50,r:90,t:15,b:30};
+  const w=W-pad.l-pad.r, h=H-pad.t-pad.b;
+
+  const yrs = Array.from({length:21},(_,i)=>i);
+  const subs = [
+    ['Kalina',   DEG.kalina,  'var(--kalina)', 0.6],
+    ['Steam',    DEG.steam,   'var(--steam)',  0.7],
+    ['SOFC',     DEG.sofc,    'var(--nami)',   0.8],
+    ['MD Memb',  DEG.md,      'var(--sea)',    0.7],
+    ['MFC',      DEG.mfc,     'var(--mfc)',    0.6],
+    ['Evac Tube',DEG.evac,    'var(--evac)',   0.6],
+  ];
+
+  ctx.strokeStyle='#1a2540'; ctx.lineWidth=1;
+  [0.6,0.7,0.8,0.9,1.0].forEach(v=>{
+    const y=pad.t+h*(1-v+0.4)/0.4;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+w,y); ctx.stroke();
+    ctx.fillStyle='#3a5070'; ctx.font='9px Share Tech Mono'; ctx.textAlign='right';
+    ctx.fillText((v*100).toFixed(0)+'%',pad.l-4,y+3);
+  });
+
+  const warnY=pad.t+h*(1-0.80+0.4)/0.4;
+  ctx.setLineDash([4,4]); ctx.strokeStyle='rgba(255,34,68,0.3)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(pad.l,warnY); ctx.lineTo(pad.l+w,warnY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  subs.forEach(([name,rate,color,floor],si)=>{
+    ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=1.8;
+    yrs.forEach((y,i)=>{
+      const v=Math.max(floor,1-y*rate);
+      const x=pad.l+w*i/20;
+      const vy=pad.t+h*(1-v+0.4)/0.4;
+      i===0?ctx.moveTo(x,vy):ctx.lineTo(x,vy);
+    });
+    ctx.stroke();
+    ctx.fillStyle=color; ctx.font='8px Rajdhani'; ctx.textAlign='left';
+    ctx.fillText(name, pad.l+w+6, pad.t+si*16+4);
+  });
+
+  ctx.fillStyle='#3a5070'; ctx.textAlign='center'; ctx.font='9px Share Tech Mono';
+  [0,5,10,15,20].forEach(y=>ctx.fillText('Yr '+y,pad.l+w*y/20,H-8));
+}
+
+// ─── LOG ─────────────────────────────────────────────
+const LSYS = ['KALINA CYCLE','STEAM TURBINE','SOFC CELLS','MD FILTRATION','MFC WETLAND','EVAC+VMD','FLUSH RECOV'];
+const LCLS = ['kalina','steam','sofc','cooling','mfc','water','flush'];
+const LMSG = [
+  ['NH₃-H₂O working fluid cycle nominal.','Kalina absorber pressure stable.','Heat recovery exceeding ORC baseline by 54% of Carnot.','Zeotropic mixture separation optimal.'],
+  ['SOFC 800°C exhaust capture active.','Steam turbine RPM nominal.','Secondary heat routing to Kalina secondary loop.','Cascade efficiency holding at 33.3%.'],
+  ['H₂ feed rate optimized at 55% efficiency.','Electrochemical conversion active.','H₂O exhaust routed to collection.','Stack temperature 800°C nominal.'],
+  ['Membrane distillation heat-driven — electrical SEC: 1.0 kWh/m³.','Hydrophobic membrane flux nominal.','Waste heat driving thermal side passively.','Audit source: Nature npj Clean Water.'],
+  ['Microbial fuel cell array generating power.','BOD oxidation rate nominal.','Electrode biofilm stable.','Power and treatment simultaneous.'],
+  ['Evacuated tube array temperature nominal.','VMD coupling optimal.','2.5× water output vs flat still confirmed. [Sharma et al.]','Collection rate on target.'],
+  ['Vacuum distillation on standby.','Fluid contamination nominal.','Recovery rate 90% per cycle.','Metal particle count within spec.'],
+];
+
+function addLog() {
+  const r = calc();
+  const ts = `T+${String(Math.floor(simSec/3600)).padStart(1,'0')}:${String(Math.floor(simSec%3600/60)).padStart(2,'0')}:${String(simSec%60).padStart(2,'0')}`;
+  const sys = Math.floor(Math.random()*7);
+  const msg = LMSG[sys][Math.floor(Math.random()*4)];
+  const area = document.getElementById('log-area');
+  const e = document.createElement('div');
+  e.className='le';
+  const cls = r.surplus<0?'err':r.age>10?'warn':'ok';
+  // Highlight upgraded systems occasionally
+  const isNew = [0,1,3,4,5].includes(sys);
+  e.innerHTML=`<span class="lt">${ts}</span><span class="ls ${LCLS[sys]}">${LSYS[sys]}</span><span class="lm ${isNew&&Math.random()>0.6?'new':cls}">${msg}</span>`;
+  area.appendChild(e);
+  if(area.children.length>50) area.removeChild(area.children[0]);
+  area.scrollTop=area.scrollHeight;
+}
+
+// ─── SLIDERS ─────────────────────────────────────────
+['load','temp','ambient','flow','solar','racks','sofc','kalina','age'].forEach(id=>{
+  const el=document.getElementById('sl-'+id);
+  if(!el) return;
+  el.addEventListener('input',()=>{
+    const display = id==='flow' ? (+el.value).toLocaleString() : el.value;
+    document.getElementById('v-'+id).textContent = display;
+    render();
+  });
+});
+['kalina','steam','sofc','md','mfc','evac','flush','thermal'].forEach(id=>{
+  const el=document.getElementById('tog-'+id);
+  if(el) el.addEventListener('change',render);
+});
+
+// ─── TICK ────────────────────────────────────────────
+function tick(){
+  simSec++;
+  const h=String(Math.floor(simSec/3600)).padStart(1,'0');
+  const m=String(Math.floor(simSec%3600/60)).padStart(2,'0');
+  const s=String(simSec%60).padStart(2,'0');
+  document.getElementById('clock').textContent=`T+${h}:${m}:${s}`;
+  if(simSec%3===0) addLog();
+  render();
+}
+
+render();
+setInterval(tick,1000);
+</script>
+</body>
+</html>
