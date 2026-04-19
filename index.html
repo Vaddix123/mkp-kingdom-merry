@@ -3,21 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kingdom Merry Protocol - How It Works</title>
-<meta name="description" content="A guided walkthrough of a self-sustaining 100 MW data center. The only facility design that ships in 24 months.">
+<title>Meridian Data Infrastructure - How It Works</title>
+<meta name="description" content="Meridian Data Infrastructure: a guided walkthrough of a self-sustaining 100 MW data center. Behind-the-meter generation, water-positive, methane-destroying. The only facility design that ships in 24 months.">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
   :root {
-    --bg:#02050e; --panel:#080f1e; --border:#1a2540;
-    --text:#d4e8ff; --dim:#5a6e8a; --mute:#3a5070;
-    --sora:#4a9eff; --nami:#f5c842; --zoro:#2dce6e;
-    --kingdom:#c084fc; --sea:#00c8e8; --heart:#ff4d8d;
-    --kalina:#ff9500; --steam:#e0e0ff;
-    --pitch:#ff3366; --money:#00ff99;
+    /* Institutional infrastructure-pitch palette - realistic, muted */
+    --bg:#0b1220;           /* deep navy background */
+    --panel:#131c2e;        /* panel dark navy */
+    --border:#2a3649;       /* subtle slate border */
+    --text:#e2e8f0;         /* primary off-white text */
+    --dim:#94a3b8;          /* secondary slate-blue text */
+    --mute:#475569;         /* dim detail */
+    --sora:#60a5fa;         /* calm sky blue */
+    --nami:#c9a25a;         /* muted gold */
+    --zoro:#5fa572;         /* muted green */
+    --kingdom:#8a7ba6;      /* dusty purple */
+    --sea:#4b9cc4;          /* steel blue */
+    --heart:#c96a80;        /* dusty rose */
+    --kalina:#c47d3a;       /* amber/copper */
+    --steam:#b7bec8;        /* steel gray */
+    --pitch:#4f7dbf;        /* professional blue (primary action) */
+    --money:#5fa572;        /* muted green (success) */
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { width:100%; height:100%; overflow:hidden; background:#02050e; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:16px; }
+  html, body { width:100%; height:100%; overflow:hidden; background:#0b1220; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:16px; }
   canvas { display:block; width:100%; height:100%; cursor:grab; }
   canvas:active { cursor:grabbing; }
 
@@ -25,7 +36,7 @@
   header { position:fixed; top:0; left:0; right:0; z-index:20;
     padding:12px 22px; border-bottom:1px solid var(--border);
     display:flex; align-items:center; justify-content:space-between;
-    background:linear-gradient(90deg, rgba(255,51,102,0.22), rgba(0,255,153,0.08), rgba(74,158,255,0.12));
+    background:linear-gradient(90deg, rgba(79,125,191,0.18), rgba(95,165,114,0.08), rgba(96,165,250,0.10));
     backdrop-filter:blur(10px); }
   .hd-title { font-family:'Cinzel',serif; font-size:18px; font-weight:900;
     background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money), var(--sora));
@@ -47,7 +58,7 @@
   #intro h1 { font-family:'Cinzel',serif; font-size:56px; font-weight:900; letter-spacing:2px;
     background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money), var(--sora));
     -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    filter:drop-shadow(0 0 24px rgba(255,51,102,0.3)); margin-bottom:18px; }
+    filter:drop-shadow(0 0 24px rgba(79,125,191,0.3)); margin-bottom:18px; }
   #intro .intro-tag { font-family:'Cinzel',serif; font-size:26px; color:var(--text); font-weight:400;
     margin-bottom:22px; max-width:900px; line-height:1.3; }
   #intro .intro-body { font-family:'Rajdhani',sans-serif; font-size:18px; color:var(--dim);
@@ -56,13 +67,13 @@
   .big-btn { font-family:'Cinzel',serif; font-weight:900; font-size:22px; letter-spacing:4px;
     padding:18px 44px; border-radius:4px; cursor:pointer; transition:all 0.25s;
     background:linear-gradient(135deg, var(--pitch), #ff5a8f); color:#fff; border:none;
-    box-shadow:0 0 30px rgba(255,51,102,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+    box-shadow:0 0 30px rgba(79,125,191,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
     text-shadow:0 1px 2px rgba(0,0,0,0.4); }
-  .big-btn:hover { transform:translateY(-2px); box-shadow:0 4px 40px rgba(255,51,102,0.7); }
+  .big-btn:hover { transform:translateY(-2px); box-shadow:0 4px 40px rgba(79,125,191,0.7); }
   .big-btn.secondary { background:transparent; color:var(--text); border:1px solid var(--border);
     box-shadow:none; text-shadow:none; font-size:14px; letter-spacing:2px; padding:12px 24px;
     margin-top:20px; }
-  .big-btn.secondary:hover { border-color:var(--pitch); color:var(--pitch); box-shadow:0 0 16px rgba(255,51,102,0.3); }
+  .big-btn.secondary:hover { border-color:var(--pitch); color:var(--pitch); box-shadow:0 0 16px rgba(79,125,191,0.3); }
 
   /* ====== TOP PROGRESS BAR ====== */
   #progress-bar { position:fixed; top:60px; left:0; right:0; z-index:15;
@@ -94,8 +105,8 @@
   #narration .nar-body p { margin-bottom:11px; }
   #narration .nar-body b { color:var(--pitch); font-weight:700; }
   #narration .nar-metric { margin-top:18px; padding:14px 16px;
-    background:linear-gradient(135deg, rgba(0,255,153,0.08), rgba(255,51,102,0.05));
-    border:1px solid rgba(0,255,153,0.25); border-radius:4px; }
+    background:linear-gradient(135deg, rgba(95,165,114,0.08), rgba(79,125,191,0.05));
+    border:1px solid rgba(95,165,114,0.25); border-radius:4px; }
   #narration .nar-metric-lbl { font-family:'Share Tech Mono',monospace; font-size:10px;
     color:var(--dim); letter-spacing:2px; margin-bottom:4px; text-transform:uppercase; }
   #narration .nar-metric-val { font-family:'Cinzel',serif; font-size:22px; font-weight:900;
@@ -123,9 +134,9 @@
     padding:10px 16px; border-radius:4px; background:transparent; color:var(--text);
     border:1px solid var(--border); cursor:pointer; text-transform:uppercase; transition:all 0.15s;
     min-width:80px; }
-  .tc-btn:hover { color:var(--pitch); border-color:var(--pitch); background:rgba(255,51,102,0.08); }
+  .tc-btn:hover { color:var(--pitch); border-color:var(--pitch); background:rgba(79,125,191,0.08); }
   .tc-btn.primary { background:var(--pitch); color:#fff; border-color:var(--pitch); font-weight:700;
-    box-shadow:0 0 12px rgba(255,51,102,0.4); }
+    box-shadow:0 0 12px rgba(79,125,191,0.4); }
   .tc-btn.primary:hover { background:#ff5a8f; border-color:#ff5a8f; }
   .tc-btn.end { color:var(--dim); border-color:rgba(26,37,64,0.5); }
   .tc-btn.end:hover { color:var(--text); }
@@ -156,7 +167,7 @@
     border:1px solid var(--border); cursor:pointer; text-transform:uppercase; transition:all 0.2s; }
   .cam-btn:hover { color:var(--pitch); border-color:var(--pitch); }
   .cam-btn.active { color:var(--text); background:var(--pitch); border-color:var(--pitch); }
-  .cam-btn.restart-tour { background:rgba(255,51,102,0.15); color:var(--pitch); border-color:var(--pitch); }
+  .cam-btn.restart-tour { background:rgba(79,125,191,0.15); color:var(--pitch); border-color:var(--pitch); }
   .cam-btn.restart-tour:hover { background:var(--pitch); color:#fff; }
 
   /* ====== COMPONENT INFO PANEL (shown in free-explore) ====== */
@@ -188,7 +199,7 @@
   #deal h1 { font-family:'Cinzel',serif; font-size:72px; font-weight:900; letter-spacing:6px;
     background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money));
     -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    filter:drop-shadow(0 0 30px rgba(255,51,102,0.4)); margin-bottom:12px; }
+    filter:drop-shadow(0 0 30px rgba(79,125,191,0.4)); margin-bottom:12px; }
   #deal .deal-tag { font-family:'Cinzel',serif; font-size:26px; color:var(--text); font-weight:400;
     margin-bottom:40px; text-align:center; max-width:900px; line-height:1.3; }
   #deal .deal-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;
@@ -239,7 +250,7 @@
     border-top-color:var(--pitch); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:22px; }
   @keyframes spin { to { transform:rotate(360deg); } }
   #loading .fallback { display:none; margin-top:22px; padding:16px 20px;
-    background:rgba(255,51,102,0.1); border:1px solid var(--pitch); border-radius:4px;
+    background:rgba(79,125,191,0.1); border:1px solid var(--pitch); border-radius:4px;
     max-width:620px; text-align:left; }
   #loading .fallback.visible { display:block; }
   #loading .fallback h3 { font-family:'Cinzel',serif; color:var(--pitch); margin-bottom:10px; font-size:15px; letter-spacing:2px; }
@@ -325,7 +336,7 @@
 <!-- ====== LOADING SCREEN ====== -->
 <div id="loading">
   <div class="spinner"></div>
-  <h1>KINGDOM MERRY PROTOCOL</h1>
+  <h1>MERIDIAN DATA INFRASTRUCTURE</h1>
   <p id="loading-msg">Loading 3D engine...</p>
   <div class="fallback" id="fallback-msg">
     <h3>CDN Blocked</h3>
@@ -336,7 +347,7 @@
 <!-- ====== HEADER ====== -->
 <header>
   <div>
-    <div class="hd-title">KINGDOM MERRY PROTOCOL - HOW IT WORKS</div>
+    <div class="hd-title">MERIDIAN DATA INFRASTRUCTURE - HOW IT WORKS</div>
     <div class="hd-sub">A GUIDED WALKTHROUGH OF A SELF-SUSTAINING 100 MW DATA CENTER</div>
   </div>
   <div class="hd-right">
@@ -410,6 +421,10 @@
   <button class="cam-btn" onclick="MKP.setView('dc', this)">DC</button>
   <button class="cam-btn" onclick="MKP.setView('water', this)">WATER</button>
   <button class="cam-btn" onclick="MKP.setView('lfg', this)">LFG</button>
+  <button class="cam-btn" onclick="MKP.setView('city', this)">CITY</button>
+  <button class="cam-btn" onclick="MKP.setView('downtown', this)">DOWNTOWN</button>
+  <button class="cam-btn" onclick="MKP.setView('airport', this)">AIRPORT</button>
+  <button class="cam-btn" onclick="MKP.setView('landfill', this)">LANDFILL</button>
   <button class="cam-btn" onclick="MKP.showDeal()">THE DEAL</button>
 </div>
 
@@ -874,7 +889,7 @@ Contingency at 8%:                               $140M
   </div>
 
   <div class="deal-footer">
-    MKP v6 - KINGDOM MERRY PROTOCOL - SHOW-YOUR-WORK EDITION - EVERY NUMBER DERIVED - EVERY CLAIM SOURCED
+    MERIDIAN DATA INFRASTRUCTURE - v6 SHOW-YOUR-WORK EDITION - EVERY NUMBER DERIVED - EVERY CLAIM SOURCED
   </div>
 </div>
 
@@ -929,9 +944,9 @@ if (typeof THREE === 'undefined') { showFallback(); return; }
 var canvas = document.getElementById('c');
 var scene = new THREE.Scene();
 scene.background = new THREE.Color(0x02050e);
-scene.fog = new THREE.Fog(0x02050e, 400, 1400);
+scene.fog = new THREE.Fog(0x02050e, 800, 3500);
 
-var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 3000);
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 6000);
 camera.position.set(340, 240, 340);
 
 var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
@@ -972,17 +987,18 @@ rimPink.position.set(-200, 80, -200); scene.add(rimPink);
 var rimBlue = new THREE.DirectionalLight(0x4a9eff, 0.25);
 rimBlue.position.set(50, 100, 300); scene.add(rimBlue);
 
-// GROUND
+// GROUND (expanded for cityscape)
 var ground = new THREE.Mesh(
-  new THREE.PlaneGeometry(1000, 1000),
-  new THREE.MeshStandardMaterial({ color: 0x080f1e, roughness: 0.95, metalness: 0.1 })
+  new THREE.PlaneGeometry(4000, 4000),
+  new THREE.MeshStandardMaterial({ color: 0x0a1020, roughness: 0.95, metalness: 0.1 })
 );
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 scene.add(ground);
 
-var grid = new THREE.GridHelper(1000, 50, 0x1a2540, 0x0a1220);
-grid.position.y = 0.1;
+// Site grid only in MKP zone (don't clutter city)
+var grid = new THREE.GridHelper(600, 30, 0x1a2540, 0x0a1220);
+grid.position.y = 0.11;
 scene.add(grid);
 
 // ==================== MACHINERY BUILDERS ====================
@@ -1691,6 +1707,828 @@ function buildExportTie() {
   return g;
 }
 
+// ==========================================================
+// =================== CITYSCAPE BUILDERS ===================
+// ==========================================================
+var cityCars = []; // animated cars
+
+// Procedural window-light texture for buildings
+function makeWindowTexture(cols, rows, litRate, warmBias) {
+  var canvas = document.createElement('canvas');
+  canvas.width = cols * 16;
+  canvas.height = rows * 20;
+  var ctx = canvas.getContext('2d');
+  // Base dark facade
+  ctx.fillStyle = '#0c1420';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Pane dividers
+  ctx.fillStyle = '#141e30';
+  for (var i = 0; i < rows; i++) {
+    ctx.fillRect(0, i * 20, canvas.width, 1);
+  }
+  // Lit windows
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+      if (Math.random() < litRate) {
+        var warm = Math.random() < warmBias;
+        ctx.fillStyle = warm ? '#f5c842' : '#7ab2d8';
+        ctx.fillRect(c * 16 + 3, r * 20 + 4, 10, 13);
+      }
+    }
+  }
+  var tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+
+// Tower (downtown skyscraper)
+function buildTower(x, z, w, h, d, textureSet) {
+  var tex = textureSet[Math.floor(Math.random() * textureSet.length)].clone();
+  tex.needsUpdate = true;
+  tex.repeat.set(Math.max(1, Math.floor(w / 8)), Math.max(2, Math.floor(h / 15)));
+  var faceMat = new THREE.MeshStandardMaterial({
+    color: 0x1a2230,
+    emissive: 0xffffff,
+    emissiveIntensity: 0.9,
+    emissiveMap: tex,
+    map: tex,
+    metalness: 0.55,
+    roughness: 0.4
+  });
+  var bldg = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), faceMat);
+  bldg.position.set(x, h / 2, z);
+  bldg.castShadow = true;
+  bldg.receiveShadow = true;
+
+  // Rooftop mechanicals
+  var g = new THREE.Group();
+  g.add(bldg);
+  if (Math.random() > 0.4) {
+    var hvac = new THREE.Mesh(
+      new THREE.BoxGeometry(w * 0.4, 3, d * 0.4),
+      new THREE.MeshStandardMaterial({ color: 0x3a3a42, roughness: 0.8 })
+    );
+    hvac.position.set(x, h + 1.5, z);
+    g.add(hvac);
+  }
+  if (Math.random() > 0.6) {
+    var antenna = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.2, 0.3, 8 + Math.random() * 12, 6),
+      new THREE.MeshStandardMaterial({ color: 0xaa2222, metalness: 0.6 })
+    );
+    antenna.position.set(x + (Math.random() - 0.5) * w * 0.4, h + 6, z);
+    g.add(antenna);
+    // Antenna red light (emissive)
+    var lightBall = new THREE.Mesh(
+      new THREE.SphereGeometry(0.4, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    );
+    lightBall.position.copy(antenna.position);
+    lightBall.position.y = antenna.position.y + 5;
+    g.add(lightBall);
+  }
+  return g;
+}
+
+function buildDowntown(cx, cz) {
+  var g = new THREE.Group();
+  // Shared window-texture set (3 styles)
+  var texSet = [
+    makeWindowTexture(8, 16, 0.45, 0.2),
+    makeWindowTexture(8, 16, 0.65, 0.4),
+    makeWindowTexture(8, 16, 0.30, 0.15)
+  ];
+  // Street grid under downtown
+  g.add(buildStreetBlock(cx, cz, 600, 400));
+  // 28 towers
+  var placed = [];
+  var attempts = 0;
+  while (placed.length < 28 && attempts < 200) {
+    attempts++;
+    var bx = cx + (Math.random() - 0.5) * 540;
+    var bz = cz + (Math.random() - 0.5) * 360;
+    // Snap to street grid
+    bx = Math.round(bx / 35) * 35;
+    bz = Math.round(bz / 35) * 35;
+    // Distance check
+    var tooClose = false;
+    for (var p = 0; p < placed.length; p++) {
+      var dx = bx - placed[p].x, dz = bz - placed[p].z;
+      if (dx * dx + dz * dz < 35 * 35) { tooClose = true; break; }
+    }
+    if (tooClose) continue;
+    var distFromCore = Math.sqrt(bx * bx + bz * bz);
+    var h = 40 + Math.random() * 120;
+    if (distFromCore < 100) h = 120 + Math.random() * 80; // taller in core
+    var w = 18 + Math.random() * 14;
+    var d = 18 + Math.random() * 14;
+    g.add(buildTower(bx, bz, w, h, d, texSet));
+    placed.push({ x: bx, z: bz });
+  }
+  return g;
+}
+
+// Street block with roads, sidewalks
+function buildStreetBlock(cx, cz, w, d) {
+  var g = new THREE.Group();
+  // Road surface (darker than ground)
+  var pavement = new THREE.Mesh(
+    new THREE.PlaneGeometry(w, d),
+    new THREE.MeshStandardMaterial({ color: 0x151b28, roughness: 0.95 })
+  );
+  pavement.rotation.x = -Math.PI / 2;
+  pavement.position.set(cx, 0.15, cz);
+  pavement.receiveShadow = true;
+  g.add(pavement);
+  // Road grid lines
+  var roadMat = new THREE.MeshBasicMaterial({ color: 0x0a0d14 });
+  for (var ix = -w / 2; ix <= w / 2; ix += 35) {
+    var rv = new THREE.Mesh(new THREE.PlaneGeometry(4, d), roadMat);
+    rv.rotation.x = -Math.PI / 2;
+    rv.position.set(cx + ix, 0.2, cz);
+    g.add(rv);
+  }
+  for (var iz = -d / 2; iz <= d / 2; iz += 35) {
+    var rh = new THREE.Mesh(new THREE.PlaneGeometry(w, 4), roadMat);
+    rh.rotation.x = -Math.PI / 2;
+    rh.position.set(cx, 0.2, cz + iz);
+    g.add(rh);
+  }
+  // Center lane stripes (yellow)
+  var stripeMat = new THREE.MeshBasicMaterial({ color: 0xffdd33 });
+  for (var ix2 = -w / 2; ix2 <= w / 2; ix2 += 35) {
+    for (var seg = 0; seg < d / 6; seg++) {
+      var stripe = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 2), stripeMat);
+      stripe.rotation.x = -Math.PI / 2;
+      stripe.position.set(cx + ix2, 0.22, cz - d / 2 + seg * 6 + 1);
+      g.add(stripe);
+    }
+  }
+  return g;
+}
+
+// Mid-rise commercial office buildings
+function buildCommercialDistrict(cx, cz) {
+  var g = new THREE.Group();
+  g.add(buildStreetBlock(cx, cz, 300, 250));
+  var texSet = [
+    makeWindowTexture(6, 8, 0.55, 0.5),
+    makeWindowTexture(6, 8, 0.40, 0.3)
+  ];
+  for (var i = 0; i < 14; i++) {
+    var bx = cx + (Math.random() - 0.5) * 250;
+    var bz = cz + (Math.random() - 0.5) * 200;
+    bx = Math.round(bx / 35) * 35;
+    bz = Math.round(bz / 35) * 35;
+    var h = 15 + Math.random() * 30; // 5-12 stories
+    var w = 25 + Math.random() * 20;
+    var d = 20 + Math.random() * 15;
+    g.add(buildTower(bx, bz, w, h, d, texSet));
+    // Parking lot adjacent
+    if (Math.random() > 0.5) {
+      var lot = new THREE.Mesh(
+        new THREE.PlaneGeometry(w * 1.2, d * 0.8),
+        new THREE.MeshStandardMaterial({ color: 0x1a1e2a, roughness: 1.0 })
+      );
+      lot.rotation.x = -Math.PI / 2;
+      lot.position.set(bx + w * 0.8, 0.16, bz);
+      g.add(lot);
+    }
+  }
+  return g;
+}
+
+// Residential neighborhood (instanced houses)
+function buildResidential(cx, cz) {
+  var g = new THREE.Group();
+  // Base pavement grid
+  var pavement = new THREE.Mesh(
+    new THREE.PlaneGeometry(500, 400),
+    new THREE.MeshStandardMaterial({ color: 0x1a2430, roughness: 0.9 })
+  );
+  pavement.rotation.x = -Math.PI / 2;
+  pavement.position.set(cx, 0.12, cz);
+  pavement.receiveShadow = true;
+  g.add(pavement);
+
+  // Grass blocks
+  var grassMat = new THREE.MeshStandardMaterial({ color: 0x1a4020, roughness: 1.0 });
+  for (var bi = -2; bi <= 2; bi++) {
+    for (var bj = -2; bj <= 2; bj++) {
+      var blk = new THREE.Mesh(
+        new THREE.PlaneGeometry(70, 40),
+        grassMat
+      );
+      blk.rotation.x = -Math.PI / 2;
+      blk.position.set(cx + bi * 85, 0.14, cz + bj * 60);
+      g.add(blk);
+    }
+  }
+
+  // Streets
+  var streetMat = new THREE.MeshStandardMaterial({ color: 0x1d2434, roughness: 0.95 });
+  for (var sx = -2; sx <= 2; sx++) {
+    var vs = new THREE.Mesh(new THREE.PlaneGeometry(10, 400), streetMat);
+    vs.rotation.x = -Math.PI / 2;
+    vs.position.set(cx + sx * 85 - 42, 0.15, cz);
+    g.add(vs);
+  }
+  for (var sz = -2; sz <= 2; sz++) {
+    var hs = new THREE.Mesh(new THREE.PlaneGeometry(500, 8), streetMat);
+    hs.rotation.x = -Math.PI / 2;
+    hs.position.set(cx, 0.15, cz + sz * 60 - 30);
+    g.add(hs);
+  }
+
+  // Houses (instanced via standard mesh since we vary heights)
+  var houseColors = [0x8a7a5a, 0x7a8a6a, 0x9a7a6a, 0x6a7a8a, 0x8a8a7a];
+  var roofColors = [0x5a2a1a, 0x4a3a2a, 0x3a2a1a, 0x6a3a2a];
+  var houseCount = 0;
+  for (var hr = -2; hr <= 2; hr++) {
+    for (var hc = -2; hc <= 2; hc++) {
+      var blockX = cx + hc * 85;
+      var blockZ = cz + hr * 60;
+      // 4-6 houses per block
+      for (var hi = 0; hi < 5; hi++) {
+        var hx = blockX + (hi - 2) * 14 + (Math.random() - 0.5) * 2;
+        var hz = blockZ + (Math.random() - 0.5) * 10;
+        var hw = 7 + Math.random() * 3;
+        var hh = 3.5 + Math.random() * 1.5;
+        var hd = 8 + Math.random() * 3;
+        var bodyColor = houseColors[Math.floor(Math.random() * houseColors.length)];
+        var roofColor = roofColors[Math.floor(Math.random() * roofColors.length)];
+        // House body
+        var body = new THREE.Mesh(
+          new THREE.BoxGeometry(hw, hh, hd),
+          new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.8 })
+        );
+        body.position.set(hx, hh / 2, hz);
+        body.castShadow = true;
+        body.receiveShadow = true;
+        g.add(body);
+        // Pyramid roof
+        var roof = new THREE.Mesh(
+          new THREE.ConeGeometry(Math.max(hw, hd) * 0.72, 2.5, 4),
+          new THREE.MeshStandardMaterial({ color: roofColor, roughness: 0.8 })
+        );
+        roof.position.set(hx, hh + 1.25, hz);
+        roof.rotation.y = Math.PI / 4;
+        roof.castShadow = true;
+        g.add(roof);
+        // Windows (small glowing squares on front)
+        if (Math.random() > 0.3) {
+          for (var wn = 0; wn < 2; wn++) {
+            var win = new THREE.Mesh(
+              new THREE.PlaneGeometry(1, 1),
+              new THREE.MeshBasicMaterial({
+                color: Math.random() > 0.4 ? 0xf5c842 : 0x0a0a0a,
+                transparent: true, opacity: 0.9
+              })
+            );
+            win.position.set(hx - 2 + wn * 4, hh * 0.6, hz - hd / 2 - 0.01);
+            g.add(win);
+          }
+        }
+        houseCount++;
+        if (houseCount > 95) break;
+      }
+      if (houseCount > 95) break;
+    }
+    if (houseCount > 95) break;
+  }
+
+  return g;
+}
+
+// Industrial warehouses
+function buildIndustrial(cx, cz) {
+  var g = new THREE.Group();
+  // Pavement
+  var pavement = new THREE.Mesh(
+    new THREE.PlaneGeometry(400, 300),
+    new THREE.MeshStandardMaterial({ color: 0x1a1e26, roughness: 1.0 })
+  );
+  pavement.rotation.x = -Math.PI / 2;
+  pavement.position.set(cx, 0.13, cz);
+  g.add(pavement);
+
+  for (var i = 0; i < 10; i++) {
+    var bx = cx + (Math.floor(i / 3) - 1) * 100 + (Math.random() - 0.5) * 20;
+    var bz = cz + ((i % 3) - 1) * 80 + (Math.random() - 0.5) * 15;
+    var w = 60 + Math.random() * 30;
+    var h = 8 + Math.random() * 4;
+    var d = 35 + Math.random() * 20;
+    var warehouse = new THREE.Mesh(
+      new THREE.BoxGeometry(w, h, d),
+      new THREE.MeshStandardMaterial({ color: 0x5a6070, metalness: 0.3, roughness: 0.7 })
+    );
+    warehouse.position.set(bx, h / 2, bz);
+    warehouse.castShadow = true;
+    warehouse.receiveShadow = true;
+    g.add(warehouse);
+    // Saw-tooth roof stripes
+    for (var rs = 0; rs < 4; rs++) {
+      var stripe = new THREE.Mesh(
+        new THREE.BoxGeometry(w, 0.3, 1),
+        new THREE.MeshStandardMaterial({ color: 0x3a4050 })
+      );
+      stripe.position.set(bx, h + 0.15, bz - d / 2 + rs * d / 4 + 2);
+      g.add(stripe);
+    }
+    // Loading docks
+    for (var ld = 0; ld < 4; ld++) {
+      var dock = new THREE.Mesh(
+        new THREE.PlaneGeometry(5, 4),
+        new THREE.MeshStandardMaterial({ color: 0x1a1a20, roughness: 0.9 })
+      );
+      dock.position.set(bx - w / 2 + 10 + ld * 12, h / 2, bz - d / 2 - 0.05);
+      g.add(dock);
+    }
+  }
+  // Some trucks in the yard
+  for (var tr = 0; tr < 6; tr++) {
+    var truck = new THREE.Mesh(
+      new THREE.BoxGeometry(10, 3, 2.5),
+      new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.4 })
+    );
+    truck.position.set(cx + (Math.random() - 0.5) * 350, 1.5, cz + (Math.random() - 0.5) * 250);
+    truck.rotation.y = Math.random() * Math.PI * 2;
+    truck.castShadow = true;
+    g.add(truck);
+  }
+  return g;
+}
+
+// THE LANDFILL (fuel source, finally visible)
+function buildLandfill(cx, cz) {
+  var g = new THREE.Group();
+  // Terraced waste hill
+  var coverMat = new THREE.MeshStandardMaterial({ color: 0x3a4020, roughness: 1.0 });
+  var coverMatDark = new THREE.MeshStandardMaterial({ color: 0x2a3018, roughness: 1.0 });
+  var layers = 6;
+  var baseR = 140;
+  var topR = 50;
+  var layerH = 8;
+  for (var l = 0; l < layers; l++) {
+    var rBot = baseR - (baseR - topR) * (l / layers);
+    var rTop = baseR - (baseR - topR) * ((l + 1) / layers);
+    var terrace = new THREE.Mesh(
+      new THREE.CylinderGeometry(rTop, rBot, layerH, 20),
+      l % 2 === 0 ? coverMat : coverMatDark
+    );
+    terrace.position.set(cx, l * layerH + layerH / 2, cz);
+    terrace.receiveShadow = true;
+    terrace.castShadow = true;
+    g.add(terrace);
+  }
+  // Gas collection wells on top
+  for (var gw = 0; gw < 12; gw++) {
+    var ang = (gw / 12) * Math.PI * 2;
+    var wr = 25 + Math.random() * 20;
+    var wx = cx + Math.cos(ang) * wr;
+    var wz = cz + Math.sin(ang) * wr;
+    var well = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5, 0.5, 3, 8),
+      new THREE.MeshStandardMaterial({ color: 0x4a4a4a, metalness: 0.5 })
+    );
+    well.position.set(wx, layers * layerH + 1.5, wz);
+    g.add(well);
+    // Small flare/vent candle cap
+    var cap = new THREE.Mesh(
+      new THREE.ConeGeometry(0.7, 1, 8),
+      new THREE.MeshStandardMaterial({ color: 0x2a2a2a })
+    );
+    cap.position.set(wx, layers * layerH + 3.5, wz);
+    g.add(cap);
+  }
+  // Service road (spiral approximation: rings at each terrace)
+  var roadMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 1.0 });
+  for (var rl = 0; rl < layers; rl++) {
+    var rInner = baseR - (baseR - topR) * (rl / layers) - 2;
+    var ring = new THREE.Mesh(
+      new THREE.RingGeometry(rInner - 2.5, rInner, 24),
+      roadMat
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(cx, rl * layerH + 0.05, cz);
+    g.add(ring);
+  }
+  // Gas collection header pipe running off the hill toward MKP
+  var headerPipe = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.2, 1.2, 200, 12),
+    new THREE.MeshStandardMaterial({ color: 0xff9500, emissive: 0x552d00, emissiveIntensity: 0.2, metalness: 0.5 })
+  );
+  headerPipe.position.set(cx + 170, 2, cz + 50);
+  headerPipe.rotation.z = Math.PI / 2;
+  headerPipe.rotation.y = -0.3;
+  g.add(headerPipe);
+  // Perimeter fence on the landfill
+  var fenceMat = new THREE.MeshStandardMaterial({ color: 0x3a3a3a });
+  for (var fp = 0; fp < 24; fp++) {
+    var fAng = (fp / 24) * Math.PI * 2;
+    var fPost = new THREE.Mesh(
+      new THREE.BoxGeometry(0.3, 3, 0.3),
+      fenceMat
+    );
+    fPost.position.set(cx + Math.cos(fAng) * (baseR + 10), 1.5, cz + Math.sin(fAng) * (baseR + 10));
+    g.add(fPost);
+  }
+  return g;
+}
+
+// AIRPORT
+function buildAirport(cx, cz) {
+  var g = new THREE.Group();
+  // Runway base
+  var runway = new THREE.Mesh(
+    new THREE.PlaneGeometry(500, 30),
+    new THREE.MeshStandardMaterial({ color: 0x1a1a20, roughness: 1.0 })
+  );
+  runway.rotation.x = -Math.PI / 2;
+  runway.position.set(cx, 0.2, cz);
+  runway.receiveShadow = true;
+  g.add(runway);
+  // Centerline dashed markings
+  for (var i = 0; i < 20; i++) {
+    var mark = new THREE.Mesh(
+      new THREE.PlaneGeometry(15, 0.6),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    mark.rotation.x = -Math.PI / 2;
+    mark.position.set(cx - 225 + i * 24, 0.25, cz);
+    g.add(mark);
+  }
+  // Threshold markings
+  for (var th = 0; th < 8; th++) {
+    var tm = new THREE.Mesh(
+      new THREE.PlaneGeometry(8, 2),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    tm.rotation.x = -Math.PI / 2;
+    tm.position.set(cx - 240, 0.25, cz - 12 + th * 3.5);
+    g.add(tm);
+  }
+  // Taxiway
+  var taxi = new THREE.Mesh(
+    new THREE.PlaneGeometry(250, 12),
+    new THREE.MeshStandardMaterial({ color: 0x1d1d24, roughness: 1.0 })
+  );
+  taxi.rotation.x = -Math.PI / 2;
+  taxi.position.set(cx - 50, 0.22, cz + 30);
+  g.add(taxi);
+  // Control tower
+  var twrBase = new THREE.Mesh(
+    new THREE.CylinderGeometry(3.5, 4.5, 4, 8),
+    new THREE.MeshStandardMaterial({ color: 0x8a8a90, roughness: 0.6 })
+  );
+  twrBase.position.set(cx - 180, 2, cz - 45);
+  twrBase.castShadow = true;
+  g.add(twrBase);
+  var twrStem = new THREE.Mesh(
+    new THREE.CylinderGeometry(2.5, 3, 18, 8),
+    new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.4 })
+  );
+  twrStem.position.set(cx - 180, 13, cz - 45);
+  twrStem.castShadow = true;
+  g.add(twrStem);
+  var twrCab = new THREE.Mesh(
+    new THREE.CylinderGeometry(5, 4.5, 4, 12),
+    new THREE.MeshStandardMaterial({ color: 0x4a7aac, metalness: 0.3, emissive: 0x4a7aac, emissiveIntensity: 0.5, transparent: true, opacity: 0.8 })
+  );
+  twrCab.position.set(cx - 180, 24, cz - 45);
+  g.add(twrCab);
+  var twrRoof = new THREE.Mesh(
+    new THREE.ConeGeometry(5.2, 2, 12),
+    new THREE.MeshStandardMaterial({ color: 0x3a3a3a, metalness: 0.5 })
+  );
+  twrRoof.position.set(cx - 180, 27, cz - 45);
+  g.add(twrRoof);
+  // Terminal building
+  var terminal = new THREE.Mesh(
+    new THREE.BoxGeometry(90, 14, 35),
+    new THREE.MeshStandardMaterial({ color: 0x5a6070, metalness: 0.4, roughness: 0.5 })
+  );
+  terminal.position.set(cx - 130, 7, cz - 75);
+  terminal.castShadow = true;
+  terminal.receiveShadow = true;
+  g.add(terminal);
+  // Terminal windows
+  var termWinMat = new THREE.MeshBasicMaterial({ color: 0x8abddf, transparent: true, opacity: 0.9 });
+  var termWin = new THREE.Mesh(new THREE.PlaneGeometry(88, 4), termWinMat);
+  termWin.position.set(cx - 130, 10, cz - 57.4);
+  g.add(termWin);
+  // Hangars
+  for (var hg = 0; hg < 3; hg++) {
+    var hang = new THREE.Mesh(
+      new THREE.BoxGeometry(30, 12, 30),
+      new THREE.MeshStandardMaterial({ color: 0x4a5060, metalness: 0.4 })
+    );
+    hang.position.set(cx + 50 + hg * 35, 6, cz + 45);
+    hang.castShadow = true;
+    g.add(hang);
+  }
+  // Small airplanes on taxiway (static)
+  for (var ap = 0; ap < 2; ap++) {
+    var plane = new THREE.Group();
+    var fuselage = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.2, 0.6, 18, 10),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.5 })
+    );
+    fuselage.rotation.z = Math.PI / 2;
+    plane.add(fuselage);
+    var wing = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 0.4, 14),
+      new THREE.MeshStandardMaterial({ color: 0xeeeeee, metalness: 0.5 })
+    );
+    plane.add(wing);
+    var tail = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 4, 0.4),
+      new THREE.MeshStandardMaterial({ color: 0xeeeeee })
+    );
+    tail.position.set(-7, 2, 0);
+    plane.add(tail);
+    plane.position.set(cx - 100 + ap * 60, 1.3, cz + 32);
+    plane.rotation.y = Math.PI / 2;
+    g.add(plane);
+  }
+  return g;
+}
+
+// HIGHWAY (straight road with moving cars)
+function buildHighway(x1, z1, x2, z2, lanes) {
+  var g = new THREE.Group();
+  var dx = x2 - x1, dz = z2 - z1;
+  var length = Math.sqrt(dx * dx + dz * dz);
+  var angle = Math.atan2(dz, dx);
+  var width = lanes * 4 + 4;
+  // Road surface
+  var road = new THREE.Mesh(
+    new THREE.PlaneGeometry(length, width),
+    new THREE.MeshStandardMaterial({ color: 0x1a1e26, roughness: 0.95 })
+  );
+  road.rotation.x = -Math.PI / 2;
+  road.rotation.z = -angle;
+  road.position.set((x1 + x2) / 2, 0.17, (z1 + z2) / 2);
+  road.receiveShadow = true;
+  g.add(road);
+  // Center divider
+  var divider = new THREE.Mesh(
+    new THREE.PlaneGeometry(length, 0.8),
+    new THREE.MeshBasicMaterial({ color: 0xffdd33 })
+  );
+  divider.rotation.x = -Math.PI / 2;
+  divider.rotation.z = -angle;
+  divider.position.set((x1 + x2) / 2, 0.2, (z1 + z2) / 2);
+  g.add(divider);
+  // Lane dashes
+  for (var l = 1; l < lanes; l++) {
+    var lx = -width / 2 + l * 4 + 2;
+    var dashSegs = Math.floor(length / 8);
+    for (var s = 0; s < dashSegs; s++) {
+      var dash = new THREE.Mesh(
+        new THREE.PlaneGeometry(3, 0.3),
+        new THREE.MeshBasicMaterial({ color: 0xeeeeee })
+      );
+      dash.rotation.x = -Math.PI / 2;
+      dash.rotation.z = -angle;
+      var dt = s / dashSegs;
+      var segX = x1 + dx * dt + Math.sin(angle) * lx;
+      var segZ = z1 + dz * dt - Math.cos(angle) * lx;
+      dash.position.set(segX, 0.19, segZ);
+      g.add(dash);
+    }
+  }
+  // Lamppost chain
+  for (var lp = 0; lp < length / 40; lp++) {
+    var lt = lp / (length / 40);
+    var lx2 = x1 + dx * lt;
+    var lz2 = z1 + dz * lt;
+    var postOffset = width / 2 + 2;
+    for (var side = 0; side < 2; side++) {
+      var sideSign = side === 0 ? 1 : -1;
+      var px = lx2 + Math.sin(angle) * postOffset * sideSign;
+      var pz = lz2 - Math.cos(angle) * postOffset * sideSign;
+      var post = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.15, 0.15, 7, 6),
+        new THREE.MeshStandardMaterial({ color: 0x2a2a2a })
+      );
+      post.position.set(px, 3.5, pz);
+      g.add(post);
+      var lamp = new THREE.Mesh(
+        new THREE.SphereGeometry(0.45, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffe090 })
+      );
+      lamp.position.set(px, 7, pz);
+      g.add(lamp);
+    }
+  }
+  // Create cars on this highway
+  var carColors = [0xdd3333, 0x33aa44, 0x3366cc, 0xeeeeee, 0xffcc33, 0x222222, 0x8a4a2a];
+  for (var c = 0; c < 12; c++) {
+    var carColor = carColors[Math.floor(Math.random() * carColors.length)];
+    var car = new THREE.Group();
+    var body = new THREE.Mesh(
+      new THREE.BoxGeometry(3.5, 1.1, 1.6),
+      new THREE.MeshStandardMaterial({ color: carColor, metalness: 0.5, roughness: 0.4 })
+    );
+    body.castShadow = true;
+    car.add(body);
+    var cabin = new THREE.Mesh(
+      new THREE.BoxGeometry(1.8, 0.7, 1.4),
+      new THREE.MeshStandardMaterial({ color: 0x111111, transparent: true, opacity: 0.7 })
+    );
+    cabin.position.set(-0.2, 0.9, 0);
+    car.add(cabin);
+    // Headlights
+    var lightLeft = new THREE.Mesh(
+      new THREE.SphereGeometry(0.18, 6, 6),
+      new THREE.MeshBasicMaterial({ color: 0xffffcc })
+    );
+    lightLeft.position.set(1.7, 0.3, -0.5);
+    car.add(lightLeft);
+    var lightRight = lightLeft.clone();
+    lightRight.position.z = 0.5;
+    car.add(lightRight);
+    car.rotation.y = -angle + (Math.random() > 0.5 ? 0 : Math.PI);
+    var direction = car.rotation.y === -angle ? 1 : -1;
+    car.userData = {
+      x1: x1, z1: z1, x2: x2, z2: z2,
+      progress: Math.random(),
+      speed: 0.0002 + Math.random() * 0.0002,
+      direction: direction,
+      lane: Math.floor(Math.random() * lanes) - lanes / 2,
+      angle: angle
+    };
+    scene.add(car);
+    cityCars.push(car);
+  }
+  return g;
+}
+
+// TRANSMISSION CORRIDOR (chain of lattice towers + cables)
+function buildTransmissionCorridor(x1, z1, x2, z2, count) {
+  var g = new THREE.Group();
+  var points = [];
+  for (var i = 0; i <= count; i++) {
+    var t = i / count;
+    var tx = x1 + (x2 - x1) * t;
+    var tz = z1 + (z2 - z1) * t;
+    points.push({ x: tx, z: tz });
+    var tower = buildLatticeTower(30);
+    tower.position.set(tx, 0, tz);
+    g.add(tower);
+  }
+  // Cables between towers (three parallel lines, with sag)
+  var cableMat = new THREE.LineBasicMaterial({ color: 0x333338 });
+  for (var c = 0; c < 3; c++) {
+    var cableY = 28 - c * 1.5;
+    var cableOffset = (c - 1) * 2.5;
+    for (var seg = 0; seg < points.length - 1; seg++) {
+      var pA = points[seg];
+      var pB = points[seg + 1];
+      var segPts = [];
+      var subSteps = 10;
+      for (var ss = 0; ss <= subSteps; ss++) {
+        var st = ss / subSteps;
+        var sx = pA.x + (pB.x - pA.x) * st + cableOffset;
+        var sz = pA.z + (pB.z - pA.z) * st;
+        var sag = Math.sin(st * Math.PI) * 2.5;
+        segPts.push(sx, cableY - sag, sz);
+      }
+      var cableGeo = new THREE.BufferGeometry();
+      cableGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(segPts), 3));
+      g.add(new THREE.Line(cableGeo, cableMat));
+    }
+  }
+  return g;
+}
+
+// TREE INSTANCES (using InstancedMesh for performance)
+function buildTreeInstances(clusters) {
+  var trunkGeo = new THREE.CylinderGeometry(0.3, 0.45, 3, 6);
+  var foliageGeoCone = new THREE.ConeGeometry(2, 5, 8);
+  var foliageGeoSphere = new THREE.SphereGeometry(2, 8, 8);
+  var trunkMat = new THREE.MeshStandardMaterial({ color: 0x3a2810, roughness: 0.9 });
+  var foliageMat1 = new THREE.MeshStandardMaterial({ color: 0x2a5a2a, roughness: 0.8 });
+  var foliageMat2 = new THREE.MeshStandardMaterial({ color: 0x1a4a1a, roughness: 0.8 });
+
+  // Count total trees
+  var total = 0;
+  for (var c = 0; c < clusters.length; c++) total += clusters[c].count;
+
+  var trunks = new THREE.InstancedMesh(trunkGeo, trunkMat, total);
+  var foliagesCone = new THREE.InstancedMesh(foliageGeoCone, foliageMat1, Math.floor(total / 2));
+  var foliagesSphere = new THREE.InstancedMesh(foliageGeoSphere, foliageMat2, Math.ceil(total / 2));
+
+  var m = new THREE.Matrix4();
+  var trunkIdx = 0;
+  var coneIdx = 0;
+  var sphereIdx = 0;
+
+  for (var cl = 0; cl < clusters.length; cl++) {
+    var cluster = clusters[cl];
+    for (var t = 0; t < cluster.count; t++) {
+      var tx = cluster.cx + (Math.random() - 0.5) * cluster.rx * 2;
+      var tz = cluster.cz + (Math.random() - 0.5) * cluster.rz * 2;
+      var scale = 0.8 + Math.random() * 0.7;
+      // Trunk
+      m.makeTranslation(tx, 1.5 * scale, tz);
+      m.multiply(new THREE.Matrix4().makeScale(scale, scale, scale));
+      trunks.setMatrixAt(trunkIdx++, m);
+      // Foliage (alternate cone/sphere)
+      if (t % 2 === 0 && coneIdx < foliagesCone.count) {
+        m.makeTranslation(tx, 4.5 * scale, tz);
+        m.multiply(new THREE.Matrix4().makeScale(scale, scale, scale));
+        foliagesCone.setMatrixAt(coneIdx++, m);
+      } else if (sphereIdx < foliagesSphere.count) {
+        m.makeTranslation(tx, 3.8 * scale, tz);
+        m.multiply(new THREE.Matrix4().makeScale(scale, scale, scale));
+        foliagesSphere.setMatrixAt(sphereIdx++, m);
+      }
+    }
+  }
+  trunks.instanceMatrix.needsUpdate = true;
+  foliagesCone.instanceMatrix.needsUpdate = true;
+  foliagesSphere.instanceMatrix.needsUpdate = true;
+  trunks.receiveShadow = true;
+  foliagesCone.castShadow = true;
+  foliagesSphere.castShadow = true;
+
+  var g = new THREE.Group();
+  g.add(trunks);
+  g.add(foliagesCone);
+  g.add(foliagesSphere);
+  return g;
+}
+
+// MOUNTAIN BACKDROP (far horizon)
+function buildMountains() {
+  var g = new THREE.Group();
+  var mountMat = new THREE.MeshStandardMaterial({ color: 0x1a2030, roughness: 1.0, fog: true });
+  for (var m = 0; m < 12; m++) {
+    var angle = (m / 12) * Math.PI * 2;
+    var dist = 1800 + Math.random() * 200;
+    var mx = Math.cos(angle) * dist;
+    var mz = Math.sin(angle) * dist;
+    var h = 80 + Math.random() * 120;
+    var r = 120 + Math.random() * 100;
+    var mt = new THREE.Mesh(
+      new THREE.ConeGeometry(r, h, 6),
+      mountMat
+    );
+    mt.position.set(mx, h / 2 - 10, mz);
+    g.add(mt);
+  }
+  return g;
+}
+
+// TOP-LEVEL: Build entire cityscape
+function buildCityscape() {
+  var city = new THREE.Group();
+
+  // Far horizon mountains
+  city.add(buildMountains());
+
+  // Landfill (fuel source, northwest)
+  city.add(buildLandfill(-650, -700));
+
+  // Downtown skyscraper cluster (east)
+  city.add(buildDowntown(1050, 250));
+
+  // Commercial district (northeast)
+  city.add(buildCommercialDistrict(700, -350));
+
+  // Residential neighborhood (south)
+  city.add(buildResidential(300, 900));
+
+  // Industrial zone (west)
+  city.add(buildIndustrial(-850, 300));
+
+  // Airport (far west)
+  city.add(buildAirport(-1200, 750));
+
+  // Highway running east-west across south
+  city.add(buildHighway(-1600, 1350, 1600, 1350, 4));
+  // Secondary road connecting MKP to downtown
+  city.add(buildHighway(280, 15, 700, 200, 2));
+  // North-south highway
+  city.add(buildHighway(1400, -800, 1400, 1400, 3));
+
+  // Transmission corridor from MKP export tie to downtown
+  city.add(buildTransmissionCorridor(280, 15, 850, 200, 5));
+
+  // Trees scattered in green zones
+  city.add(buildTreeInstances([
+    { cx: -650, cz: -700, rx: 200, rz: 200, count: 60 },  // around landfill
+    { cx: 300, cz: 900, rx: 280, rz: 220, count: 120 },    // residential
+    { cx: 0, cz: -400, rx: 150, rz: 100, count: 40 },      // near MKP
+    { cx: 700, cz: -350, rx: 180, rz: 150, count: 50 },    // commercial
+    { cx: -400, cz: 800, rx: 200, rz: 200, count: 60 }     // between zones
+  ]));
+
+  return city;
+}
+
 // ============ SCENE ASSEMBLY ============
 var machines = [];
 function addMachine(id, title, subtitle, color, data, obj, pos) {
@@ -1701,7 +2539,7 @@ function addMachine(id, title, subtitle, color, data, obj, pos) {
   return obj;
 }
 
-addMachine('lfg', 'LFG SOURCE', 'STRANDED LANDFILL GAS', 0xff9500,
+addMachine('lfg', 'LFG SOURCE', 'STRANDED LANDFILL GAS', 0xc47d3a,
   { 'Source': 'Adjacent municipal landfill', 'Flow': '5,000 scfm - 50% CH4',
     'Cost': '$2/MMBtu (EPA LMOP 2025)', 'Contract': '20-yr offtake',
     'Annual': '5.44M MMBtu',
@@ -1715,14 +2553,14 @@ addMachine('lfg', 'LFG SOURCE', 'STRANDED LANDFILL GAS', 0xff9500,
   })(),
   { x: -280, z: -40 });
 
-addMachine('cleanup', 'GAS CLEANUP', 'H2S + SILOXANE < 0.5 PPM', 0xff4d8d,
+addMachine('cleanup', 'GAS CLEANUP', 'H2S + SILOXANE < 0.5 PPM', 0xc96a80,
   { 'Function': 'Biogas to fuel-cell grade', 'H2S spec': '<1 ppm out',
     'Siloxane': '<0.1 ppmv out', 'CapEx': '$30M', 'OpEx': '$2M/yr consumables',
     desc: 'Removes sulfur compounds and siloxanes that poison SOFC stacks. Iron sponge + activated carbon + chilled condensation.',
     source: 'Guild Associates UPC - SCS Engineers 2024' },
   buildGasCleanup(), { x: -190, z: -40 });
 
-addMachine('sofc', 'SOFC CHP', '100 MWe - 55% LHV', 0xf5c842,
+addMachine('sofc', 'SOFC CHP', '100 MWe - 55% LHV', 0xc9a25a,
   { 'Nameplate': '100 MWe', 'Efficiency': '55% LHV on biogas',
     'Fuel rate': '13,100 kg CH4/hr', 'Exhaust temp': '800C pre-manifold',
     'Water exhaust': '29,400 L/hr', 'CapEx': '$250M at $2,500/kWe',
@@ -1738,14 +2576,14 @@ addMachine('steam', 'STEAM TURBINE', '680C BOTTOMING - 24.6 MWe', 0xe0e0ff,
     source: 'GE industrial ST curves - Mitsubishi CHP reference docs' },
   buildSteamTurbine(), { x: 50, z: -70 });
 
-addMachine('kalina', 'KALINA', 'ST CONDENSATE - +4.5 MWe', 0xff9500,
+addMachine('kalina', 'KALINA', 'ST CONDENSATE - +4.5 MWe', 0xc47d3a,
   { 'Heat source': 'ST condenser - 180C', 'Working fluid': 'NH3-H2O',
     'Carnot at 180C': '32%', 'Real eff': '14%', 'Output': '4.5 MWe',
     desc: 'Kalina cycle on ST condenser exhaust at 180C.',
     source: 'Husavik Iceland (scale-adjusted) - Mlcak 2002' },
   buildKalina(), { x: 110, z: -40 });
 
-addMachine('substation', 'SUBSTATION', '129 MW GROSS - +25 MW EXPORT', 0x00ff99,
+addMachine('substation', 'SUBSTATION', '129 MW GROSS - +25 MW EXPORT', 0x5fa572,
   { 'Gross gen': '129.1 MW', 'DC load': '100 MW',
     'Parasitic': '~4 MW', 'Net export': '+25 MW',
     'Export revenue': '$13M/yr @ $60/MWh',
@@ -1753,7 +2591,7 @@ addMachine('substation', 'SUBSTATION', '129 MW GROSS - +25 MW EXPORT', 0x00ff99,
     source: 'FERC / LMP quarterly queue report Nov 2025' },
   buildSubstation(), { x: 70, z: 15 });
 
-addMachine('dc', 'DATA CENTER', '100 MW IT - PUE 1.15', 0x4a9eff,
+addMachine('dc', 'DATA CENTER', '100 MW IT - PUE 1.15', 0x60a5fa,
   { 'IT load': '100 MW', 'PUE': '1.15 (two-phase immersion)',
     'WUE': 'Net-negative (producer)',
     'Revenue': '$184M/yr at $170/kW/mo',
@@ -1762,21 +2600,21 @@ addMachine('dc', 'DATA CENTER', '100 MW IT - PUE 1.15', 0x4a9eff,
     source: 'CBRE H2 2025 NA DC Trends - Uptime Institute 2024' },
   buildDataCenter(), { x: -50, z: 110 });
 
-addMachine('md', 'MD + CONDENSER', 'SOFC EXHAUST + GRAY WATER', 0x00c8e8,
+addMachine('md', 'MD + CONDENSER', 'SOFC EXHAUST + GRAY WATER', 0x4b9cc4,
   { 'SOFC recovery': '20,000 L/hr (68%)', 'MD output': '5,000 L/hr',
     'Wetland': '2,000 L/hr', 'Total': '~170,000 gal/day', 'SEC': '1.0 kWh/m3',
     desc: 'Water production - condenser + membrane distillation.',
     source: 'npj Clean Water 2023 - Aquastill commercial MD' },
   buildMDPlant(), { x: 20, z: 180 });
 
-addMachine('tanks', 'H2O STORAGE', '170K GAL/DAY', 0x00c8e8,
+addMachine('tanks', 'H2O STORAGE', '170K GAL/DAY', 0x4b9cc4,
   { 'Capacity': '3 x 250K gal domed tanks', 'Throughput': '170K gal/day',
     'Destination': 'On-site reuse + offtake',
     desc: 'Stores net-positive water output. 36-hr buffer.',
     source: 'AWWA tank sizing guidelines' },
   buildWaterTanks(), { x: -42, z: 185 });
 
-addMachine('wetland', 'WETLAND + MFC', 'NPDES - 5000 m3', 0xc084fc,
+addMachine('wetland', 'WETLAND + MFC', 'NPDES - 5000 m3', 0x8a7ba6,
   { 'Volume': '5,000 m3', 'Function': 'BOD/TSS removal',
     'MFC output': '+8 kW (trickle)', 'Discharge': 'NPDES-compliant',
     'Macrophytes': 'Typha, Phragmites, Iris',
@@ -1784,13 +2622,16 @@ addMachine('wetland', 'WETLAND + MFC', 'NPDES - 5000 m3', 0xc084fc,
     source: 'EPA constructed wetland BMPs - Logan MFC lab' },
   buildWetland(), { x: -170, z: 160 });
 
-addMachine('export', 'EXPORT TIE', '+25 MW GRID - $13M/YR', 0x2dce6e,
+addMachine('export', 'EXPORT TIE', '+25 MW GRID - $13M/YR', 0x5fa572,
   { 'Export': '25 MW', 'Rate': '$60/MWh (PJM)',
     'Revenue': '$13M/yr', 'Tie size': 'Small (export only)',
     'Queue': 'Bypassed',
     desc: 'Small grid tie for surplus export. Bypasses import queue.',
     source: 'PJM 2025 interconnect queue data' },
   buildExportTie(), { x: 250, z: 15 });
+
+// ============ CITYSCAPE (full city context around facility) ============
+scene.add(buildCityscape());
 
 // PIPES
 function buildPipe(p1, p2, color, radius) {
@@ -2179,6 +3020,10 @@ function hideDeal() {
 // FREE EXPLORE CAMERA PRESETS
 var views = {
   overview: { pos: [340, 240, 340], target: [0, 15, 30] },
+  city:     { pos: [-100, 900, 1800], target: [400, 50, 200] },
+  downtown: { pos: [600, 320, 900], target: [1050, 60, 250] },
+  landfill: { pos: [-200, 350, -100], target: [-650, 50, -700] },
+  airport:  { pos: [-1500, 200, 400], target: [-1200, 10, 750] },
   power:    { pos: [30, 80, 80], target: [-20, 10, -30] },
   dc:       { pos: [-50, 60, 240], target: [-50, 12, 90] },
   water:    { pos: [-120, 80, 280], target: [-80, 5, 170] },
@@ -2414,6 +3259,20 @@ function animate() {
       );
       wd.material.opacity = 0.85;
     }
+  }
+
+  // CITY CARS (drive along highway segments)
+  for (var cci = 0; cci < cityCars.length; cci++) {
+    var cc = cityCars[cci];
+    cc.userData.progress += cc.userData.speed * cc.userData.direction;
+    if (cc.userData.progress > 1) cc.userData.progress = 0;
+    if (cc.userData.progress < 0) cc.userData.progress = 1;
+    var laneOffset = cc.userData.lane * 4;
+    var laneX = Math.sin(cc.userData.angle) * laneOffset;
+    var laneZ = -Math.cos(cc.userData.angle) * laneOffset;
+    cc.position.x = cc.userData.x1 + (cc.userData.x2 - cc.userData.x1) * cc.userData.progress + laneX;
+    cc.position.z = cc.userData.z1 + (cc.userData.z2 - cc.userData.z1) * cc.userData.progress + laneZ;
+    cc.position.y = 0.9;
   }
 
   // Counters
