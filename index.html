@@ -3,208 +3,430 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MKP v6 // 3D FACILITY MODEL - Kingdom Merry Protocol</title>
+<title>Kingdom Merry Protocol - How It Works</title>
+<meta name="description" content="A guided walkthrough of a self-sustaining 100 MW data center. The only facility design that ships in 24 months.">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
   :root {
     --bg:#02050e; --panel:#080f1e; --border:#1a2540;
-    --text:#d4e8ff; --dim:#3a5070;
+    --text:#d4e8ff; --dim:#5a6e8a; --mute:#3a5070;
     --sora:#4a9eff; --nami:#f5c842; --zoro:#2dce6e;
     --kingdom:#c084fc; --sea:#00c8e8; --heart:#ff4d8d;
     --kalina:#ff9500; --steam:#e0e0ff;
     --pitch:#ff3366; --money:#00ff99;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { width:100%; height:100%; overflow:hidden; background:#02050e; color:var(--text); font-family:'Rajdhani',sans-serif; }
+  html, body { width:100%; height:100%; overflow:hidden; background:#02050e; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:16px; }
   canvas { display:block; width:100%; height:100%; cursor:grab; }
   canvas:active { cursor:grabbing; }
 
-  header { position:fixed; top:0; left:0; right:0; z-index:10;
-    padding:10px 18px; border-bottom:1px solid var(--border);
+  /* HEADER */
+  header { position:fixed; top:0; left:0; right:0; z-index:20;
+    padding:12px 22px; border-bottom:1px solid var(--border);
     display:flex; align-items:center; justify-content:space-between;
-    background:linear-gradient(90deg, rgba(255,51,102,0.25), rgba(0,255,153,0.1), rgba(74,158,255,0.15));
-    backdrop-filter:blur(8px); }
-  .hd-title { font-family:'Cinzel',serif; font-size:15px; font-weight:900;
+    background:linear-gradient(90deg, rgba(255,51,102,0.22), rgba(0,255,153,0.08), rgba(74,158,255,0.12));
+    backdrop-filter:blur(10px); }
+  .hd-title { font-family:'Cinzel',serif; font-size:18px; font-weight:900;
     background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money), var(--sora));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-  .hd-sub { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:2px; margin-top:2px; }
-  .hd-right { display:flex; gap:14px; align-items:center; font-family:'Share Tech Mono',monospace; font-size:10px; }
-  .pip { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
-  .pip.green { background:var(--zoro); box-shadow:0 0 8px var(--zoro); animation:hb 2s infinite; }
-  .pip.pitch { background:var(--pitch); box-shadow:0 0 8px var(--pitch); animation:hb 1.3s infinite; }
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:1px; }
+  .hd-sub { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--dim); letter-spacing:2px; margin-top:3px; }
+  .hd-right { display:flex; gap:18px; align-items:center; font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--text); }
+  .pip { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:6px; }
+  .pip.green { background:var(--zoro); box-shadow:0 0 10px var(--zoro); animation:hb 2s infinite; }
+  .pip.pitch { background:var(--pitch); box-shadow:0 0 10px var(--pitch); animation:hb 1.3s infinite; }
   @keyframes hb { 0%,100% { transform:scale(1); } 50% { transform:scale(1.4); } }
 
-  .pitch-bar { position:fixed; top:56px; left:14px; right:14px; z-index:10;
-    display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:8px; pointer-events:none; }
-  .pitch-lead { background:rgba(8,15,30,0.85); backdrop-filter:blur(6px);
-    border:1px solid var(--pitch); border-radius:4px; padding:10px 14px; position:relative; pointer-events:auto; }
-  .pitch-lead::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--pitch); }
-  .pitch-lead-hdr { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--pitch); letter-spacing:2px; margin-bottom:4px; }
-  .pitch-lead-big { font-family:'Cinzel',serif; font-size:17px; font-weight:900; color:var(--text); line-height:1.15; }
-  .pitch-lead-sub { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); margin-top:4px; line-height:1.4; }
-  .pitch-card { background:rgba(8,15,30,0.85); backdrop-filter:blur(6px);
-    border:1px solid var(--border); border-radius:3px; padding:8px 10px; position:relative; pointer-events:auto; }
-  .pitch-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
-  .pitch-card.speed::before { background:var(--money); }
-  .pitch-card.water::before { background:var(--sea); }
-  .pitch-card.esg::before { background:var(--zoro); }
-  .pitch-lbl { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); letter-spacing:1.5px; margin-bottom:4px; }
-  .pitch-val { font-family:'Cinzel',serif; font-size:15px; font-weight:700; line-height:1; margin-bottom:3px; }
-  .pitch-desc { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); line-height:1.3; }
+  /* ====== TOUR INTRO OVERLAY (first load) ====== */
+  #intro { position:fixed; inset:0; z-index:50; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; background:rgba(2,5,14,0.95);
+    backdrop-filter:blur(6px); padding:40px 20px; text-align:center; }
+  #intro.hidden { display:none; }
+  #intro .intro-eyebrow { font-family:'Share Tech Mono',monospace; font-size:13px;
+    color:var(--pitch); letter-spacing:5px; margin-bottom:18px; }
+  #intro h1 { font-family:'Cinzel',serif; font-size:56px; font-weight:900; letter-spacing:2px;
+    background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money), var(--sora));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 24px rgba(255,51,102,0.3)); margin-bottom:18px; }
+  #intro .intro-tag { font-family:'Cinzel',serif; font-size:26px; color:var(--text); font-weight:400;
+    margin-bottom:22px; max-width:900px; line-height:1.3; }
+  #intro .intro-body { font-family:'Rajdhani',sans-serif; font-size:18px; color:var(--dim);
+    max-width:680px; line-height:1.7; margin-bottom:36px; letter-spacing:0.5px; }
+  #intro .intro-body b { color:var(--text); }
+  .big-btn { font-family:'Cinzel',serif; font-weight:900; font-size:22px; letter-spacing:4px;
+    padding:18px 44px; border-radius:4px; cursor:pointer; transition:all 0.25s;
+    background:linear-gradient(135deg, var(--pitch), #ff5a8f); color:#fff; border:none;
+    box-shadow:0 0 30px rgba(255,51,102,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+    text-shadow:0 1px 2px rgba(0,0,0,0.4); }
+  .big-btn:hover { transform:translateY(-2px); box-shadow:0 4px 40px rgba(255,51,102,0.7); }
+  .big-btn.secondary { background:transparent; color:var(--text); border:1px solid var(--border);
+    box-shadow:none; text-shadow:none; font-size:14px; letter-spacing:2px; padding:12px 24px;
+    margin-top:20px; }
+  .big-btn.secondary:hover { border-color:var(--pitch); color:var(--pitch); box-shadow:0 0 16px rgba(255,51,102,0.3); }
 
-  #info-panel { position:fixed; right:14px; top:150px; width:290px; z-index:10;
-    background:rgba(8,15,30,0.92); backdrop-filter:blur(8px);
-    border:1px solid var(--border); border-radius:4px;
-    padding:14px; max-height:calc(100vh - 230px); overflow-y:auto; }
-  #info-panel h3 { font-family:'Cinzel',serif; font-size:13px; font-weight:900;
-    color:var(--pitch); letter-spacing:1.5px; margin-bottom:6px;
-    padding-bottom:6px; border-bottom:1px solid var(--border); }
-  .ip-row { display:flex; justify-content:space-between; padding:3px 0;
-    font-family:'Share Tech Mono',monospace; font-size:9px;
-    border-bottom:1px solid rgba(26,37,64,0.4); }
-  .ip-row .k { color:var(--dim); } .ip-row .v { color:var(--text); font-weight:600; }
-  .ip-desc { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--dim);
-    line-height:1.5; margin-top:8px; padding:6px 8px; background:var(--bg); border-left:2px solid var(--sora); }
-  .ip-source { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim);
-    line-height:1.5; margin-top:8px; font-style:italic; }
+  /* ====== TOP PROGRESS BAR ====== */
+  #progress-bar { position:fixed; top:60px; left:0; right:0; z-index:15;
+    height:5px; background:rgba(26,37,64,0.6); display:none; }
+  #progress-bar.visible { display:block; }
+  #progress-fill { height:100%; background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money));
+    width:0%; transition:width 0.3s linear; box-shadow:0 0 12px var(--pitch); }
+  #progress-chapters { position:absolute; top:0; left:0; right:0; height:100%; display:flex; }
+  .chap-mark { flex:1; border-right:1px solid rgba(255,255,255,0.08); cursor:pointer; position:relative; }
+  .chap-mark:last-child { border-right:none; }
+  .chap-mark:hover::after { content:attr(data-title); position:absolute; top:10px; left:50%;
+    transform:translateX(-50%); background:rgba(2,5,14,0.95); border:1px solid var(--pitch);
+    padding:4px 10px; border-radius:3px; font-family:'Share Tech Mono',monospace; font-size:10px;
+    color:var(--text); white-space:nowrap; letter-spacing:1px; }
 
-  .cam-bar { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); z-index:10;
-    display:flex; gap:6px; background:rgba(8,15,30,0.9); backdrop-filter:blur(8px);
+  /* ====== NARRATION PANEL (LEFT) ====== */
+  #narration { position:fixed; top:72px; left:18px; width:460px; z-index:14;
+    background:rgba(8,15,30,0.94); backdrop-filter:blur(12px);
+    border:1px solid var(--border); border-left:4px solid var(--pitch);
+    border-radius:6px; padding:24px 26px; max-height:calc(100vh - 150px); overflow-y:auto;
+    display:none; opacity:0; transform:translateX(-20px); transition:opacity 0.5s, transform 0.5s; }
+  #narration.visible { display:block; opacity:1; transform:translateX(0); }
+  #narration .nar-eyebrow { font-family:'Share Tech Mono',monospace; font-size:11px;
+    color:var(--pitch); letter-spacing:3px; margin-bottom:6px; text-transform:uppercase; }
+  #narration h2 { font-family:'Cinzel',serif; font-size:28px; font-weight:900;
+    color:var(--text); line-height:1.15; margin-bottom:14px; letter-spacing:0.5px; }
+  #narration .nar-body { font-family:'Rajdhani',sans-serif; font-size:17px; color:var(--text);
+    line-height:1.65; font-weight:400; letter-spacing:0.3px; }
+  #narration .nar-body p { margin-bottom:11px; }
+  #narration .nar-body b { color:var(--pitch); font-weight:700; }
+  #narration .nar-metric { margin-top:18px; padding:14px 16px;
+    background:linear-gradient(135deg, rgba(0,255,153,0.08), rgba(255,51,102,0.05));
+    border:1px solid rgba(0,255,153,0.25); border-radius:4px; }
+  #narration .nar-metric-lbl { font-family:'Share Tech Mono',monospace; font-size:10px;
+    color:var(--dim); letter-spacing:2px; margin-bottom:4px; text-transform:uppercase; }
+  #narration .nar-metric-val { font-family:'Cinzel',serif; font-size:22px; font-weight:900;
+    color:var(--money); letter-spacing:0.5px; line-height:1.2; }
+  #narration .side-card { margin-top:14px; padding:12px 14px;
+    border-left:3px solid; border-radius:0 4px 4px 0;
+    background:rgba(8,15,30,0.6); }
+  #narration .side-card.why { border-color:var(--nami); }
+  #narration .side-card.ref { border-color:var(--sora); }
+  #narration .side-card-lbl { font-family:'Share Tech Mono',monospace; font-size:9px;
+    letter-spacing:2px; margin-bottom:5px; text-transform:uppercase; }
+  #narration .side-card.why .side-card-lbl { color:var(--nami); }
+  #narration .side-card.ref .side-card-lbl { color:var(--sora); }
+  #narration .side-card-body { font-family:'Rajdhani',sans-serif; font-size:13px;
+    color:var(--text); line-height:1.55; font-weight:400; letter-spacing:0.2px; }
+  #narration .side-card.ref .side-card-body { color:var(--dim); font-size:12px; font-family:'Share Tech Mono',monospace; letter-spacing:0.5px; }
+
+  /* ====== TOUR CONTROL BAR ====== */
+  #tour-controls { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:14;
+    display:none; gap:8px; background:rgba(8,15,30,0.95); backdrop-filter:blur(10px);
+    border:1px solid var(--border); border-radius:8px; padding:10px 12px;
+    box-shadow:0 4px 30px rgba(0,0,0,0.5); }
+  #tour-controls.visible { display:flex; }
+  .tc-btn { font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1.5px;
+    padding:10px 16px; border-radius:4px; background:transparent; color:var(--text);
+    border:1px solid var(--border); cursor:pointer; text-transform:uppercase; transition:all 0.15s;
+    min-width:80px; }
+  .tc-btn:hover { color:var(--pitch); border-color:var(--pitch); background:rgba(255,51,102,0.08); }
+  .tc-btn.primary { background:var(--pitch); color:#fff; border-color:var(--pitch); font-weight:700;
+    box-shadow:0 0 12px rgba(255,51,102,0.4); }
+  .tc-btn.primary:hover { background:#ff5a8f; border-color:#ff5a8f; }
+  .tc-btn.end { color:var(--dim); border-color:rgba(26,37,64,0.5); }
+  .tc-btn.end:hover { color:var(--text); }
+  .tc-chapter { font-family:'Share Tech Mono',monospace; font-size:11px;
+    color:var(--dim); letter-spacing:2px; padding:10px 14px; border-left:1px solid var(--border);
+    border-right:1px solid var(--border); margin:0 4px; min-width:120px; text-align:center; }
+  .tc-chapter b { color:var(--pitch); font-size:14px; }
+
+  /* ====== METRICS HUD (bottom right) ====== */
+  .metrics-hud { position:fixed; bottom:16px; right:18px; z-index:13;
+    display:flex; gap:8px; background:rgba(8,15,30,0.92); backdrop-filter:blur(10px);
+    border:1px solid var(--border); border-radius:6px; padding:10px 12px; }
+  .mh-card { padding:8px 14px; border-left:3px solid; text-align:center; min-width:92px; }
+  .mh-card.power { border-color:var(--money); }
+  .mh-card.water { border-color:var(--sea); }
+  .mh-card.co2   { border-color:var(--zoro); }
+  .mh-card.money { border-color:var(--pitch); }
+  .mh-lbl { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--dim); letter-spacing:1.5px; text-transform:uppercase; }
+  .mh-val { font-family:'Cinzel',serif; font-size:17px; font-weight:800; margin-top:3px; letter-spacing:0.5px; }
+
+  /* ====== FREE-EXPLORE CAMERA BAR (shown after tour) ====== */
+  .cam-bar { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:12;
+    display:none; gap:6px; background:rgba(8,15,30,0.9); backdrop-filter:blur(8px);
     border:1px solid var(--border); border-radius:6px; padding:6px; }
+  .cam-bar.visible { display:flex; }
   .cam-btn { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px;
-    padding:8px 14px; border-radius:3px; background:transparent; color:var(--dim);
+    padding:9px 14px; border-radius:3px; background:transparent; color:var(--dim);
     border:1px solid var(--border); cursor:pointer; text-transform:uppercase; transition:all 0.2s; }
   .cam-btn:hover { color:var(--pitch); border-color:var(--pitch); }
   .cam-btn.active { color:var(--text); background:var(--pitch); border-color:var(--pitch); }
+  .cam-btn.restart-tour { background:rgba(255,51,102,0.15); color:var(--pitch); border-color:var(--pitch); }
+  .cam-btn.restart-tour:hover { background:var(--pitch); color:#fff; }
 
-  .legend { position:fixed; bottom:14px; left:14px; z-index:10;
-    background:rgba(8,15,30,0.9); backdrop-filter:blur(8px);
+  /* ====== COMPONENT INFO PANEL (shown in free-explore) ====== */
+  #info-panel { position:fixed; right:18px; top:72px; width:300px; z-index:12;
+    background:rgba(8,15,30,0.92); backdrop-filter:blur(8px);
     border:1px solid var(--border); border-radius:4px;
-    padding:10px 14px; font-family:'Share Tech Mono',monospace; font-size:9px; }
-  .legend-title { font-family:'Cinzel',serif; font-size:9px; color:var(--dim); letter-spacing:2px; margin-bottom:6px; }
-  .legend-row { display:flex; align-items:center; gap:8px; padding:2px 0; color:var(--text); }
-  .legend-dot { width:10px; height:10px; border-radius:2px; }
+    padding:16px; max-height:calc(100vh - 200px); overflow-y:auto;
+    display:none; }
+  #info-panel.visible { display:block; }
+  #info-panel h3 { font-family:'Cinzel',serif; font-size:15px; font-weight:900;
+    color:var(--pitch); letter-spacing:1.5px; margin-bottom:8px;
+    padding-bottom:8px; border-bottom:1px solid var(--border); }
+  .ip-row { display:flex; justify-content:space-between; padding:4px 0;
+    font-family:'Share Tech Mono',monospace; font-size:11px;
+    border-bottom:1px solid rgba(26,37,64,0.4); }
+  .ip-row .k { color:var(--dim); } .ip-row .v { color:var(--text); font-weight:600; }
+  .ip-desc { font-family:'Rajdhani',sans-serif; font-size:13px; color:var(--text);
+    line-height:1.55; margin-top:10px; padding:8px 10px; background:var(--bg); border-left:2px solid var(--sora); }
+  .ip-source { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--dim);
+    line-height:1.5; margin-top:10px; font-style:italic; }
 
-  .metrics-hud { position:fixed; bottom:14px; right:14px; z-index:10;
-    display:flex; gap:6px; background:rgba(8,15,30,0.9); backdrop-filter:blur(8px);
-    border:1px solid var(--border); border-radius:4px; padding:8px; }
-  .mh-card { padding:6px 10px; border-left:2px solid; text-align:center; min-width:70px; }
-  .mh-card.power { border-color:var(--money); }
-  .mh-card.water { border-color:var(--sea); }
-  .mh-card.esg { border-color:var(--zoro); }
-  .mh-card.money { border-color:var(--pitch); }
-  .mh-lbl { font-family:'Share Tech Mono',monospace; font-size:7px; color:var(--dim); letter-spacing:1px; }
-  .mh-val { font-family:'Cinzel',serif; font-size:13px; font-weight:700; margin-top:2px; }
+  /* ====== CLOSING DEAL OVERLAY ====== */
+  #deal { position:fixed; inset:0; z-index:40; display:none; overflow-y:auto;
+    background:radial-gradient(ellipse at center, rgba(8,15,30,0.98) 0%, rgba(2,5,14,0.99) 70%);
+    backdrop-filter:blur(8px); padding:60px 40px; }
+  #deal.visible { display:flex; flex-direction:column; align-items:center; }
+  #deal .deal-eyebrow { font-family:'Share Tech Mono',monospace; font-size:14px;
+    color:var(--pitch); letter-spacing:6px; margin-bottom:16px; }
+  #deal h1 { font-family:'Cinzel',serif; font-size:72px; font-weight:900; letter-spacing:6px;
+    background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 30px rgba(255,51,102,0.4)); margin-bottom:12px; }
+  #deal .deal-tag { font-family:'Cinzel',serif; font-size:26px; color:var(--text); font-weight:400;
+    margin-bottom:40px; text-align:center; max-width:900px; line-height:1.3; }
+  #deal .deal-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;
+    max-width:1000px; width:100%; margin-bottom:36px; }
+  #deal .deal-stat { background:rgba(8,15,30,0.8); border:1px solid var(--border);
+    border-radius:6px; padding:26px 22px; text-align:center; position:relative; }
+  #deal .deal-stat::before { content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--pitch); }
+  #deal .deal-stat.money::before { background:var(--money); }
+  #deal .deal-stat.kalina::before { background:var(--kalina); }
+  #deal .deal-stat-lbl { font-family:'Share Tech Mono',monospace; font-size:11px;
+    color:var(--dim); letter-spacing:3px; margin-bottom:10px; text-transform:uppercase; }
+  #deal .deal-stat-val { font-family:'Cinzel',serif; font-size:44px; font-weight:900;
+    color:var(--text); line-height:1; }
+  #deal .deal-stat-sub { font-family:'Rajdhani',sans-serif; font-size:14px; color:var(--dim);
+    margin-top:8px; letter-spacing:0.5px; }
+  #deal h2 { font-family:'Cinzel',serif; font-size:32px; font-weight:900; color:var(--pitch);
+    letter-spacing:2px; margin-bottom:20px; text-align:center; }
+  #deal .deal-opts { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;
+    max-width:1000px; width:100%; margin-bottom:40px; }
+  #deal .deal-opt { background:rgba(8,15,30,0.8); border:1px solid var(--border);
+    border-radius:6px; padding:22px 20px; }
+  #deal .deal-opt-name { font-family:'Cinzel',serif; font-size:16px; font-weight:700;
+    color:var(--money); margin-bottom:8px; letter-spacing:1px; }
+  #deal .deal-opt-val { font-family:'Cinzel',serif; font-size:28px; font-weight:900;
+    color:var(--text); margin-bottom:10px; line-height:1.1; }
+  #deal .deal-opt-desc { font-family:'Rajdhani',sans-serif; font-size:13px; color:var(--dim);
+    line-height:1.5; }
+  #deal .deal-close-body { font-family:'Rajdhani',sans-serif; font-size:17px; color:var(--text);
+    max-width:800px; line-height:1.7; margin-bottom:30px; text-align:center; letter-spacing:0.3px; }
+  #deal .deal-close-body b { color:var(--pitch); }
+  #deal .deal-actions { display:flex; gap:14px; margin-bottom:20px; flex-wrap:wrap; justify-content:center; }
+  #deal .deal-footer { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--dim);
+    letter-spacing:2px; margin-top:12px; }
+  #deal .deal-close-btn { position:fixed; top:80px; right:20px;
+    background:transparent; color:var(--dim); border:1px solid var(--border);
+    padding:8px 14px; border-radius:3px; cursor:pointer;
+    font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; }
+  #deal .deal-close-btn:hover { color:var(--text); border-color:var(--text); }
 
+  /* ====== LOADING ====== */
   #loading { position:fixed; inset:0; z-index:100; display:flex; flex-direction:column;
     align-items:center; justify-content:center; background:#02050e; text-align:center; padding:20px; }
   #loading.hidden { display:none; }
-  #loading h1 { font-family:'Cinzel',serif; font-size:22px; color:var(--pitch);
-    letter-spacing:4px; margin-bottom:14px;
-    background:linear-gradient(90deg, var(--pitch), var(--kalina), var(--money));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-  #loading p { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--dim);
-    letter-spacing:2px; line-height:1.8; max-width:560px; }
-  #loading .spinner { width:40px; height:40px; border:3px solid var(--border);
-    border-top-color:var(--pitch); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px; }
+  #loading h1 { font-family:'Cinzel',serif; font-size:26px; color:var(--pitch); letter-spacing:5px; margin-bottom:14px; }
+  #loading p { font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--dim); letter-spacing:2px; line-height:1.7; max-width:600px; }
+  #loading .spinner { width:44px; height:44px; border:3px solid var(--border);
+    border-top-color:var(--pitch); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:22px; }
   @keyframes spin { to { transform:rotate(360deg); } }
-  #loading .fallback { display:none; margin-top:20px; padding:14px 18px;
+  #loading .fallback { display:none; margin-top:22px; padding:16px 20px;
     background:rgba(255,51,102,0.1); border:1px solid var(--pitch); border-radius:4px;
-    max-width:560px; text-align:left; }
+    max-width:620px; text-align:left; }
   #loading .fallback.visible { display:block; }
-  #loading .fallback h3 { font-family:'Cinzel',serif; color:var(--pitch); margin-bottom:8px; font-size:13px; letter-spacing:2px; }
-  #loading .fallback p { color:var(--text); font-size:10px; letter-spacing:1px; }
-  #loading .fallback code { background:#000; padding:2px 5px; border-radius:2px; color:var(--money); font-size:10px; }
+  #loading .fallback h3 { font-family:'Cinzel',serif; color:var(--pitch); margin-bottom:10px; font-size:15px; letter-spacing:2px; }
+  #loading .fallback p { color:var(--text); font-size:11px; letter-spacing:1px; }
 
-  .cursor-hint { position:fixed; bottom:60px; left:50%; transform:translateX(-50%);
-    font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--dim); letter-spacing:2px;
-    z-index:10; pointer-events:none; }
-
-  ::-webkit-scrollbar { width:3px; height:3px; }
+  ::-webkit-scrollbar { width:5px; height:5px; }
   ::-webkit-scrollbar-track { background:var(--bg); }
   ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--pitch); }
+
+  /* Small screens */
+  @media (max-width: 900px) {
+    #narration { width:calc(100% - 36px); max-height:55vh; }
+    #intro h1 { font-size:40px; }
+    #intro .intro-tag { font-size:20px; }
+    #deal h1 { font-size:44px; }
+    #deal .deal-grid, #deal .deal-opts { grid-template-columns:1fr; }
+    .metrics-hud { bottom:auto; top:60px; right:10px; flex-direction:column; padding:6px; }
+  }
 </style>
 </head>
 <body>
 
+<!-- ====== LOADING SCREEN ====== -->
 <div id="loading">
   <div class="spinner"></div>
   <h1>KINGDOM MERRY PROTOCOL</h1>
-  <p id="loading-msg">LOADING 3D ENGINE FROM CDN...</p>
+  <p id="loading-msg">Loading 3D engine...</p>
   <div class="fallback" id="fallback-msg">
-    <h3>IF THIS PERSISTS</h3>
-    <p>The preview panel blocks external scripts. <b>Open the .html file directly in Chrome / Firefox / Edge</b> by double-clicking it in File Explorer, or host it on any static site (GitHub Pages, Netlify, Vercel drop) to share with an investor. The 3D model will render fully when loaded in a standard browser.</p>
+    <h3>CDN Blocked</h3>
+    <p>The preview panel blocks external scripts. <b>Open this file directly in Chrome / Firefox / Edge</b> (double-click in File Explorer), or visit the live site at <b>vaddix123.github.io/mkp-kingdom-merry</b>.</p>
   </div>
 </div>
 
+<!-- ====== HEADER ====== -->
 <header>
   <div>
-    <div class="hd-title">KINGDOM MERRY PROTOCOL - MKP v6 - 3D INVESTOR MODEL</div>
-    <div class="hd-sub">BEHIND-THE-METER BIOGAS CHP - 100 MW DC - NET WATER-POSITIVE - METHANE-DESTRUCTION</div>
+    <div class="hd-title">KINGDOM MERRY PROTOCOL - HOW IT WORKS</div>
+    <div class="hd-sub">A GUIDED WALKTHROUGH OF A SELF-SUSTAINING 100 MW DATA CENTER</div>
   </div>
   <div class="hd-right">
-    <span><span class="pip green"></span>SYSTEMS ONLINE</span>
+    <span><span class="pip green"></span>LIVE</span>
     <span><span class="pip pitch"></span>24-MO T2P</span>
     <span id="clock" style="color:var(--dim)">T+0:00:00</span>
   </div>
 </header>
 
-<div class="pitch-bar">
-  <div class="pitch-lead">
-    <div class="pitch-lead-hdr">THE PITCH</div>
-    <div class="pitch-lead-big">The only 100 MW data center that ships in 24 months.</div>
-    <div class="pitch-lead-sub">PJM queue: 5-7 yr. CAISO: 6-8 yr. MKP skips the queue via behind-the-meter generation.</div>
+<!-- ====== INTRO OVERLAY ====== -->
+<div id="intro">
+  <div class="intro-eyebrow">INVESTOR WALKTHROUGH</div>
+  <h1>THE DATA CENTER<br>THAT SHIPS IN 24 MONTHS</h1>
+  <div class="intro-tag">A self-sustaining 100 MW facility that skips the 5-8 year grid queue, produces more water than it uses, and destroys methane emissions as a byproduct.</div>
+  <div class="intro-body">
+    This is a <b>guided 8-minute walkthrough</b>. The tour auto-plays. You can <b>pause at any time</b>, <b>jump back a chapter</b> to re-read something, or <b>skip ahead</b>. At the end you'll see the financial structure and the deal on the table.
+    <br><br>
+    Everything you see is based on <b>commercial technology in operation today</b>. Every number has a citable source.
   </div>
-  <div class="pitch-card speed"><div class="pitch-lbl">TIME TO POWER</div><div class="pitch-val" style="color:var(--money)">24 mo</div><div class="pitch-desc">vs 60+ mo grid-dependent</div></div>
-  <div class="pitch-card water"><div class="pitch-lbl">WATER POSITION</div><div class="pitch-val" style="color:var(--sea)">+170K gal/d</div><div class="pitch-desc">bypasses AZ/NV water bans</div></div>
-  <div class="pitch-card esg"><div class="pitch-lbl">CO2e AVOIDED</div><div class="pitch-val" style="color:var(--zoro)">122 kt/yr</div><div class="pitch-desc">methane destruction, GWP-28</div></div>
+  <button class="big-btn" onclick="MKP.startTour()">BEGIN WALKTHROUGH</button>
+  <button class="big-btn secondary" onclick="MKP.skipToExplore()">Skip to free-explore mode</button>
 </div>
 
-<div id="info-panel">
-  <h3 id="ip-title">CLICK ANY MACHINE</h3>
-  <div id="ip-body">
-    <div class="ip-desc">
-      Orbit: <b style="color:var(--pitch)">left drag</b><br>
-      Pan: <b style="color:var(--pitch)">right drag</b><br>
-      Zoom: <b style="color:var(--pitch)">scroll</b><br>
-      Inspect: <b style="color:var(--pitch)">click</b>
-    </div>
-    <div class="ip-source">
-      Real 3D model - OrbitControls - raycasting - lit machinery - steam and flame effects
-    </div>
+<!-- ====== PROGRESS BAR ====== -->
+<div id="progress-bar">
+  <div id="progress-fill"></div>
+  <div id="progress-chapters"></div>
+</div>
+
+<!-- ====== NARRATION PANEL ====== -->
+<div id="narration">
+  <div class="nar-eyebrow" id="nar-eyebrow">CHAPTER 1 OF 11</div>
+  <h2 id="nar-title">...</h2>
+  <div class="nar-body" id="nar-body"></div>
+  <div class="nar-metric" id="nar-metric-box">
+    <div class="nar-metric-lbl">KEY METRIC</div>
+    <div class="nar-metric-val" id="nar-metric-val">...</div>
+  </div>
+  <div class="side-card why" id="nar-why-card">
+    <div class="side-card-lbl">WHY THIS MATTERS</div>
+    <div class="side-card-body" id="nar-why"></div>
+  </div>
+  <div class="side-card ref" id="nar-ref-card">
+    <div class="side-card-lbl">TECHNICAL REFERENCE</div>
+    <div class="side-card-body" id="nar-ref"></div>
   </div>
 </div>
 
-<div class="legend">
-  <div class="legend-title">FLOW LEGEND</div>
-  <div class="legend-row"><div class="legend-dot" style="background:var(--nami)"></div>Cleaned biogas (CH4)</div>
-  <div class="legend-row"><div class="legend-dot" style="background:var(--steam)"></div>Steam / 680C exhaust</div>
-  <div class="legend-row"><div class="legend-dot" style="background:var(--money)"></div>Electrical power</div>
-  <div class="legend-row"><div class="legend-dot" style="background:var(--zoro)"></div>Pure water</div>
-  <div class="legend-row"><div class="legend-dot" style="background:var(--kingdom)"></div>Gray water to wetland</div>
+<!-- ====== TOUR CONTROLS ====== -->
+<div id="tour-controls">
+  <button class="tc-btn" onclick="MKP.tourPrev()">&laquo; BACK</button>
+  <button class="tc-btn primary" id="pause-btn" onclick="MKP.tourTogglePause()">PAUSE</button>
+  <button class="tc-btn" onclick="MKP.tourNext()">NEXT &raquo;</button>
+  <div class="tc-chapter"><b id="tc-chap-num">1</b> / <span id="tc-chap-total">11</span></div>
+  <button class="tc-btn end" onclick="MKP.endTour()">END TOUR</button>
 </div>
 
+<!-- ====== METRICS HUD ====== -->
 <div class="metrics-hud">
-  <div class="mh-card power"><div class="mh-lbl">NET EXPORT</div><div class="mh-val" style="color:var(--money)">+25 MW</div></div>
-  <div class="mh-card water"><div class="mh-lbl">H2O OUT</div><div class="mh-val" style="color:var(--sea)">27K L/hr</div></div>
-  <div class="mh-card esg"><div class="mh-lbl">EBITDA</div><div class="mh-val" style="color:var(--zoro)">$119M</div></div>
-  <div class="mh-card money"><div class="mh-lbl">YOUR FEES</div><div class="mh-val" style="color:var(--pitch)">$220M</div></div>
+  <div class="mh-card power"><div class="mh-lbl">POWER OUT</div><div class="mh-val" style="color:var(--money)" id="m-power">+0 MW</div></div>
+  <div class="mh-card water"><div class="mh-lbl">H2O TODAY</div><div class="mh-val" style="color:var(--sea)" id="m-water">0 gal</div></div>
+  <div class="mh-card co2"><div class="mh-lbl">CO2e DESTROYED</div><div class="mh-val" style="color:var(--zoro)" id="m-co2">0 t</div></div>
+  <div class="mh-card money"><div class="mh-lbl">REVENUE TODAY</div><div class="mh-val" style="color:var(--pitch)" id="m-money">$0</div></div>
 </div>
 
-<div class="cam-bar">
+<!-- ====== FREE-EXPLORE CAMERA BAR ====== -->
+<div class="cam-bar" id="cam-bar">
+  <button class="cam-btn restart-tour" onclick="MKP.restartTour()">&raquo; REPLAY TOUR</button>
   <button class="cam-btn active" onclick="MKP.setView('overview', this)">OVERVIEW</button>
-  <button class="cam-btn" onclick="MKP.setView('power', this)">POWER TRAIN</button>
+  <button class="cam-btn" onclick="MKP.setView('power', this)">POWER</button>
   <button class="cam-btn" onclick="MKP.setView('dc', this)">DC</button>
   <button class="cam-btn" onclick="MKP.setView('water', this)">WATER</button>
   <button class="cam-btn" onclick="MKP.setView('lfg', this)">LFG</button>
-  <button class="cam-btn" onclick="MKP.toggleRotate(this)">AUTO-ROTATE</button>
+  <button class="cam-btn" onclick="MKP.showDeal()">THE DEAL</button>
 </div>
 
-<div class="cursor-hint">LEFT-DRAG ORBIT - RIGHT-DRAG PAN - SCROLL ZOOM - CLICK COMPONENTS</div>
+<!-- ====== INFO PANEL (free-explore) ====== -->
+<div id="info-panel">
+  <h3 id="ip-title">CLICK A MACHINE</h3>
+  <div id="ip-body">
+    <div class="ip-desc">In free-explore mode, click any building to see its full specs and data sources.</div>
+  </div>
+</div>
+
+<!-- ====== CLOSING "THE DEAL" OVERLAY ====== -->
+<div id="deal">
+  <button class="deal-close-btn" onclick="MKP.hideDeal()">CLOSE</button>
+  <div class="deal-eyebrow">THE OFFER ON THE TABLE</div>
+  <h1>THE DEAL</h1>
+  <div class="deal-tag">A fully engineered, site-ready 100 MW data center design ready to deploy on one of 580 qualifying landfills across the United States.</div>
+
+  <div class="deal-grid">
+    <div class="deal-stat">
+      <div class="deal-stat-lbl">TOTAL CAPEX</div>
+      <div class="deal-stat-val">$1.75B</div>
+      <div class="deal-stat-sub">per 100 MW site - fully audited</div>
+    </div>
+    <div class="deal-stat money">
+      <div class="deal-stat-lbl">ANNUAL EBITDA</div>
+      <div class="deal-stat-val" style="color:var(--money)">$119M</div>
+      <div class="deal-stat-sub">58% margin, Path 1 baseline</div>
+    </div>
+    <div class="deal-stat kalina">
+      <div class="deal-stat-lbl">PAYBACK PERIOD</div>
+      <div class="deal-stat-val" style="color:var(--kalina)">15 yr</div>
+      <div class="deal-stat-sub">standalone - institutionally financeable</div>
+    </div>
+  </div>
+
+  <h2>WHAT'S ON OFFER</h2>
+
+  <div class="deal-opts">
+    <div class="deal-opt">
+      <div class="deal-opt-name">TRANSACTION FEE</div>
+      <div class="deal-opt-val">$44M per deal</div>
+      <div class="deal-opt-desc">2.5% of CapEx paid at financial close. Zero post-close exposure. 5 deals = <b style="color:var(--money)">$220M total</b>. Comparable to infra M&A advisory at 1-3%.</div>
+    </div>
+    <div class="deal-opt">
+      <div class="deal-opt-name">ROYALTY STREAM</div>
+      <div class="deal-opt-val">$2.0M/yr per site</div>
+      <div class="deal-opt-desc">1% of gross revenue in perpetuity. 20-year NPV ~$19.6M per site. Lower upfront, higher lifetime. Aligns with IP licensing norms.</div>
+    </div>
+    <div class="deal-opt">
+      <div class="deal-opt-name">EQUITY CARRY</div>
+      <div class="deal-opt-val">5% per deal</div>
+      <div class="deal-opt-desc">Minority equity at sponsor cost. $87M position per site held to flip or recap. Highest upside, requires co-invest or earn-in structure.</div>
+    </div>
+  </div>
+
+  <div class="deal-close-body">
+    Every component in this design has a <b>commercial precedent</b> — fuel cells from Bloom Energy, steam turbines from Mitsubishi, Kalina plants running since 2000 in Iceland. The innovation is not the technology. It is the <b>assembly and siting strategy</b>: co-developing with a stranded-fuel asset to skip the grid queue, deliver water independence, and destroy methane emissions as a byproduct.
+    <br><br>
+    <b>The operator is offering principal IP plus deal origination.</b> The capital partner provides balance sheet and hyperscale tenant relationships.
+  </div>
+
+  <div class="deal-actions">
+    <a href="mailto:contact@your-domain.com?subject=MKP%20v6%20-%20LOI%20Interest" class="big-btn">REQUEST FULL TECHNICAL PACKAGE</a>
+  </div>
+
+  <div class="deal-footer">
+    MKP v6 - KINGDOM MERRY PROTOCOL - AUDITED BUILD - ALL VALUES SOURCED
+  </div>
+</div>
 
 <canvas id="c"></canvas>
 
+<!-- ========================================================= -->
+<!--                        SCRIPT                             -->
+<!-- ========================================================= -->
 <script>
 // CDN loader with fallback chain
 var CDN_URLS = [
@@ -212,8 +434,7 @@ var CDN_URLS = [
    'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js'],
   ['https://unpkg.com/three@0.128.0/build/three.min.js',
    'https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js'],
-  ['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
-   null]
+  ['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', null]
 ];
 var attemptIndex = 0;
 var fallbackTimer = null;
@@ -221,49 +442,33 @@ var fallbackTimer = null;
 function loadScript(url, cb, err) {
   if (!url) { cb(); return; }
   var s = document.createElement('script');
-  s.src = url;
-  s.onload = cb;
-  s.onerror = err;
+  s.src = url; s.onload = cb; s.onerror = err;
   document.head.appendChild(s);
 }
-
 function showFallback() {
   document.getElementById('fallback-msg').classList.add('visible');
   document.getElementById('loading-msg').textContent = 'CDN unreachable in this environment.';
 }
-
 function tryLoad() {
-  if (attemptIndex >= CDN_URLS.length) {
-    showFallback();
-    return;
-  }
+  if (attemptIndex >= CDN_URLS.length) { showFallback(); return; }
   var pair = CDN_URLS[attemptIndex];
-  document.getElementById('loading-msg').textContent = 'LOADING 3D ENGINE (attempt ' + (attemptIndex + 1) + ')...';
+  document.getElementById('loading-msg').textContent = 'Loading 3D engine (attempt ' + (attemptIndex + 1) + ')...';
   loadScript(pair[0],
     function() {
       if (pair[1]) {
         loadScript(pair[1],
           function() { clearTimeout(fallbackTimer); initScene(); },
-          function() { attemptIndex++; tryLoad(); }
-        );
-      } else {
-        clearTimeout(fallbackTimer);
-        initScene();
-      }
+          function() { attemptIndex++; tryLoad(); });
+      } else { clearTimeout(fallbackTimer); initScene(); }
     },
-    function() { attemptIndex++; tryLoad(); }
-  );
+    function() { attemptIndex++; tryLoad(); });
 }
-
 fallbackTimer = setTimeout(showFallback, 8000);
 tryLoad();
 
-// ========== SCENE INIT ==========
+// ============= SCENE INIT ==============
 function initScene() {
-if (typeof THREE === 'undefined') {
-  showFallback();
-  return;
-}
+if (typeof THREE === 'undefined') { showFallback(); return; }
 
 var canvas = document.getElementById('c');
 var scene = new THREE.Scene();
@@ -291,39 +496,31 @@ if (THREE.OrbitControls) {
   controls.maxDistance = 900;
   controls.maxPolarAngle = Math.PI * 0.48;
   controls.autoRotate = true;
-  controls.autoRotateSpeed = 0.4;
+  controls.autoRotateSpeed = 0.3;
   controls.target.set(0, 15, 30);
 }
 
 // LIGHTING
 scene.add(new THREE.AmbientLight(0x3a4a66, 0.55));
-
 var sun = new THREE.DirectionalLight(0xffe8c8, 0.75);
 sun.position.set(200, 300, 150);
 sun.castShadow = true;
-sun.shadow.camera.left = -400;
-sun.shadow.camera.right = 400;
-sun.shadow.camera.top = 400;
-sun.shadow.camera.bottom = -400;
-sun.shadow.camera.near = 10;
-sun.shadow.camera.far = 800;
-sun.shadow.mapSize.width = 2048;
-sun.shadow.mapSize.height = 2048;
+sun.shadow.camera.left = -400; sun.shadow.camera.right = 400;
+sun.shadow.camera.top = 400; sun.shadow.camera.bottom = -400;
+sun.shadow.camera.near = 10; sun.shadow.camera.far = 800;
+sun.shadow.mapSize.width = 2048; sun.shadow.mapSize.height = 2048;
 sun.shadow.bias = -0.0005;
 scene.add(sun);
-
 var rimPink = new THREE.DirectionalLight(0xff3366, 0.3);
-rimPink.position.set(-200, 80, -200);
-scene.add(rimPink);
-
+rimPink.position.set(-200, 80, -200); scene.add(rimPink);
 var rimBlue = new THREE.DirectionalLight(0x4a9eff, 0.25);
-rimBlue.position.set(50, 100, 300);
-scene.add(rimBlue);
+rimBlue.position.set(50, 100, 300); scene.add(rimBlue);
 
 // GROUND
-var groundGeo = new THREE.PlaneGeometry(1000, 1000);
-var groundMat = new THREE.MeshStandardMaterial({ color: 0x080f1e, roughness: 0.95, metalness: 0.1 });
-var ground = new THREE.Mesh(groundGeo, groundMat);
+var ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(1000, 1000),
+  new THREE.MeshStandardMaterial({ color: 0x080f1e, roughness: 0.95, metalness: 0.1 })
+);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 scene.add(ground);
@@ -332,646 +529,416 @@ var grid = new THREE.GridHelper(1000, 50, 0x1a2540, 0x0a1220);
 grid.position.y = 0.1;
 scene.add(grid);
 
-// =============== MACHINERY BUILDERS ===============
+// ==================== MACHINERY BUILDERS ====================
+// Track working parts for animation
+var workingParts = {
+  sofcModules: [],      // array of fuel cell chassis meshes for glow cycle
+  turbineRotor: null,   // rotating turbine rotor
+  hvacFans: [],         // array of fan blade groups for rotation
+  bushingArcs: [],      // arc sprites for substation
+  dcWindows: [],        // emissive window materials for pulsing
+  waterDrops: [],       // water droplet particles at MD
+  flameMesh: null,
+  wetlandMat: null
+};
 
-// Fuel cell module (Bloom Energy style)
-function buildFuelCellModule() {
+function buildFuelCellModule(index) {
   var g = new THREE.Group();
-  // Main chassis
-  var chassis = new THREE.Mesh(
-    new THREE.BoxGeometry(14, 7, 10),
-    new THREE.MeshStandardMaterial({ color: 0xc4a030, roughness: 0.55, metalness: 0.4, emissive: 0x3a2a08, emissiveIntensity: 0.3 })
-  );
-  chassis.position.y = 3.5;
-  chassis.castShadow = true;
-  chassis.receiveShadow = true;
+  var chassisMat = new THREE.MeshStandardMaterial({
+    color: 0xc4a030, roughness: 0.55, metalness: 0.4,
+    emissive: 0x3a2a08, emissiveIntensity: 0.3
+  });
+  var chassis = new THREE.Mesh(new THREE.BoxGeometry(14, 7, 10), chassisMat);
+  chassis.position.y = 3.5; chassis.castShadow = true; chassis.receiveShadow = true;
   g.add(chassis);
+  workingParts.sofcModules.push({ mat: chassisMat, idx: index });
 
-  // Top roof slight overhang
   var roof = new THREE.Mesh(
     new THREE.BoxGeometry(14.8, 0.4, 10.8),
     new THREE.MeshStandardMaterial({ color: 0x5a4a18, metalness: 0.6, roughness: 0.4 })
   );
-  roof.position.y = 7.2;
-  roof.castShadow = true;
-  g.add(roof);
+  roof.position.y = 7.2; roof.castShadow = true; g.add(roof);
 
-  // Ventilation louvers on top
   for (var i = 0; i < 6; i++) {
     var slat = new THREE.Mesh(
       new THREE.BoxGeometry(12, 0.25, 0.8),
       new THREE.MeshStandardMaterial({ color: 0x3a2d10, metalness: 0.7, roughness: 0.3 })
     );
-    slat.position.set(0, 7.55, -3.6 + i * 1.4);
-    g.add(slat);
+    slat.position.set(0, 7.55, -3.6 + i * 1.4); g.add(slat);
   }
 
-  // Exhaust stack
   var stack = new THREE.Mesh(
     new THREE.CylinderGeometry(0.7, 0.7, 4, 16),
     new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.85, roughness: 0.3 })
   );
-  stack.position.set(5, 9.5, 0);
-  stack.castShadow = true;
-  g.add(stack);
-
-  // Stack cap
+  stack.position.set(5, 9.5, 0); stack.castShadow = true; g.add(stack);
   var cap = new THREE.Mesh(
     new THREE.CylinderGeometry(0.9, 0.9, 0.4, 16),
     new THREE.MeshStandardMaterial({ color: 0x8a8a9a, metalness: 0.9, roughness: 0.2 })
   );
-  cap.position.set(5, 11.6, 0);
-  g.add(cap);
+  cap.position.set(5, 11.6, 0); g.add(cap);
 
-  // Access door panel (front face)
   var door = new THREE.Mesh(
     new THREE.BoxGeometry(14.1, 5, 0.2),
     new THREE.MeshStandardMaterial({ color: 0x9a7a20, roughness: 0.4, metalness: 0.3 })
   );
-  door.position.set(0, 3, -5.05);
-  g.add(door);
+  door.position.set(0, 3, -5.05); g.add(door);
 
-  // Door seam (vertical line)
   var seam = new THREE.Mesh(
     new THREE.BoxGeometry(0.08, 4.8, 0.3),
     new THREE.MeshStandardMaterial({ color: 0x2a1c05 })
   );
-  seam.position.set(0, 3, -5.15);
-  g.add(seam);
+  seam.position.set(0, 3, -5.15); g.add(seam);
 
-  // Handles
   for (var h = 0; h < 2; h++) {
     var handle = new THREE.Mesh(
       new THREE.BoxGeometry(1.2, 0.25, 0.35),
       new THREE.MeshStandardMaterial({ color: 0x222228, metalness: 0.8 })
     );
-    handle.position.set(-3 + h * 6, 3.2, -5.25);
-    g.add(handle);
+    handle.position.set(-3 + h * 6, 3.2, -5.25); g.add(handle);
   }
 
-  // Side grille
   var grilleMat = new THREE.MeshStandardMaterial({ color: 0x2a2008, roughness: 0.8 });
   var grilleL = new THREE.Mesh(new THREE.BoxGeometry(0.15, 5, 8), grilleMat);
-  grilleL.position.set(-7.08, 3.5, 0);
-  g.add(grilleL);
-  var grilleR = new THREE.Mesh(new THREE.BoxGeometry(0.15, 5, 8), grilleMat);
-  grilleR.position.set(7.08, 3.5, 0);
-  g.add(grilleR);
+  grilleL.position.set(-7.08, 3.5, 0); g.add(grilleL);
+  var grilleR = grilleL.clone(); grilleR.position.x = 7.08; g.add(grilleR);
 
   return g;
 }
 
-// SOFC array (9 modules)
 function buildSOFC() {
   var g = new THREE.Group();
-  // Concrete pad
   var pad = new THREE.Mesh(
     new THREE.BoxGeometry(80, 1, 60),
     new THREE.MeshStandardMaterial({ color: 0x2a3040, roughness: 0.95 })
   );
-  pad.position.y = 0.5;
-  pad.receiveShadow = true;
-  g.add(pad);
+  pad.position.y = 0.5; pad.receiveShadow = true; g.add(pad);
 
-  // 3x3 array of modules
+  var idx = 0;
   for (var r = 0; r < 3; r++) {
     for (var c = 0; c < 3; c++) {
-      var m = buildFuelCellModule();
+      var m = buildFuelCellModule(idx++);
       m.position.set(-22 + c * 22, 1, -18 + r * 18);
       g.add(m);
     }
   }
 
-  // Central exhaust manifold (big insulated pipe)
   var manifold = new THREE.Mesh(
     new THREE.CylinderGeometry(3, 3, 25, 24),
     new THREE.MeshStandardMaterial({ color: 0x8a8a9a, metalness: 0.85, roughness: 0.25 })
   );
-  manifold.position.set(0, 14, -30);
-  manifold.castShadow = true;
-  g.add(manifold);
+  manifold.position.set(0, 14, -30); manifold.castShadow = true; g.add(manifold);
 
-  // Manifold cap
   var mCap = new THREE.Mesh(
     new THREE.CylinderGeometry(3.3, 3.3, 0.8, 24),
     new THREE.MeshStandardMaterial({ color: 0xaaaaba, metalness: 0.9, roughness: 0.2 })
   );
-  mCap.position.set(0, 26.8, -30);
-  g.add(mCap);
+  mCap.position.set(0, 26.8, -30); g.add(mCap);
 
-  // Hot exhaust glow sphere (emissive)
   var hotBall = new THREE.Mesh(
     new THREE.SphereGeometry(2.5, 16, 16),
     new THREE.MeshBasicMaterial({ color: 0xff8800, transparent: true, opacity: 0.7 })
   );
-  hotBall.position.set(0, 27.5, -30);
-  g.add(hotBall);
-
-  // Manifold point light
+  hotBall.position.set(0, 27.5, -30); g.add(hotBall);
   var hotLight = new THREE.PointLight(0xff6600, 1.5, 100);
-  hotLight.position.set(0, 27, -30);
-  g.add(hotLight);
+  hotLight.position.set(0, 27, -30); g.add(hotLight);
 
-  // Transformer skid (east side)
-  var transfoPad = new THREE.Mesh(
-    new THREE.BoxGeometry(16, 0.6, 14),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  transfoPad.position.set(50, 0.3, 0);
-  transfoPad.receiveShadow = true;
-  g.add(transfoPad);
-
-  var transfoBody = new THREE.Mesh(
-    new THREE.BoxGeometry(12, 7, 10),
-    new THREE.MeshStandardMaterial({ color: 0x2a4a2a, roughness: 0.6, metalness: 0.4 })
-  );
-  transfoBody.position.set(50, 4.1, 0);
-  transfoBody.castShadow = true;
-  g.add(transfoBody);
-
-  // Radiator fins on transformer sides
-  for (var f = 0; f < 8; f++) {
-    var fin = new THREE.Mesh(
-      new THREE.BoxGeometry(0.3, 5, 2.5),
-      new THREE.MeshStandardMaterial({ color: 0x1a3a1a })
-    );
-    fin.position.set(56.2, 4.1, -3.5 + f * 1);
-    g.add(fin);
-    var finL = fin.clone();
-    finL.position.x = 43.8;
-    g.add(finL);
-  }
-
-  // Bushings (3 tall insulators)
-  for (var b = 0; b < 3; b++) {
-    var bushing = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.4, 0.4, 5, 12),
-      new THREE.MeshStandardMaterial({ color: 0xd8d8d8, metalness: 0.3, roughness: 0.6 })
-    );
-    bushing.position.set(46 + b * 4, 10.1, 0);
-    bushing.castShadow = true;
-    g.add(bushing);
-
-    // Insulator discs
-    for (var d = 0; d < 5; d++) {
-      var disc = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.75, 0.75, 0.35, 12),
-        new THREE.MeshStandardMaterial({ color: 0xaaaaaa, roughness: 0.5 })
-      );
-      disc.position.set(46 + b * 4, 8.3 + d * 0.9, 0);
-      g.add(disc);
+  // Transformer skid
+  g.add((function() {
+    var sg = new THREE.Group();
+    var pad2 = new THREE.Mesh(new THREE.BoxGeometry(16, 0.6, 14),
+      new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+    pad2.position.set(50, 0.3, 0); pad2.receiveShadow = true; sg.add(pad2);
+    var body = new THREE.Mesh(new THREE.BoxGeometry(12, 7, 10),
+      new THREE.MeshStandardMaterial({ color: 0x2a4a2a, roughness: 0.6, metalness: 0.4 }));
+    body.position.set(50, 4.1, 0); body.castShadow = true; sg.add(body);
+    for (var f = 0; f < 8; f++) {
+      var fin = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 2.5),
+        new THREE.MeshStandardMaterial({ color: 0x1a3a1a }));
+      fin.position.set(56.2, 4.1, -3.5 + f * 1); sg.add(fin);
+      var finL = fin.clone(); finL.position.x = 43.8; sg.add(finL);
     }
-  }
-
+    for (var b = 0; b < 3; b++) {
+      var bushing = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 5, 12),
+        new THREE.MeshStandardMaterial({ color: 0xd8d8d8, metalness: 0.3, roughness: 0.6 }));
+      bushing.position.set(46 + b * 4, 10.1, 0); bushing.castShadow = true; sg.add(bushing);
+      for (var d = 0; d < 5; d++) {
+        var disc = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.35, 12),
+          new THREE.MeshStandardMaterial({ color: 0xaaaaaa, roughness: 0.5 }));
+        disc.position.set(46 + b * 4, 8.3 + d * 0.9, 0); sg.add(disc);
+      }
+    }
+    return sg;
+  })());
   return g;
 }
 
-// Hyperbolic cooling tower
 function buildCoolingTower() {
   var g = new THREE.Group();
   var points = [];
-  var height = 34;
-  var baseR = 9;
-  var waistR = 5.5;
-  var topR = 6.5;
+  var height = 34, baseR = 9, waistR = 5.5, topR = 6.5;
   for (var i = 0; i <= 24; i++) {
     var t = i / 24;
     var y = t * height;
-    var r;
-    if (t < 0.65) r = baseR - (baseR - waistR) * (t / 0.65);
-    else r = waistR + (topR - waistR) * ((t - 0.65) / 0.35);
+    var r = (t < 0.65) ? baseR - (baseR - waistR) * (t / 0.65) : waistR + (topR - waistR) * ((t - 0.65) / 0.35);
     points.push(new THREE.Vector2(r, y));
   }
   var lathe = new THREE.Mesh(
     new THREE.LatheGeometry(points, 32),
     new THREE.MeshStandardMaterial({ color: 0x8a9aae, roughness: 0.75, metalness: 0.25, side: THREE.DoubleSide })
   );
-  lathe.castShadow = true;
-  lathe.receiveShadow = true;
-  g.add(lathe);
-
-  // Support columns (8 around base)
+  lathe.castShadow = true; lathe.receiveShadow = true; g.add(lathe);
   for (var c = 0; c < 8; c++) {
     var angle = (c / 8) * Math.PI * 2;
-    var col = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.5, 0.5, 4, 8),
-      new THREE.MeshStandardMaterial({ color: 0x556070 })
-    );
+    var col = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 4, 8),
+      new THREE.MeshStandardMaterial({ color: 0x556070 }));
     col.position.set(Math.cos(angle) * (baseR - 0.8), 2, Math.sin(angle) * (baseR - 0.8));
-    col.castShadow = true;
-    g.add(col);
+    col.castShadow = true; g.add(col);
   }
-
-  // Base ring
   var ring = new THREE.Mesh(
     new THREE.TorusGeometry(baseR + 0.3, 0.5, 8, 40),
     new THREE.MeshStandardMaterial({ color: 0x667080 })
   );
-  ring.rotation.x = -Math.PI / 2;
-  ring.position.y = 0.5;
-  g.add(ring);
-
+  ring.rotation.x = -Math.PI / 2; ring.position.y = 0.5; g.add(ring);
   return g;
 }
 
-// Pressure vessel (scrubber tank for gas cleanup)
 function buildScrubberVessel(radius, height, color) {
   var g = new THREE.Group();
-  // Main cylindrical body
   var body = new THREE.Mesh(
     new THREE.CylinderGeometry(radius, radius, height, 24),
     new THREE.MeshStandardMaterial({ color: color, roughness: 0.45, metalness: 0.6 })
   );
-  body.position.y = height / 2;
-  body.castShadow = true;
-  body.receiveShadow = true;
-  g.add(body);
-
-  // Hemispherical top cap
+  body.position.y = height / 2; body.castShadow = true; body.receiveShadow = true; g.add(body);
   var topCap = new THREE.Mesh(
     new THREE.SphereGeometry(radius, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
     new THREE.MeshStandardMaterial({ color: color, roughness: 0.5, metalness: 0.5 })
   );
-  topCap.position.y = height;
-  topCap.castShadow = true;
-  g.add(topCap);
-
-  // Bottom cap
+  topCap.position.y = height; topCap.castShadow = true; g.add(topCap);
   var botCap = new THREE.Mesh(
     new THREE.SphereGeometry(radius, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
     new THREE.MeshStandardMaterial({ color: color, roughness: 0.5, metalness: 0.5 })
   );
-  botCap.rotation.x = Math.PI;
-  botCap.position.y = 0;
-  g.add(botCap);
-
-  // Flanges at top/bottom
+  botCap.rotation.x = Math.PI; botCap.position.y = 0; g.add(botCap);
   var flangeMat = new THREE.MeshStandardMaterial({ color: 0x555560, metalness: 0.8 });
   var flange1 = new THREE.Mesh(new THREE.CylinderGeometry(radius + 0.6, radius + 0.6, 0.8, 24), flangeMat);
-  flange1.position.y = height - 1;
-  g.add(flange1);
-  var flange2 = flange1.clone();
-  flange2.position.y = 1;
-  g.add(flange2);
-
-  // Top nozzle
-  var nozzle = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.8, 0.8, 2, 12),
-    flangeMat
-  );
-  nozzle.position.y = height + radius * 0.6;
-  g.add(nozzle);
-
+  flange1.position.y = height - 1; g.add(flange1);
+  var flange2 = flange1.clone(); flange2.position.y = 1; g.add(flange2);
+  var nozzle = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 2, 12), flangeMat);
+  nozzle.position.y = height + radius * 0.6; g.add(nozzle);
   return g;
 }
 
-// Gas cleanup cluster
 function buildGasCleanup() {
   var g = new THREE.Group();
-  // Pad
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(36, 1, 32),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.5;
-  pad.receiveShadow = true;
-  g.add(pad);
-
-  // Primary scrubber
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(36, 1, 32),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.5; pad.receiveShadow = true; g.add(pad);
   var v1 = buildScrubberVessel(4.5, 16, 0xc94a78);
-  v1.position.set(-10, 1, -6);
-  g.add(v1);
-
-  // Secondary scrubber (smaller)
+  v1.position.set(-10, 1, -6); g.add(v1);
   var v2 = buildScrubberVessel(3.5, 12, 0xa53a65);
-  v2.position.set(5, 1, -3);
-  g.add(v2);
-
-  // Control building
-  var ctrl = new THREE.Mesh(
-    new THREE.BoxGeometry(10, 5, 8),
-    new THREE.MeshStandardMaterial({ color: 0x3a5070, roughness: 0.7 })
-  );
-  ctrl.position.set(12, 3.5, 10);
-  ctrl.castShadow = true;
-  ctrl.receiveShadow = true;
-  g.add(ctrl);
-
-  // Small stack on control building
-  var smStack = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.4, 0.4, 3, 12),
-    new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.8 })
-  );
-  smStack.position.set(14, 7.5, 10);
-  g.add(smStack);
-
-  // Interconnecting piping (visible pipes between vessels)
-  var pipeColor = 0xff4d8d;
-  var pipeMat = new THREE.MeshStandardMaterial({ color: pipeColor, metalness: 0.7, roughness: 0.4, emissive: pipeColor, emissiveIntensity: 0.15 });
-
-  // Pipe from v1 top to v2 top
+  v2.position.set(5, 1, -3); g.add(v2);
+  var ctrl = new THREE.Mesh(new THREE.BoxGeometry(10, 5, 8),
+    new THREE.MeshStandardMaterial({ color: 0x3a5070, roughness: 0.7 }));
+  ctrl.position.set(12, 3.5, 10); ctrl.castShadow = true; ctrl.receiveShadow = true; g.add(ctrl);
+  var smStack = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 3, 12),
+    new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.8 }));
+  smStack.position.set(14, 7.5, 10); g.add(smStack);
+  var pipeMat = new THREE.MeshStandardMaterial({ color: 0xff4d8d, metalness: 0.7, roughness: 0.4, emissive: 0xff4d8d, emissiveIntensity: 0.15 });
   var pipe1 = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 16, 12), pipeMat);
-  pipe1.position.set(-2.5, 17, -4.5);
-  pipe1.rotation.z = Math.PI / 2;
-  pipe1.rotation.y = Math.PI / 10;
-  g.add(pipe1);
-
+  pipe1.position.set(-2.5, 17, -4.5); pipe1.rotation.z = Math.PI / 2; pipe1.rotation.y = Math.PI / 10; g.add(pipe1);
   return g;
 }
 
-// Flare stack with flame
-var flameMesh; // global for animation
 function buildFlareStack() {
   var g = new THREE.Group();
-  // Pad
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(14, 0.8, 14),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.4;
-  pad.receiveShadow = true;
-  g.add(pad);
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(14, 0.8, 14),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.4; pad.receiveShadow = true; g.add(pad);
+  var stack = new THREE.Mesh(new THREE.CylinderGeometry(2, 2.5, 32, 16),
+    new THREE.MeshStandardMaterial({ color: 0x3a3a3a, metalness: 0.7, roughness: 0.4 }));
+  stack.position.y = 16.4; stack.castShadow = true; g.add(stack);
+  var tip = new THREE.Mesh(new THREE.CylinderGeometry(3, 2.2, 3, 16),
+    new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.8 }));
+  tip.position.y = 33.9; g.add(tip);
 
-  // Main stack (tall cylinder)
-  var stack = new THREE.Mesh(
-    new THREE.CylinderGeometry(2, 2.5, 32, 16),
-    new THREE.MeshStandardMaterial({ color: 0x3a3a3a, metalness: 0.7, roughness: 0.4 })
-  );
-  stack.position.y = 16.4;
-  stack.castShadow = true;
-  g.add(stack);
+  var flame = new THREE.Mesh(new THREE.ConeGeometry(3.5, 14, 16, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.85, side: THREE.DoubleSide }));
+  flame.position.y = 42; g.add(flame);
+  var innerFlame = new THREE.Mesh(new THREE.ConeGeometry(1.5, 8, 12, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xffcc33, transparent: true, opacity: 0.9, side: THREE.DoubleSide }));
+  innerFlame.position.y = 40; g.add(innerFlame);
+  flame.userData.inner = innerFlame;
 
-  // Burner tip
-  var tip = new THREE.Mesh(
-    new THREE.CylinderGeometry(3, 2.2, 3, 16),
-    new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.8 })
-  );
-  tip.position.y = 33.9;
-  g.add(tip);
-
-  // Flame (cone shape, emissive, animated)
-  flameMesh = new THREE.Mesh(
-    new THREE.ConeGeometry(3.5, 14, 16, 1, true),
-    new THREE.MeshBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
-  );
-  flameMesh.position.y = 42;
-  g.add(flameMesh);
-
-  // Inner flame (yellow core)
-  var innerFlame = new THREE.Mesh(
-    new THREE.ConeGeometry(1.5, 8, 12, 1, true),
-    new THREE.MeshBasicMaterial({ color: 0xffcc33, transparent: true, opacity: 0.9, side: THREE.DoubleSide })
-  );
-  innerFlame.position.y = 40;
-  g.add(innerFlame);
-  flameMesh.userData.inner = innerFlame;
-
-  // Flame light
   var flameLight = new THREE.PointLight(0xff6600, 3, 120);
-  flameLight.position.y = 42;
-  g.add(flameLight);
-  flameMesh.userData.light = flameLight;
+  flameLight.position.y = 42; g.add(flameLight);
+  flame.userData.light = flameLight;
+  workingParts.flameMesh = flame;
 
-  // Access ladder (zigzag rails on stack)
   var ladderMat = new THREE.MeshStandardMaterial({ color: 0x2a2a30, roughness: 0.8 });
   for (var r = 0; r < 16; r++) {
     var rung = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.15, 0.2), ladderMat);
-    rung.position.set(2.6, 2 + r * 2, 0);
-    g.add(rung);
+    rung.position.set(2.6, 2 + r * 2, 0); g.add(rung);
   }
   var rail1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 32, 6), ladderMat);
-  rail1.position.set(2.6, 16.4, -0.4);
-  g.add(rail1);
-  var rail2 = rail1.clone();
-  rail2.position.z = 0.4;
-  g.add(rail2);
-
+  rail1.position.set(2.6, 16.4, -0.4); g.add(rail1);
+  var rail2 = rail1.clone(); rail2.position.z = 0.4; g.add(rail2);
   return g;
 }
 
-// LFG wellheads cluster
 function buildLFGWellheads() {
   var g = new THREE.Group();
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(32, 1, 32),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.5;
-  pad.receiveShadow = true;
-  g.add(pad);
-
-  // 4 wellheads arranged in square
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(32, 1, 32),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.5; pad.receiveShadow = true; g.add(pad);
   var positions = [[-10, -10], [10, -10], [-10, 10], [10, 10]];
   for (var i = 0; i < 4; i++) {
-    var wx = positions[i][0];
-    var wz = positions[i][1];
-
-    // Wellhead body (short cylinder)
-    var body = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.8, 1.8, 5, 16),
-      new THREE.MeshStandardMaterial({ color: 0xf5c842, roughness: 0.5, metalness: 0.5, emissive: 0x3a2a08, emissiveIntensity: 0.15 })
-    );
-    body.position.set(wx, 3, wz);
-    body.castShadow = true;
-    g.add(body);
-
-    // Top tree (vertical pipe with valves)
-    var tree = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.6, 0.6, 7, 12),
-      new THREE.MeshStandardMaterial({ color: 0x5a5a60, metalness: 0.8 })
-    );
-    tree.position.set(wx, 9, wz);
-    tree.castShadow = true;
-    g.add(tree);
-
-    // Valve handles (horizontal wheels)
-    var valve = new THREE.Mesh(
-      new THREE.TorusGeometry(0.8, 0.15, 6, 16),
-      new THREE.MeshStandardMaterial({ color: 0xaa0000 })
-    );
-    valve.rotation.x = Math.PI / 2;
-    valve.position.set(wx, 7, wz);
-    g.add(valve);
-
-    // Manifold pipe connection
-    var mp = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.5, 0.5, 10, 10),
-      new THREE.MeshStandardMaterial({ color: 0xff9500, metalness: 0.6, roughness: 0.4, emissive: 0x552d00, emissiveIntensity: 0.2 })
-    );
-    mp.position.set(wx / 2, 1.5, wz / 2);
-    mp.rotation.z = Math.PI / 2;
-    mp.rotation.y = Math.atan2(wz, wx);
-    g.add(mp);
+    var wx = positions[i][0], wz = positions[i][1];
+    var body = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.8, 5, 16),
+      new THREE.MeshStandardMaterial({ color: 0xf5c842, roughness: 0.5, metalness: 0.5, emissive: 0x3a2a08, emissiveIntensity: 0.15 }));
+    body.position.set(wx, 3, wz); body.castShadow = true; g.add(body);
+    var tree = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 7, 12),
+      new THREE.MeshStandardMaterial({ color: 0x5a5a60, metalness: 0.8 }));
+    tree.position.set(wx, 9, wz); tree.castShadow = true; g.add(tree);
+    var valve = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.15, 6, 16),
+      new THREE.MeshStandardMaterial({ color: 0xaa0000 }));
+    valve.rotation.x = Math.PI / 2; valve.position.set(wx, 7, wz); g.add(valve);
+    var mp = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 10, 10),
+      new THREE.MeshStandardMaterial({ color: 0xff9500, metalness: 0.6, roughness: 0.4, emissive: 0x552d00, emissiveIntensity: 0.2 }));
+    mp.position.set(wx / 2, 1.5, wz / 2); mp.rotation.z = Math.PI / 2; mp.rotation.y = Math.atan2(wz, wx); g.add(mp);
   }
-
   return g;
 }
 
-// Steam turbine hall
 function buildSteamTurbine() {
   var g = new THREE.Group();
-  // Pad
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(52, 1, 40),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.5;
-  pad.receiveShadow = true;
-  g.add(pad);
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(52, 1, 40),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.5; pad.receiveShadow = true; g.add(pad);
 
-  // Main turbine hall (box with peaked roof)
-  var hall = new THREE.Mesh(
-    new THREE.BoxGeometry(32, 14, 20),
-    new THREE.MeshStandardMaterial({ color: 0xb0b0c8, roughness: 0.6, metalness: 0.3 })
-  );
-  hall.position.set(-6, 8, 0);
-  hall.castShadow = true;
-  hall.receiveShadow = true;
-  g.add(hall);
+  // Semi-transparent hall walls so rotor shows
+  var hallMat = new THREE.MeshStandardMaterial({
+    color: 0xb0b0c8, roughness: 0.6, metalness: 0.3,
+    transparent: true, opacity: 0.75
+  });
+  var hall = new THREE.Mesh(new THREE.BoxGeometry(32, 14, 20), hallMat);
+  hall.position.set(-6, 8, 0); hall.castShadow = true; hall.receiveShadow = true; g.add(hall);
 
-  // Peaked roof (using simple triangular prism via BoxGeometry rotated)
+  // Hall framing (edges)
+  var edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(32, 14, 20));
+  var edges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: 0x5a6080 }));
+  edges.position.set(-6, 8, 0); g.add(edges);
+
+  // Peaked roof
   var roofGeo = new THREE.BufferGeometry();
-  var roofVerts = new Float32Array([
-    -16, 0, -10,  16, 0, -10,  16, 0, 10,  -16, 0, 10,  // bottom
-    -16, 5, 0,  16, 5, 0  // ridge
-  ]);
+  var roofVerts = new Float32Array([-16, 0, -10,  16, 0, -10,  16, 0, 10,  -16, 0, 10,  -16, 5, 0,  16, 5, 0]);
   roofGeo.setAttribute('position', new THREE.BufferAttribute(roofVerts, 3));
-  roofGeo.setIndex([
-    0, 1, 4,  1, 5, 4,  // front slope
-    3, 4, 2,  4, 5, 2,  // back slope
-    0, 4, 3,  // left end
-    1, 2, 5   // right end
-  ]);
+  roofGeo.setIndex([0, 1, 4,  1, 5, 4,  3, 4, 2,  4, 5, 2,  0, 4, 3,  1, 2, 5]);
   roofGeo.computeVertexNormals();
-  var roof = new THREE.Mesh(roofGeo, new THREE.MeshStandardMaterial({ color: 0xd0d0e4, roughness: 0.7, metalness: 0.2 }));
-  roof.position.set(-6, 15, 0);
-  roof.castShadow = true;
-  g.add(roof);
+  var roof = new THREE.Mesh(roofGeo, new THREE.MeshStandardMaterial({ color: 0xd0d0e4, roughness: 0.7 }));
+  roof.position.set(-6, 15, 0); roof.castShadow = true; g.add(roof);
 
-  // Turbine casing visible through side (large horizontal cylinder)
-  var casing = new THREE.Mesh(
-    new THREE.CylinderGeometry(3.5, 3.5, 18, 20),
-    new THREE.MeshStandardMaterial({ color: 0x4a5060, metalness: 0.85, roughness: 0.25 })
+  // TURBINE ROTOR (the working part) - a cylinder with visible blade disks
+  var rotorGroup = new THREE.Group();
+  // Shaft
+  var shaft = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.8, 0.8, 14, 16),
+    new THREE.MeshStandardMaterial({ color: 0x8a9aaf, metalness: 0.95, roughness: 0.1 })
   );
+  shaft.rotation.z = Math.PI / 2; rotorGroup.add(shaft);
+  // Blade disks (5 of them, progressively larger - typical multi-stage turbine)
+  for (var b = 0; b < 5; b++) {
+    var radius = 1.5 + b * 0.5;
+    var diskGroup = new THREE.Group();
+    // Disk hub
+    var hub = new THREE.Mesh(
+      new THREE.CylinderGeometry(radius, radius, 0.6, 20),
+      new THREE.MeshStandardMaterial({ color: 0x5a6070, metalness: 0.9, roughness: 0.2 })
+    );
+    hub.rotation.z = Math.PI / 2; diskGroup.add(hub);
+    // Blades - add angled planes radiating from hub
+    for (var bi = 0; bi < 24; bi++) {
+      var angle = (bi / 24) * Math.PI * 2;
+      var blade = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, radius * 0.9, 0.12),
+        new THREE.MeshStandardMaterial({ color: 0x7a8aa0, metalness: 0.9, roughness: 0.15 })
+      );
+      blade.position.set(0, Math.sin(angle) * radius * 0.7, Math.cos(angle) * radius * 0.7);
+      blade.rotation.x = angle + Math.PI / 2;
+      blade.rotation.z = Math.PI / 12; // angled for airflow visual
+      diskGroup.add(blade);
+    }
+    diskGroup.position.x = -5 + b * 2.5;
+    rotorGroup.add(diskGroup);
+  }
+  rotorGroup.position.set(-8, 6, 4);
+  g.add(rotorGroup);
+  workingParts.turbineRotor = rotorGroup;
+
+  // Turbine casing (partial - wraps rotor but shows it)
+  var casingGeo = new THREE.CylinderGeometry(3.5, 3.5, 16, 20, 1, false, -Math.PI/3, Math.PI*4/3);
+  var casing = new THREE.Mesh(casingGeo, new THREE.MeshStandardMaterial({ color: 0x3a4050, metalness: 0.85, roughness: 0.3, side: THREE.DoubleSide }));
   casing.rotation.z = Math.PI / 2;
-  casing.position.set(-10, 6, 4);
-  casing.castShadow = true;
+  casing.position.set(-8, 6, 4);
   g.add(casing);
 
-  // Turbine end flange
-  var flange = new THREE.Mesh(
-    new THREE.CylinderGeometry(3.8, 3.8, 0.6, 20),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040, metalness: 0.9 })
-  );
-  flange.rotation.z = Math.PI / 2;
-  flange.position.set(-1, 6, 4);
-  g.add(flange);
+  // End flange
+  var flange = new THREE.Mesh(new THREE.CylinderGeometry(3.8, 3.8, 0.6, 20),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040, metalness: 0.9 }));
+  flange.rotation.z = Math.PI / 2; flange.position.set(1, 6, 4); g.add(flange);
 
-  // Generator (smaller cylinder extending east)
-  var gen = new THREE.Mesh(
-    new THREE.CylinderGeometry(2.8, 2.8, 8, 16),
-    new THREE.MeshStandardMaterial({ color: 0x3a4050, metalness: 0.8, roughness: 0.3 })
-  );
-  gen.rotation.z = Math.PI / 2;
-  gen.position.set(4.5, 6, 4);
-  gen.castShadow = true;
-  g.add(gen);
+  // Generator
+  var gen = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 2.8, 8, 16),
+    new THREE.MeshStandardMaterial({ color: 0x3a4050, metalness: 0.8, roughness: 0.3 }));
+  gen.rotation.z = Math.PI / 2; gen.position.set(5.5, 6, 4); gen.castShadow = true; g.add(gen);
 
-  // Cooling tower east
+  // Cooling tower
   var coolTower = buildCoolingTower();
-  coolTower.position.set(16, 1, 14);
-  g.add(coolTower);
+  coolTower.position.set(16, 1, 14); g.add(coolTower);
 
-  // Exhaust stack on west
-  var stack = new THREE.Mesh(
-    new THREE.CylinderGeometry(2, 2.3, 26, 16),
-    new THREE.MeshStandardMaterial({ color: 0x3a3a4a, metalness: 0.7, roughness: 0.4 })
-  );
-  stack.position.set(-22, 13.5, -14);
-  stack.castShadow = true;
-  g.add(stack);
-
-  var stackCap = new THREE.Mesh(
-    new THREE.CylinderGeometry(2.4, 2.4, 1, 16),
-    new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.9 })
-  );
-  stackCap.position.set(-22, 27, -14);
-  g.add(stackCap);
-
-  g.userData.stackTop = new THREE.Vector3(-22, 27.5, -14); // for steam emitter
-  g.userData.coolTowerTop = new THREE.Vector3(16, 36, 14);
+  // Stack
+  var stack = new THREE.Mesh(new THREE.CylinderGeometry(2, 2.3, 26, 16),
+    new THREE.MeshStandardMaterial({ color: 0x3a3a4a, metalness: 0.7, roughness: 0.4 }));
+  stack.position.set(-22, 13.5, -14); stack.castShadow = true; g.add(stack);
+  var stackCap = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, 1, 16),
+    new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.9 }));
+  stackCap.position.set(-22, 27, -14); g.add(stackCap);
 
   return g;
 }
 
-// Kalina skid
 function buildKalina() {
   var g = new THREE.Group();
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(26, 0.8, 22),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.4;
-  pad.receiveShadow = true;
-  g.add(pad);
-
-  // Distillation column
-  var col = new THREE.Mesh(
-    new THREE.CylinderGeometry(2.3, 2.3, 14, 20),
-    new THREE.MeshStandardMaterial({ color: 0xff9500, roughness: 0.4, metalness: 0.6, emissive: 0x552d00, emissiveIntensity: 0.2 })
-  );
-  col.position.set(-6, 7.8, -2);
-  col.castShadow = true;
-  g.add(col);
-
-  // Column top dome
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(26, 0.8, 22),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.4; pad.receiveShadow = true; g.add(pad);
+  var col = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.3, 14, 20),
+    new THREE.MeshStandardMaterial({ color: 0xff9500, roughness: 0.4, metalness: 0.6, emissive: 0x552d00, emissiveIntensity: 0.2 }));
+  col.position.set(-6, 7.8, -2); col.castShadow = true; g.add(col);
   var colTop = new THREE.Mesh(
     new THREE.SphereGeometry(2.3, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
     new THREE.MeshStandardMaterial({ color: 0xffaa33, metalness: 0.6 })
   );
-  colTop.position.set(-6, 14.8, -2);
-  g.add(colTop);
-
-  // Heat exchanger bundle (box with horizontal tubes protruding)
-  var hxBody = new THREE.Mesh(
-    new THREE.BoxGeometry(10, 4, 10),
-    new THREE.MeshStandardMaterial({ color: 0xaa5a00, roughness: 0.5, metalness: 0.5 })
-  );
-  hxBody.position.set(5, 2.8, 0);
-  hxBody.castShadow = true;
-  g.add(hxBody);
-
-  // Horizontal tubes
+  colTop.position.set(-6, 14.8, -2); g.add(colTop);
+  var hxBody = new THREE.Mesh(new THREE.BoxGeometry(10, 4, 10),
+    new THREE.MeshStandardMaterial({ color: 0xaa5a00, roughness: 0.5, metalness: 0.5 }));
+  hxBody.position.set(5, 2.8, 0); hxBody.castShadow = true; g.add(hxBody);
   for (var i = 0; i < 3; i++) {
-    var tube = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.35, 0.35, 12, 10),
-      new THREE.MeshStandardMaterial({ color: 0xe0e0ff, metalness: 0.85, roughness: 0.15 })
-    );
-    tube.rotation.z = Math.PI / 2;
-    tube.position.set(5, 5.2 + i * 0.8, -4);
-    g.add(tube);
+    var tube = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 12, 10),
+      new THREE.MeshStandardMaterial({ color: 0xe0e0ff, metalness: 0.85, roughness: 0.15 }));
+    tube.rotation.z = Math.PI / 2; tube.position.set(5, 5.2 + i * 0.8, -4); g.add(tube);
   }
-
-  // Pump
-  var pump = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.2, 1.2, 3, 12),
-    new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.7 })
-  );
-  pump.position.set(9, 2.3, 6);
-  pump.castShadow = true;
-  g.add(pump);
-
+  var pump = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 3, 12),
+    new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.7 }));
+  pump.position.set(9, 2.3, 6); pump.castShadow = true; g.add(pump);
   return g;
 }
 
-// Lattice transmission tower
 function buildLatticeTower(height) {
   var g = new THREE.Group();
   var mat = new THREE.LineBasicMaterial({ color: 0x8a9aa8 });
   var matT = new THREE.MeshStandardMaterial({ color: 0x8a9aa8, metalness: 0.7, roughness: 0.5 });
   var baseR = 2.5, topR = 0.8;
-
-  // 4 legs (tapered)
   var corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
   for (var i = 0; i < 4; i++) {
     var bx = corners[i][0] * baseR, bz = corners[i][1] * baseR;
@@ -980,14 +947,10 @@ function buildLatticeTower(height) {
     var len = Math.sqrt(dx * dx + dy * dy + dz * dz);
     var leg = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, len, 6), matT);
     leg.position.set((bx + tx) / 2, height / 2, (bz + tz) / 2);
-    // Orient along (dx,dy,dz)
-    var axis = new THREE.Vector3(0, 1, 0);
     var dir = new THREE.Vector3(dx, dy, dz).normalize();
-    leg.quaternion.setFromUnitVectors(axis, dir);
+    leg.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
     g.add(leg);
   }
-
-  // Cross bracing (X patterns on 4 faces at multiple heights)
   function makeLine(p1, p2) {
     var geom = new THREE.BufferGeometry();
     var verts = new Float32Array([p1[0], p1[1], p1[2], p2[0], p2[1], p2[2]]);
@@ -996,410 +959,235 @@ function buildLatticeTower(height) {
   }
   var levels = 5;
   for (var l = 0; l < levels; l++) {
-    var y1 = height * l / levels;
-    var y2 = height * (l + 1) / levels;
+    var y1 = height * l / levels, y2 = height * (l + 1) / levels;
     var f1 = baseR - (baseR - topR) * (l / levels);
     var f2 = baseR - (baseR - topR) * ((l + 1) / levels);
-    // Front face X
     g.add(makeLine([-f1, y1, -f1], [f2, y2, -f2]));
     g.add(makeLine([f1, y1, -f1], [-f2, y2, -f2]));
-    // Back face X
     g.add(makeLine([-f1, y1, f1], [f2, y2, f2]));
     g.add(makeLine([f1, y1, f1], [-f2, y2, f2]));
-    // Left face X
     g.add(makeLine([-f1, y1, -f1], [-f2, y2, f2]));
     g.add(makeLine([-f1, y1, f1], [-f2, y2, -f2]));
-    // Right face X
     g.add(makeLine([f1, y1, -f1], [f2, y2, f2]));
     g.add(makeLine([f1, y1, f1], [f2, y2, -f2]));
   }
-
-  // Horizontal crossarms at top
-  var arm1 = new THREE.Mesh(
-    new THREE.BoxGeometry(9, 0.3, 0.3),
-    matT
-  );
-  arm1.position.set(0, height - 2, 0);
-  g.add(arm1);
-  var arm2 = arm1.clone();
-  arm2.position.y = height - 5;
-  g.add(arm2);
-
-  // Insulator discs hanging from arms
-  for (var a = 0; a < 6; a++) {
-    var x = -3 + a * 1.2;
-    if (a === 1 || a === 4) continue; // Skip some for visual variety
-    var pin = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.15, 0.15, 1, 6),
-      new THREE.MeshStandardMaterial({ color: 0xaaaaaa })
-    );
-    pin.position.set(x, height - 2.5, 0);
-    g.add(pin);
-  }
-
+  var arm1 = new THREE.Mesh(new THREE.BoxGeometry(9, 0.3, 0.3), matT);
+  arm1.position.set(0, height - 2, 0); g.add(arm1);
+  var arm2 = arm1.clone(); arm2.position.y = height - 5; g.add(arm2);
   return g;
 }
 
-// Substation
 function buildSubstation() {
   var g = new THREE.Group();
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(36, 0.6, 30),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.3;
-  pad.receiveShadow = true;
-  g.add(pad);
-
-  // 3 transformer banks
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(36, 0.6, 30),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.3; pad.receiveShadow = true; g.add(pad);
   for (var i = 0; i < 3; i++) {
     var tx = -10 + i * 10;
-    var body = new THREE.Mesh(
-      new THREE.BoxGeometry(7, 6, 8),
-      new THREE.MeshStandardMaterial({ color: 0x2a4a2a, metalness: 0.5, roughness: 0.5 })
-    );
-    body.position.set(tx, 3.6, -5);
-    body.castShadow = true;
-    g.add(body);
-
-    // Radiator fins
+    var body = new THREE.Mesh(new THREE.BoxGeometry(7, 6, 8),
+      new THREE.MeshStandardMaterial({ color: 0x2a4a2a, metalness: 0.5, roughness: 0.5 }));
+    body.position.set(tx, 3.6, -5); body.castShadow = true; g.add(body);
     for (var f = 0; f < 5; f++) {
-      var fin = new THREE.Mesh(
-        new THREE.BoxGeometry(0.25, 4.5, 2),
-        new THREE.MeshStandardMaterial({ color: 0x1a3a1a })
-      );
-      fin.position.set(tx + 3.7, 3.6, -6.5 + f * 0.75);
-      g.add(fin);
-      var finL = fin.clone();
-      finL.position.x = tx - 3.7;
-      g.add(finL);
+      var fin = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.5, 2),
+        new THREE.MeshStandardMaterial({ color: 0x1a3a1a }));
+      fin.position.set(tx + 3.7, 3.6, -6.5 + f * 0.75); g.add(fin);
+      var finL = fin.clone(); finL.position.x = tx - 3.7; g.add(finL);
     }
-
-    // Oil conservator (horizontal cylinder on top)
-    var cons = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.8, 0.8, 5, 12),
-      new THREE.MeshStandardMaterial({ color: 0x5a7a5a, metalness: 0.7 })
-    );
-    cons.rotation.z = Math.PI / 2;
-    cons.position.set(tx, 7.4, -5);
-    g.add(cons);
-
-    // 3 bushings
-    for (var b = 0; b < 3; b++) {
-      var bushing = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.35, 0.35, 4.5, 10),
-        new THREE.MeshStandardMaterial({ color: 0xd8d8d8, roughness: 0.6 })
-      );
-      bushing.position.set(tx - 2 + b * 2, 9, -5);
-      bushing.castShadow = true;
-      g.add(bushing);
-      // Insulator discs
+    var cons = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 5, 12),
+      new THREE.MeshStandardMaterial({ color: 0x5a7a5a, metalness: 0.7 }));
+    cons.rotation.z = Math.PI / 2; cons.position.set(tx, 7.4, -5); g.add(cons);
+    for (var bb = 0; bb < 3; bb++) {
+      var bushing = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 4.5, 10),
+        new THREE.MeshStandardMaterial({ color: 0xd8d8d8, roughness: 0.6 }));
+      bushing.position.set(tx - 2 + bb * 2, 9, -5); bushing.castShadow = true; g.add(bushing);
       for (var d = 0; d < 4; d++) {
-        var disc = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.6, 0.6, 0.3, 10),
-          new THREE.MeshStandardMaterial({ color: 0xaaaaaa })
-        );
-        disc.position.set(tx - 2 + b * 2, 7.5 + d * 0.85, -5);
-        g.add(disc);
+        var disc = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.3, 10),
+          new THREE.MeshStandardMaterial({ color: 0xaaaaaa }));
+        disc.position.set(tx - 2 + bb * 2, 7.5 + d * 0.85, -5); g.add(disc);
       }
+      // Arc sprite at top of each bushing (for animated flashes)
+      var arcSprite = new THREE.Mesh(
+        new THREE.SphereGeometry(0.6, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 })
+      );
+      arcSprite.position.set(tx - 2 + bb * 2, 11.5, -5);
+      g.add(arcSprite);
+      workingParts.bushingArcs.push({ mesh: arcSprite, nextFlash: Math.random() * 3 });
     }
   }
-
-  // Lattice tower at east end
-  var lt = buildLatticeTower(24);
-  lt.position.set(14, 0.6, 8);
-  g.add(lt);
-
+  var lt = buildLatticeTower(24); lt.position.set(14, 0.6, 8); g.add(lt);
   return g;
 }
 
-// Data center warehouse
 function buildDataCenter() {
   var g = new THREE.Group();
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(108, 1, 68),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.5;
-  pad.receiveShadow = true;
-  g.add(pad);
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(108, 1, 68),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.5; pad.receiveShadow = true; g.add(pad);
+  var bldg = new THREE.Mesh(new THREE.BoxGeometry(100, 20, 60),
+    new THREE.MeshStandardMaterial({ color: 0x2a4060, roughness: 0.7, metalness: 0.2 }));
+  bldg.position.y = 11; bldg.castShadow = true; bldg.receiveShadow = true; g.add(bldg);
+  var parapet = new THREE.Mesh(new THREE.BoxGeometry(101, 1.5, 61),
+    new THREE.MeshStandardMaterial({ color: 0x1a2540 }));
+  parapet.position.y = 21.75; g.add(parapet);
 
-  // Main building
-  var bldg = new THREE.Mesh(
-    new THREE.BoxGeometry(100, 20, 60),
-    new THREE.MeshStandardMaterial({ color: 0x2a4060, roughness: 0.7, metalness: 0.2 })
-  );
-  bldg.position.y = 11;
-  bldg.castShadow = true;
-  bldg.receiveShadow = true;
-  g.add(bldg);
-
-  // Roof parapet
-  var parapet = new THREE.Mesh(
-    new THREE.BoxGeometry(101, 1.5, 61),
-    new THREE.MeshStandardMaterial({ color: 0x1a2540 })
-  );
-  parapet.position.y = 21.75;
-  g.add(parapet);
-
-  // Roof HVAC units (3x6 grid)
+  // Roof HVAC with ROTATING fans
   var hvacMat = new THREE.MeshStandardMaterial({ color: 0x3a5070, roughness: 0.6, metalness: 0.3 });
   for (var r = 0; r < 3; r++) {
     for (var c = 0; c < 6; c++) {
-      var hx = -40 + c * 16;
-      var hz = -20 + r * 20;
+      var hx = -40 + c * 16, hz = -20 + r * 20;
       var hvac = new THREE.Mesh(new THREE.BoxGeometry(8, 2, 6), hvacMat);
-      hvac.position.set(hx, 23.5, hz);
-      hvac.castShadow = true;
-      g.add(hvac);
-
-      // Fan grille on top
-      var fan = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.4, 1.4, 0.3, 20),
-        new THREE.MeshStandardMaterial({ color: 0x1a2540, emissive: 0x001122, emissiveIntensity: 0.3 })
-      );
-      fan.position.set(hx, 24.7, hz);
-      g.add(fan);
-
-      // Fan blades (simple cross)
+      hvac.position.set(hx, 23.5, hz); hvac.castShadow = true; g.add(hvac);
+      var fanHousing = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.3, 20),
+        new THREE.MeshStandardMaterial({ color: 0x1a2540, emissive: 0x001122, emissiveIntensity: 0.3 }));
+      fanHousing.position.set(hx, 24.7, hz); g.add(fanHousing);
+      // Fan blade group - rotating
+      var fanBlades = new THREE.Group();
       var bladeMat = new THREE.MeshStandardMaterial({ color: 0x4a6080 });
       var blade1 = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.1, 0.3), bladeMat);
-      blade1.position.set(hx, 24.9, hz);
-      g.add(blade1);
-      var blade2 = blade1.clone();
-      blade2.rotation.y = Math.PI / 2;
-      g.add(blade2);
+      fanBlades.add(blade1);
+      var blade2 = blade1.clone(); blade2.rotation.y = Math.PI / 2; fanBlades.add(blade2);
+      var blade3 = blade1.clone(); blade3.rotation.y = Math.PI / 4; fanBlades.add(blade3);
+      var blade4 = blade1.clone(); blade4.rotation.y = -Math.PI / 4; fanBlades.add(blade4);
+      fanBlades.position.set(hx, 24.9, hz);
+      fanBlades.userData.speed = 0.08 + Math.random() * 0.04;
+      g.add(fanBlades);
+      workingParts.hvacFans.push(fanBlades);
     }
   }
 
-  // Glowing server rack windows on front (south) face
+  // Server rack windows
   var winMat = new THREE.MeshStandardMaterial({
-    color: 0x4a9eff,
-    emissive: 0x4a9eff,
-    emissiveIntensity: 1.2,
-    transparent: true,
-    opacity: 0.85
+    color: 0x4a9eff, emissive: 0x4a9eff, emissiveIntensity: 1.2,
+    transparent: true, opacity: 0.85
   });
+  workingParts.dcWindows.push(winMat);
   for (var wr = 0; wr < 2; wr++) {
     for (var wc = 0; wc < 12; wc++) {
-      var win = new THREE.Mesh(
-        new THREE.PlaneGeometry(5.5, 5),
-        winMat
-      );
-      win.position.set(-44 + wc * 8, 6 + wr * 8, -30.05);
-      g.add(win);
-
-      // Rack detail lines (darker strips)
+      var win = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 5), winMat);
+      win.position.set(-44 + wc * 8, 6 + wr * 8, -30.05); g.add(win);
       for (var k = 1; k < 4; k++) {
         var stripMat = new THREE.MeshBasicMaterial({ color: 0x00c8e8, transparent: true, opacity: 0.8 });
         var strip = new THREE.Mesh(new THREE.PlaneGeometry(5, 0.12), stripMat);
-        strip.position.set(-44 + wc * 8, 4 + wr * 8 + k * 1.5, -30.1);
-        g.add(strip);
+        strip.position.set(-44 + wc * 8, 4 + wr * 8 + k * 1.5, -30.1); g.add(strip);
       }
     }
   }
-
-  // Loading dock doors (east face)
   var doorMat = new THREE.MeshStandardMaterial({ color: 0x1a2540, roughness: 0.8 });
-  for (var d = 0; d < 3; d++) {
+  for (var dd = 0; dd < 3; dd++) {
     var door = new THREE.Mesh(new THREE.PlaneGeometry(8, 10), doorMat);
-    door.position.set(50.05, 6, -20 + d * 14);
-    door.rotation.y = -Math.PI / 2;
-    g.add(door);
+    door.position.set(50.05, 6, -20 + dd * 14); door.rotation.y = -Math.PI / 2; g.add(door);
   }
-
-  // MKP logo strip (pink glow on front)
-  var logoMat = new THREE.MeshBasicMaterial({ color: 0xff3366, transparent: true, opacity: 0.95 });
-  var logo = new THREE.Mesh(new THREE.PlaneGeometry(80, 0.8), logoMat);
-  logo.position.set(0, 18.5, -30.05);
-  g.add(logo);
-
-  // Ambient point light inside/near DC (blue glow)
+  var logo = new THREE.Mesh(new THREE.PlaneGeometry(80, 0.8),
+    new THREE.MeshBasicMaterial({ color: 0xff3366, transparent: true, opacity: 0.95 }));
+  logo.position.set(0, 18.5, -30.05); g.add(logo);
   var dcLight = new THREE.PointLight(0x4a9eff, 1.5, 120);
-  dcLight.position.set(0, 12, -30);
-  g.add(dcLight);
-
+  dcLight.position.set(0, 12, -30); g.add(dcLight);
   return g;
 }
 
-// MD + condenser
 function buildMDPlant() {
   var g = new THREE.Group();
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(38, 1, 30),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.5;
-  pad.receiveShadow = true;
-  g.add(pad);
-
-  // Membrane rack housing
-  var rack = new THREE.Mesh(
-    new THREE.BoxGeometry(14, 3, 18),
-    new THREE.MeshStandardMaterial({ color: 0x00a8c8, metalness: 0.4, roughness: 0.5 })
-  );
-  rack.position.set(-10, 2.5, 0);
-  rack.castShadow = true;
-  g.add(rack);
-
-  // Stacked membrane modules (glowing cyan plates)
-  var memMat = new THREE.MeshStandardMaterial({
-    color: 0x00c8e8, emissive: 0x00c8e8, emissiveIntensity: 0.4,
-    transparent: true, opacity: 0.85
-  });
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(38, 1, 30),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.5; pad.receiveShadow = true; g.add(pad);
+  var rack = new THREE.Mesh(new THREE.BoxGeometry(14, 3, 18),
+    new THREE.MeshStandardMaterial({ color: 0x00a8c8, metalness: 0.4, roughness: 0.5 }));
+  rack.position.set(-10, 2.5, 0); rack.castShadow = true; g.add(rack);
+  var memMat = new THREE.MeshStandardMaterial({ color: 0x00c8e8, emissive: 0x00c8e8, emissiveIntensity: 0.4, transparent: true, opacity: 0.85 });
   for (var s = 0; s < 4; s++) {
     var mod = new THREE.Mesh(new THREE.BoxGeometry(12, 0.35, 16), memMat);
-    mod.position.set(-10, 4 + s * 1.2, 0);
-    g.add(mod);
+    mod.position.set(-10, 4 + s * 1.2, 0); g.add(mod);
   }
-
-  // Condenser tank (domed cylinder)
-  var cond = new THREE.Mesh(
-    new THREE.CylinderGeometry(4.5, 4.5, 10, 20),
-    new THREE.MeshStandardMaterial({ color: 0x00c8e8, metalness: 0.7, roughness: 0.3 })
-  );
-  cond.position.set(8, 5.5, -4);
-  cond.castShadow = true;
-  g.add(cond);
-
+  var cond = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 4.5, 10, 20),
+    new THREE.MeshStandardMaterial({ color: 0x00c8e8, metalness: 0.7, roughness: 0.3 }));
+  cond.position.set(8, 5.5, -4); cond.castShadow = true; g.add(cond);
   var condDome = new THREE.Mesh(
     new THREE.SphereGeometry(4.5, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2),
     new THREE.MeshStandardMaterial({ color: 0x0099b8, metalness: 0.7 })
   );
-  condDome.position.set(8, 10.5, -4);
-  g.add(condDome);
-
-  // Feed pumps
+  condDome.position.set(8, 10.5, -4); g.add(condDome);
   for (var p = 0; p < 2; p++) {
-    var pump = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.3, 1.3, 3, 12),
-      new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.7 })
-    );
-    pump.position.set(10 + p * 4, 2.3, 8);
-    pump.castShadow = true;
-    g.add(pump);
-    // Motor on top
-    var motor = new THREE.Mesh(
-      new THREE.BoxGeometry(1.8, 1.2, 2),
-      new THREE.MeshStandardMaterial({ color: 0x2a4a2a })
-    );
-    motor.position.set(10 + p * 4, 4.4, 8);
-    g.add(motor);
+    var pump = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 3, 12),
+      new THREE.MeshStandardMaterial({ color: 0x5a5a6a, metalness: 0.7 }));
+    pump.position.set(10 + p * 4, 2.3, 8); pump.castShadow = true; g.add(pump);
+    var motor = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.2, 2),
+      new THREE.MeshStandardMaterial({ color: 0x2a4a2a }));
+    motor.position.set(10 + p * 4, 4.4, 8); g.add(motor);
   }
-
+  // Water drop particles (falling from condenser nozzle)
+  for (var dr = 0; dr < 8; dr++) {
+    var drop = new THREE.Mesh(
+      new THREE.SphereGeometry(0.35, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0x66ddff, transparent: true, opacity: 0.85 })
+    );
+    drop.position.set(8 + (Math.random() - 0.5) * 2, 4 - Math.random() * 2, -4);
+    drop.userData = { basePos: new THREE.Vector3(8, 10.5, -4), life: Math.random() };
+    g.add(drop);
+    workingParts.waterDrops.push(drop);
+  }
   return g;
 }
 
-// Water tank (domed storage)
 function buildWaterTank() {
   var g = new THREE.Group();
-  // Cylindrical body
-  var body = new THREE.Mesh(
-    new THREE.CylinderGeometry(7.5, 7.5, 16, 24),
-    new THREE.MeshStandardMaterial({ color: 0x2a7a8a, metalness: 0.5, roughness: 0.45 })
-  );
-  body.position.y = 8;
-  body.castShadow = true;
-  body.receiveShadow = true;
-  g.add(body);
-
-  // Dome top
+  var body = new THREE.Mesh(new THREE.CylinderGeometry(7.5, 7.5, 16, 24),
+    new THREE.MeshStandardMaterial({ color: 0x2a7a8a, metalness: 0.5, roughness: 0.45 }));
+  body.position.y = 8; body.castShadow = true; body.receiveShadow = true; g.add(body);
   var dome = new THREE.Mesh(
     new THREE.SphereGeometry(7.5, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
     new THREE.MeshStandardMaterial({ color: 0x1a6070, metalness: 0.5 })
   );
-  dome.position.y = 16;
-  g.add(dome);
-
-  // Top vent/access hatch
-  var hatch = new THREE.Mesh(
-    new THREE.CylinderGeometry(1, 1, 0.5, 12),
-    new THREE.MeshStandardMaterial({ color: 0x3a3a3a })
-  );
-  hatch.position.y = 22;
-  g.add(hatch);
-
-  // External ladder
+  dome.position.y = 16; g.add(dome);
+  var hatch = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.5, 12),
+    new THREE.MeshStandardMaterial({ color: 0x3a3a3a }));
+  hatch.position.y = 22; g.add(hatch);
   var ladderMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1e });
   var rail1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 15, 6), ladderMat);
-  rail1.position.set(-7.55, 7.5, -0.5);
-  g.add(rail1);
-  var rail2 = rail1.clone();
-  rail2.position.z = 0.5;
-  g.add(rail2);
+  rail1.position.set(-7.55, 7.5, -0.5); g.add(rail1);
+  var rail2 = rail1.clone(); rail2.position.z = 0.5; g.add(rail2);
   for (var r = 0; r < 8; r++) {
     var rung = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.08, 1.2), ladderMat);
-    rung.position.set(-7.55, 1 + r * 2, 0);
-    g.add(rung);
+    rung.position.set(-7.55, 1 + r * 2, 0); g.add(rung);
   }
-
-  // Base ring
   var ring = new THREE.Mesh(
     new THREE.TorusGeometry(7.6, 0.3, 6, 32),
     new THREE.MeshStandardMaterial({ color: 0x3a3a4a })
   );
-  ring.rotation.x = -Math.PI / 2;
-  ring.position.y = 0.3;
-  g.add(ring);
-
+  ring.rotation.x = -Math.PI / 2; ring.position.y = 0.3; g.add(ring);
   return g;
 }
 
-// Water tank farm (3 tanks)
 function buildWaterTanks() {
   var g = new THREE.Group();
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(52, 0.5, 22),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.25;
-  pad.receiveShadow = true;
-  g.add(pad);
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(52, 0.5, 22),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.25; pad.receiveShadow = true; g.add(pad);
   for (var i = 0; i < 3; i++) {
-    var t = buildWaterTank();
-    t.position.set(-18 + i * 18, 0.5, 0);
-    g.add(t);
+    var t = buildWaterTank(); t.position.set(-18 + i * 18, 0.5, 0); g.add(t);
   }
   return g;
 }
 
-// Constructed wetland
 function buildWetland() {
   var g = new THREE.Group();
-
-  // Water surface (animated emissive)
-  var waterGeo = new THREE.BoxGeometry(100, 1, 60);
   var waterMat = new THREE.MeshStandardMaterial({
-    color: 0x1a5a6a,
-    emissive: 0x00c8e8,
-    emissiveIntensity: 0.25,
-    metalness: 0.9,
-    roughness: 0.15,
-    transparent: true,
-    opacity: 0.85
+    color: 0x1a5a6a, emissive: 0x00c8e8, emissiveIntensity: 0.25,
+    metalness: 0.9, roughness: 0.15, transparent: true, opacity: 0.85
   });
-  var water = new THREE.Mesh(waterGeo, waterMat);
-  water.position.y = 0.5;
-  water.receiveShadow = true;
-  g.add(water);
-  g.userData.waterMat = waterMat;
-
-  // Edging (concrete border)
+  var water = new THREE.Mesh(new THREE.BoxGeometry(100, 1, 60), waterMat);
+  water.position.y = 0.5; water.receiveShadow = true; g.add(water);
+  workingParts.wetlandMat = waterMat;
   var edgeMat = new THREE.MeshStandardMaterial({ color: 0x3a4050, roughness: 0.9 });
   var edges = [
-    { w: 102, d: 2, x: 0, z: -31 },
-    { w: 102, d: 2, x: 0, z: 31 },
-    { w: 2, d: 60, x: -51, z: 0 },
-    { w: 2, d: 60, x: 51, z: 0 }
+    { w: 102, d: 2, x: 0, z: -31 }, { w: 102, d: 2, x: 0, z: 31 },
+    { w: 2, d: 60, x: -51, z: 0 }, { w: 2, d: 60, x: 51, z: 0 }
   ];
   for (var i = 0; i < edges.length; i++) {
     var e = edges[i];
     var edge = new THREE.Mesh(new THREE.BoxGeometry(e.w, 1.5, e.d), edgeMat);
-    edge.position.set(e.x, 0.75, e.z);
-    g.add(edge);
+    edge.position.set(e.x, 0.75, e.z); g.add(edge);
   }
-
-  // Reed clusters (cones of thin cylinders)
   var reedMat = new THREE.MeshStandardMaterial({ color: 0x39aa14, roughness: 0.8 });
   var reedMatDark = new THREE.MeshStandardMaterial({ color: 0x2d7a10, roughness: 0.8 });
   for (var cx = -45; cx <= 45; cx += 12) {
@@ -1412,11 +1200,7 @@ function buildWetland() {
           new THREE.CylinderGeometry(0.05, 0.08, 3 + Math.random() * 2, 5),
           Math.random() < 0.5 ? reedMat : reedMatDark
         );
-        reed.position.set(
-          (Math.random() - 0.5) * 2.2,
-          1.5 + Math.random() * 0.5,
-          (Math.random() - 0.5) * 2.2
-        );
+        reed.position.set((Math.random() - 0.5) * 2.2, 1.5 + Math.random() * 0.5, (Math.random() - 0.5) * 2.2);
         reed.rotation.z = (Math.random() - 0.5) * 0.3;
         cluster.add(reed);
       }
@@ -1424,382 +1208,227 @@ function buildWetland() {
       g.add(cluster);
     }
   }
-
-  // Weir baffles (zigzag)
   for (var b = 0; b < 3; b++) {
-    var baffle = new THREE.Mesh(
-      new THREE.BoxGeometry(8, 2.5, 2),
-      new THREE.MeshStandardMaterial({ color: 0x4a5060 })
-    );
+    var baffle = new THREE.Mesh(new THREE.BoxGeometry(8, 2.5, 2),
+      new THREE.MeshStandardMaterial({ color: 0x4a5060 }));
     baffle.position.set(-30 + b * 30, 1.25, b % 2 === 0 ? 6 : -6);
-    baffle.castShadow = true;
-    g.add(baffle);
+    baffle.castShadow = true; g.add(baffle);
   }
-
   return g;
 }
 
-// Export tie
 function buildExportTie() {
   var g = new THREE.Group();
-  var pad = new THREE.Mesh(
-    new THREE.BoxGeometry(28, 0.5, 28),
-    new THREE.MeshStandardMaterial({ color: 0x2a3040 })
-  );
-  pad.position.y = 0.25;
-  pad.receiveShadow = true;
-  g.add(pad);
-
-  // 3 smaller transformers
+  var pad = new THREE.Mesh(new THREE.BoxGeometry(28, 0.5, 28),
+    new THREE.MeshStandardMaterial({ color: 0x2a3040 }));
+  pad.position.y = 0.25; pad.receiveShadow = true; g.add(pad);
   for (var i = 0; i < 3; i++) {
     var tx = -6 + i * 6;
-    var body = new THREE.Mesh(
-      new THREE.BoxGeometry(4, 5, 5),
-      new THREE.MeshStandardMaterial({ color: 0x2a4a2a, metalness: 0.5 })
-    );
-    body.position.set(tx, 3, -5);
-    body.castShadow = true;
-    g.add(body);
-    var bush = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.25, 0.25, 3, 8),
-      new THREE.MeshStandardMaterial({ color: 0xaaaaaa })
-    );
-    bush.position.set(tx, 7, -5);
-    g.add(bush);
+    var body = new THREE.Mesh(new THREE.BoxGeometry(4, 5, 5),
+      new THREE.MeshStandardMaterial({ color: 0x2a4a2a, metalness: 0.5 }));
+    body.position.set(tx, 3, -5); body.castShadow = true; g.add(body);
+    var bush = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 3, 8),
+      new THREE.MeshStandardMaterial({ color: 0xaaaaaa }));
+    bush.position.set(tx, 7, -5); g.add(bush);
   }
-
-  // Lattice tower
-  var lt = buildLatticeTower(28);
-  lt.position.set(8, 0.5, 6);
-  g.add(lt);
-
+  var lt = buildLatticeTower(28); lt.position.set(8, 0.5, 6); g.add(lt);
   return g;
 }
 
-// =============== SCENE ASSEMBLY ===============
+// ============ SCENE ASSEMBLY ============
 var machines = [];
-
 function addMachine(id, title, subtitle, color, data, obj, pos) {
   obj.position.set(pos.x, 0, pos.z);
   obj.userData = { id: id, title: title, subtitle: subtitle, color: color, data: data };
-  // Mark all children for raycast
-  obj.traverse(function(child) {
-    if (child.isMesh) {
-      child.userData.parent = obj;
-    }
-  });
   machines.push(obj);
   scene.add(obj);
   return obj;
 }
 
 addMachine('lfg', 'LFG SOURCE', 'STRANDED LANDFILL GAS', 0xff9500,
-  {
-    'Source': 'Adjacent municipal landfill',
-    'Flow': '5,000 scfm - 50% CH4',
-    'Cost': '$2/MMBtu (EPA LMOP 2025)',
-    'Contract': '20-yr offtake',
+  { 'Source': 'Adjacent municipal landfill', 'Flow': '5,000 scfm - 50% CH4',
+    'Cost': '$2/MMBtu (EPA LMOP 2025)', 'Contract': '20-yr offtake',
     'Annual': '5.44M MMBtu',
     desc: 'Stranded biogas currently flared. MKP co-develops with landfill operator. Fuel cost 90% below commercial biogas market.',
-    source: 'EPA LMOP 2025 inventory - 580 US LFG sites'
-  },
+    source: 'EPA LMOP 2025 inventory - 580 US LFG sites' },
   (function() {
     var combined = new THREE.Group();
-    var flare = buildFlareStack();
-    flare.position.set(0, 0, -30);
-    combined.add(flare);
-    var wells = buildLFGWellheads();
-    wells.position.set(0, 0, 5);
-    combined.add(wells);
+    var flare = buildFlareStack(); flare.position.set(0, 0, -30); combined.add(flare);
+    var wells = buildLFGWellheads(); wells.position.set(0, 0, 5); combined.add(wells);
     return combined;
   })(),
-  { x: -280, z: -40 }
-);
+  { x: -280, z: -40 });
 
 addMachine('cleanup', 'GAS CLEANUP', 'H2S + SILOXANE < 0.5 PPM', 0xff4d8d,
-  {
-    'Function': 'Biogas to fuel-cell grade',
-    'H2S spec': '<1 ppm out',
-    'Siloxane': '<0.1 ppmv out',
-    'CapEx': '$30M',
-    'OpEx': '$2M/yr consumables',
+  { 'Function': 'Biogas to fuel-cell grade', 'H2S spec': '<1 ppm out',
+    'Siloxane': '<0.1 ppmv out', 'CapEx': '$30M', 'OpEx': '$2M/yr consumables',
     desc: 'Removes sulfur compounds and siloxanes that poison SOFC stacks. Iron sponge + activated carbon + chilled condensation.',
-    source: 'Guild Associates UPC - SCS Engineers 2024'
-  },
-  buildGasCleanup(),
-  { x: -190, z: -40 }
-);
+    source: 'Guild Associates UPC - SCS Engineers 2024' },
+  buildGasCleanup(), { x: -190, z: -40 });
 
 addMachine('sofc', 'SOFC CHP', '100 MWe - 55% LHV', 0xf5c842,
-  {
-    'Nameplate': '100 MWe',
-    'Efficiency': '55% LHV on biogas',
-    'Fuel rate': '13,100 kg CH4/hr',
-    'Exhaust temp': '800C pre-manifold',
-    'Water exhaust': '29,400 L/hr',
-    'CapEx': '$250M at $2,500/kWe',
-    desc: 'Primary generation. Solid oxide fuel cell array (Bloom ES-5710 class). Produces electricity, high-grade heat, and clean water as stoichiometric byproduct.',
-    source: 'Bloom Energy 10-K 2024 - Mitsubishi MEGAMIE commercial 2022'
-  },
-  buildSOFC(),
-  { x: -60, z: -50 }
-);
+  { 'Nameplate': '100 MWe', 'Efficiency': '55% LHV on biogas',
+    'Fuel rate': '13,100 kg CH4/hr', 'Exhaust temp': '800C pre-manifold',
+    'Water exhaust': '29,400 L/hr', 'CapEx': '$250M at $2,500/kWe',
+    desc: 'Primary generation. Solid oxide fuel cell array (Bloom ES-5710 class).',
+    source: 'Bloom Energy 10-K 2024 - Mitsubishi MEGAMIE commercial 2022' },
+  buildSOFC(), { x: -60, z: -50 });
 
-var stObj = buildSteamTurbine();
 addMachine('steam', 'STEAM TURBINE', '680C BOTTOMING - 24.6 MWe', 0xe0e0ff,
-  {
-    'Inlet temp': '680C (post-manifold)',
-    'Outlet temp': '150C',
-    'Carnot': '55.6%',
-    'Real eff': '30% (55% of Carnot)',
-    'Output': '24.6 MWe',
-    'CapEx': '$40M',
-    desc: 'Bottoming Rankine cycle on SOFC exhaust. Corrects v5 error - SOFC waste is 82 MWth, not 45 MWth.',
-    source: 'GE industrial ST curves - Mitsubishi CHP reference docs'
-  },
-  stObj,
-  { x: 50, z: -70 }
-);
+  { 'Inlet temp': '680C (post-manifold)', 'Outlet temp': '150C',
+    'Carnot': '55.6%', 'Real eff': '30% (55% of Carnot)',
+    'Output': '24.6 MWe', 'CapEx': '$40M',
+    desc: 'Bottoming Rankine cycle on SOFC exhaust.',
+    source: 'GE industrial ST curves - Mitsubishi CHP reference docs' },
+  buildSteamTurbine(), { x: 50, z: -70 });
 
 addMachine('kalina', 'KALINA', 'ST CONDENSATE - +4.5 MWe', 0xff9500,
-  {
-    'Heat source': 'ST condenser - 180C',
-    'Working fluid': 'NH3-H2O',
-    'Carnot at 180C': '32%',
-    'Real eff': '14%',
-    'Output': '4.5 MWe',
-    desc: 'Relocated from v5. Original v5 put Kalina on 60C DC waste heat (physics-fiction). v6 places it on ST condenser exhaust at 180C.',
-    source: 'Husavik Iceland (scale-adjusted) - Mlcak 2002'
-  },
-  buildKalina(),
-  { x: 110, z: -40 }
-);
+  { 'Heat source': 'ST condenser - 180C', 'Working fluid': 'NH3-H2O',
+    'Carnot at 180C': '32%', 'Real eff': '14%', 'Output': '4.5 MWe',
+    desc: 'Kalina cycle on ST condenser exhaust at 180C.',
+    source: 'Husavik Iceland (scale-adjusted) - Mlcak 2002' },
+  buildKalina(), { x: 110, z: -40 });
 
 addMachine('substation', 'SUBSTATION', '129 MW GROSS - +25 MW EXPORT', 0x00ff99,
-  {
-    'Gross gen': '129.1 MW',
-    'DC load': '100 MW',
-    'Parasitic': '~4 MW',
-    'Net export': '+25 MW',
+  { 'Gross gen': '129.1 MW', 'DC load': '100 MW',
+    'Parasitic': '~4 MW', 'Net export': '+25 MW',
     'Export revenue': '$13M/yr @ $60/MWh',
-    desc: 'Behind-the-meter power distribution. Feeds DC first, exports surplus. Grid tie is small - skips the multi-year interconnect queue.',
-    source: 'FERC / LMP quarterly queue report Nov 2025'
-  },
-  buildSubstation(),
-  { x: 70, z: 15 }
-);
+    desc: 'Behind-the-meter power distribution.',
+    source: 'FERC / LMP quarterly queue report Nov 2025' },
+  buildSubstation(), { x: 70, z: 15 });
 
 addMachine('dc', 'DATA CENTER', '100 MW IT - PUE 1.15', 0x4a9eff,
-  {
-    'IT load': '100 MW',
-    'PUE': '1.15 (two-phase immersion)',
+  { 'IT load': '100 MW', 'PUE': '1.15 (two-phase immersion)',
     'WUE': 'Net-negative (producer)',
     'Revenue': '$184M/yr at $170/kW/mo',
-    'Fill': '90% occupancy',
-    'CapEx': '$1,200M',
-    desc: 'Hyperscale colocation. Two-phase immersion cooling enables higher rack density. MKP branding supports $20-30/kW/mo ESG premium.',
-    source: 'CBRE H2 2025 NA DC Trends - Uptime Institute 2024'
-  },
-  buildDataCenter(),
-  { x: -50, z: 110 }
-);
+    'Fill': '90% occupancy', 'CapEx': '$1,200M',
+    desc: 'Hyperscale colocation facility with two-phase immersion cooling.',
+    source: 'CBRE H2 2025 NA DC Trends - Uptime Institute 2024' },
+  buildDataCenter(), { x: -50, z: 110 });
 
 addMachine('md', 'MD + CONDENSER', 'SOFC EXHAUST + GRAY WATER', 0x00c8e8,
-  {
-    'SOFC recovery': '20,000 L/hr (68%)',
-    'MD output': '5,000 L/hr',
-    'Wetland': '2,000 L/hr',
-    'Total': '~170,000 gal/day',
-    'SEC': '1.0 kWh/m3',
-    desc: 'Water production. Condenses SOFC exhaust + membrane distillation on reclaimed gray water using SOFC waste heat.',
-    source: 'npj Clean Water 2023 - Aquastill commercial MD'
-  },
-  buildMDPlant(),
-  { x: 20, z: 180 }
-);
+  { 'SOFC recovery': '20,000 L/hr (68%)', 'MD output': '5,000 L/hr',
+    'Wetland': '2,000 L/hr', 'Total': '~170,000 gal/day', 'SEC': '1.0 kWh/m3',
+    desc: 'Water production - condenser + membrane distillation.',
+    source: 'npj Clean Water 2023 - Aquastill commercial MD' },
+  buildMDPlant(), { x: 20, z: 180 });
 
 addMachine('tanks', 'H2O STORAGE', '170K GAL/DAY', 0x00c8e8,
-  {
-    'Capacity': '3 x 250K gal domed tanks',
-    'Throughput': '170K gal/day',
+  { 'Capacity': '3 x 250K gal domed tanks', 'Throughput': '170K gal/day',
     'Destination': 'On-site reuse + offtake',
-    desc: 'Stores net-positive water output. Tanks sized for 36-hr buffer. Excess sold under municipal offtake.',
-    source: 'AWWA tank sizing guidelines'
-  },
-  buildWaterTanks(),
-  { x: -42, z: 185 }
-);
+    desc: 'Stores net-positive water output. 36-hr buffer.',
+    source: 'AWWA tank sizing guidelines' },
+  buildWaterTanks(), { x: -42, z: 185 });
 
-var wetlandObj = buildWetland();
 addMachine('wetland', 'WETLAND + MFC', 'NPDES - 5000 m3', 0xc084fc,
-  {
-    'Volume': '5,000 m3',
-    'Function': 'BOD/TSS removal',
-    'MFC output': '+8 kW (trickle)',
-    'Discharge': 'NPDES-compliant',
+  { 'Volume': '5,000 m3', 'Function': 'BOD/TSS removal',
+    'MFC output': '+8 kW (trickle)', 'Discharge': 'NPDES-compliant',
     'Macrophytes': 'Typha, Phragmites, Iris',
-    desc: 'Biological polishing. Embedded microbial fuel cells. Primary purpose: NPDES-compliant discharge - skips state water permit tail.',
-    source: 'EPA constructed wetland BMPs - Logan MFC lab'
-  },
-  wetlandObj,
-  { x: -170, z: 160 }
-);
+    desc: 'Biological polishing - embedded microbial fuel cells.',
+    source: 'EPA constructed wetland BMPs - Logan MFC lab' },
+  buildWetland(), { x: -170, z: 160 });
 
 addMachine('export', 'EXPORT TIE', '+25 MW GRID - $13M/YR', 0x2dce6e,
-  {
-    'Export': '25 MW',
-    'Rate': '$60/MWh (PJM)',
-    'Revenue': '$13M/yr',
-    'Tie size': 'Small (export only)',
+  { 'Export': '25 MW', 'Rate': '$60/MWh (PJM)',
+    'Revenue': '$13M/yr', 'Tie size': 'Small (export only)',
     'Queue': 'Bypassed',
-    desc: 'Small grid tie for surplus export. Does NOT require full-load import interconnection - sidesteps 5-7 year PJM queue entirely.',
-    source: 'PJM 2025 interconnect queue data'
-  },
-  buildExportTie(),
-  { x: 250, z: 15 }
-);
+    desc: 'Small grid tie for surplus export. Bypasses import queue.',
+    source: 'PJM 2025 interconnect queue data' },
+  buildExportTie(), { x: 250, z: 15 });
 
-// ============= PIPES (tubes along curves) =============
+// PIPES
 function buildPipe(p1, p2, color, radius) {
-  var a = new THREE.Vector3(p1.x, p1.y, p1.z);
-  var b = new THREE.Vector3(p2.x, p2.y, p2.z);
-  var mid = a.clone().lerp(b, 0.5);
-  mid.y += 3; // slight arc
-  var curve = new THREE.CatmullRomCurve3([a, mid, b]);
-  var geom = new THREE.TubeGeometry(curve, 40, radius || 0.8, 12, false);
-  var mat = new THREE.MeshStandardMaterial({
-    color: color,
-    emissive: color,
-    emissiveIntensity: 0.3,
-    metalness: 0.6,
-    roughness: 0.3
-  });
-  var tube = new THREE.Mesh(geom, mat);
-  tube.castShadow = true;
-  tube.userData.curve = curve;
-  scene.add(tube);
+  var mid = new THREE.Vector3((p1.x + p2.x) / 2, (p1.y + p2.y) / 2 + 3, (p1.z + p2.z) / 2);
+  var curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(p1.x, p1.y, p1.z), mid, new THREE.Vector3(p2.x, p2.y, p2.z)
+  ]);
+  var tube = new THREE.Mesh(
+    new THREE.TubeGeometry(curve, 40, radius || 0.8, 12, false),
+    new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.3, metalness: 0.6, roughness: 0.3 })
+  );
+  tube.castShadow = true; scene.add(tube);
   return { tube: tube, curve: curve, color: color };
 }
 
 var pipes = [
-  buildPipe({x:-270, y:6, z:-25}, {x:-195, y:6, z:-40}, 0xff9500, 0.9),   // LFG -> cleanup
-  buildPipe({x:-170, y:6, z:-40}, {x:-110, y:7, z:-50}, 0xf5c842, 1.1),   // cleanup -> SOFC
-  buildPipe({x:-20, y:14, z:-50}, {x:30, y:16, z:-60}, 0xe0e0ff, 1.2),    // SOFC -> ST (hot)
-  buildPipe({x:70, y:10, z:-70}, {x:105, y:7, z:-40}, 0xff9500, 0.8),     // ST -> Kalina
-  buildPipe({x:40, y:8, z:-60}, {x:65, y:6, z:10}, 0x00ff99, 1.1),        // ST -> sub
-  buildPipe({x:-10, y:10, z:-30}, {x:60, y:6, z:10}, 0x00ff99, 1.3),      // SOFC -> sub
-  buildPipe({x:110, y:5, z:-30}, {x:80, y:6, z:10}, 0x00ff99, 0.8),       // Kalina -> sub
-  buildPipe({x:65, y:8, z:25}, {x:-10, y:12, z:100}, 0x00ff99, 1.3),      // sub -> DC
-  buildPipe({x:85, y:8, z:15}, {x:240, y:8, z:15}, 0x2dce6e, 1.2),        // sub -> export
-  buildPipe({x:-30, y:12, z:-50}, {x:15, y:6, z:170}, 0x2dce6e, 0.9),     // SOFC -> MD (water)
-  buildPipe({x:-95, y:6, z:110}, {x:-130, y:4, z:150}, 0xc084fc, 1.0),    // DC -> wetland
-  buildPipe({x:0, y:6, z:180}, {x:-30, y:8, z:185}, 0x00c8e8, 0.8),       // MD -> tanks
-  buildPipe({x:-120, y:3, z:160}, {x:0, y:5, z:178}, 0x39ff14, 0.6)       // wetland -> MD
+  buildPipe({ x: -270, y: 6, z: -25 }, { x: -195, y: 6, z: -40 }, 0xff9500, 0.9),
+  buildPipe({ x: -170, y: 6, z: -40 }, { x: -110, y: 7, z: -50 }, 0xf5c842, 1.1),
+  buildPipe({ x: -20, y: 14, z: -50 }, { x: 30, y: 16, z: -60 }, 0xe0e0ff, 1.2),
+  buildPipe({ x: 70, y: 10, z: -70 }, { x: 105, y: 7, z: -40 }, 0xff9500, 0.8),
+  buildPipe({ x: 40, y: 8, z: -60 }, { x: 65, y: 6, z: 10 }, 0x00ff99, 1.1),
+  buildPipe({ x: -10, y: 10, z: -30 }, { x: 60, y: 6, z: 10 }, 0x00ff99, 1.3),
+  buildPipe({ x: 110, y: 5, z: -30 }, { x: 80, y: 6, z: 10 }, 0x00ff99, 0.8),
+  buildPipe({ x: 65, y: 8, z: 25 }, { x: -10, y: 12, z: 100 }, 0x00ff99, 1.3),
+  buildPipe({ x: 85, y: 8, z: 15 }, { x: 240, y: 8, z: 15 }, 0x2dce6e, 1.2),
+  buildPipe({ x: -30, y: 12, z: -50 }, { x: 15, y: 6, z: 170 }, 0x2dce6e, 0.9),
+  buildPipe({ x: -95, y: 6, z: 110 }, { x: -130, y: 4, z: 150 }, 0xc084fc, 1.0),
+  buildPipe({ x: 0, y: 6, z: 180 }, { x: -30, y: 8, z: 185 }, 0x00c8e8, 0.8),
+  buildPipe({ x: -120, y: 3, z: 160 }, { x: 0, y: 5, z: 178 }, 0x39ff14, 0.6)
 ];
 
-// ============= FLOW PARTICLES =============
+// FLOW PARTICLES
 var flowParticles = [];
-function createFlowParticle(pipe, offset) {
-  var geom = new THREE.SphereGeometry(1.2, 12, 12);
-  var mat = new THREE.MeshBasicMaterial({ color: pipe.color, transparent: true, opacity: 0.95 });
-  var p = new THREE.Mesh(geom, mat);
-  p.userData = { curve: pipe.curve, t: offset };
-  scene.add(p);
-
-  // Glow halo
-  var halo = new THREE.Mesh(
-    new THREE.SphereGeometry(2.4, 10, 10),
-    new THREE.MeshBasicMaterial({ color: pipe.color, transparent: true, opacity: 0.25, depthWrite: false })
-  );
-  p.add(halo);
-
-  flowParticles.push(p);
-}
 for (var pi = 0; pi < pipes.length; pi++) {
   for (var pk = 0; pk < 3; pk++) {
-    createFlowParticle(pipes[pi], pk / 3);
+    var p = new THREE.Mesh(
+      new THREE.SphereGeometry(1.2, 12, 12),
+      new THREE.MeshBasicMaterial({ color: pipes[pi].color, transparent: true, opacity: 0.95 })
+    );
+    p.userData = { curve: pipes[pi].curve, t: pk / 3 };
+    var halo = new THREE.Mesh(
+      new THREE.SphereGeometry(2.4, 10, 10),
+      new THREE.MeshBasicMaterial({ color: pipes[pi].color, transparent: true, opacity: 0.25, depthWrite: false })
+    );
+    p.add(halo); scene.add(p); flowParticles.push(p);
   }
 }
 
-// ============= STEAM PLUMES =============
+// STEAM PLUMES
 var steamParticles = [];
 function createSteamPlume(origin, color, count, spread) {
   for (var i = 0; i < count; i++) {
-    var geom = new THREE.SphereGeometry(1.4 + Math.random() * 1.2, 8, 8);
-    var mat = new THREE.MeshBasicMaterial({
-      color: color,
-      transparent: true,
-      opacity: 0.12 + Math.random() * 0.25,
-      depthWrite: false
-    });
-    var p = new THREE.Mesh(geom, mat);
-    p.position.set(
-      origin.x + (Math.random() - 0.5) * spread,
-      origin.y + Math.random() * 8,
-      origin.z + (Math.random() - 0.5) * spread
+    var p = new THREE.Mesh(
+      new THREE.SphereGeometry(1.4 + Math.random() * 1.2, 8, 8),
+      new THREE.MeshBasicMaterial({ color: color, transparent: true,
+        opacity: 0.12 + Math.random() * 0.25, depthWrite: false })
     );
-    p.userData = {
-      origin: origin.clone(),
-      life: Math.random(),
-      speedY: 0.18 + Math.random() * 0.2,
-      drift: (Math.random() - 0.5) * 0.03,
-      spread: spread
-    };
-    scene.add(p);
-    steamParticles.push(p);
+    p.position.set(origin.x + (Math.random() - 0.5) * spread,
+      origin.y + Math.random() * 8, origin.z + (Math.random() - 0.5) * spread);
+    p.userData = { origin: origin.clone(), life: Math.random(),
+      speedY: 0.18 + Math.random() * 0.2, drift: (Math.random() - 0.5) * 0.03, spread: spread };
+    scene.add(p); steamParticles.push(p);
   }
 }
-
-// Steam from ST stack
-createSteamPlume(new THREE.Vector3(50 - 22, 27, -70 - 14), 0xe0e0ff, 30, 3.5);
-// Steam from cooling tower
-createSteamPlume(new THREE.Vector3(50 + 16, 36, -70 + 14), 0xffffff, 40, 5);
-// Subtle SOFC manifold steam
+createSteamPlume(new THREE.Vector3(28, 27, -84), 0xe0e0ff, 30, 3.5);
+createSteamPlume(new THREE.Vector3(66, 36, -56), 0xffffff, 40, 5);
 createSteamPlume(new THREE.Vector3(-60, 28, -80), 0xffd0a0, 20, 2);
 
-// ============= FLARE EMBER PARTICLES =============
+// FLARE EMBERS
 var emberParticles = [];
 for (var e = 0; e < 15; e++) {
-  var geom = new THREE.SphereGeometry(0.4 + Math.random() * 0.3, 6, 6);
-  var mat = new THREE.MeshBasicMaterial({
-    color: e < 8 ? 0xff5500 : 0xffaa22,
-    transparent: true,
-    opacity: 0.8
-  });
-  var p = new THREE.Mesh(geom, mat);
-  var flareBase = new THREE.Vector3(-280, 48, -70);
-  p.position.set(
-    flareBase.x + (Math.random() - 0.5) * 4,
-    flareBase.y + Math.random() * 5,
-    flareBase.z + (Math.random() - 0.5) * 4
+  var ep = new THREE.Mesh(
+    new THREE.SphereGeometry(0.4 + Math.random() * 0.3, 6, 6),
+    new THREE.MeshBasicMaterial({ color: e < 8 ? 0xff5500 : 0xffaa22, transparent: true, opacity: 0.8 })
   );
-  p.userData = {
-    origin: flareBase.clone(),
-    life: Math.random(),
-    speedY: 0.3 + Math.random() * 0.3
-  };
-  scene.add(p);
-  emberParticles.push(p);
+  var fb = new THREE.Vector3(-280, 48, -70);
+  ep.position.set(fb.x + (Math.random() - 0.5) * 4, fb.y + Math.random() * 5, fb.z + (Math.random() - 0.5) * 4);
+  ep.userData = { origin: fb.clone(), life: Math.random(), speedY: 0.3 + Math.random() * 0.3 };
+  scene.add(ep); emberParticles.push(ep);
 }
 
-// ============= RAYCAST / CLICK =============
+// RAYCAST
 var raycaster = new THREE.Raycaster();
 var pointer = new THREE.Vector2();
-var hovered = null;
 
 function onPointerMove(ev) {
   pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(ev.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
   var hits = raycaster.intersectObjects(machines, true);
-  if (hits.length > 0) {
-    canvas.style.cursor = 'pointer';
-  } else {
-    canvas.style.cursor = 'grab';
-  }
+  canvas.style.cursor = hits.length > 0 ? 'pointer' : 'grab';
 }
-
 function onClick(ev) {
+  if (tourState.active) return; // disabled during tour
   raycaster.setFromCamera(pointer, camera);
   var hits = raycaster.intersectObjects(machines, true);
   if (hits.length === 0) return;
@@ -1807,9 +1436,9 @@ function onClick(ev) {
   while (obj && !obj.userData.title) obj = obj.parent;
   if (obj && obj.userData.title) showInfo(obj.userData);
 }
-
 function showInfo(ud) {
   var hex = '#' + ('000000' + ud.color.toString(16)).slice(-6);
+  var panel = document.getElementById('info-panel');
   document.getElementById('ip-title').textContent = ud.title;
   document.getElementById('ip-title').style.color = hex;
   var html = '';
@@ -1820,12 +1449,267 @@ function showInfo(ud) {
   if (ud.data.desc) html += '<div class="ip-desc">' + ud.data.desc + '</div>';
   if (ud.data.source) html += '<div class="ip-source">SOURCE: ' + ud.data.source + '</div>';
   document.getElementById('ip-body').innerHTML = html;
+  panel.classList.add('visible');
 }
-
 canvas.addEventListener('pointermove', onPointerMove);
 canvas.addEventListener('click', onClick);
 
-// ============= CAMERA PRESETS =============
+// =========================================================
+// =============== TOUR SCRIPT & STATE MACHINE =============
+// =========================================================
+
+var TOUR = [
+  {
+    eyebrow: 'CHAPTER 1 OF 11',
+    title: 'The $400 Billion Bottleneck',
+    duration: 45000,
+    camera: { pos: [340, 240, 340], target: [0, 15, 30] },
+    highlight: null,
+    body: '<p>In 2026, every major cloud provider — Google, Microsoft, Amazon, Meta — has committed <b>over $400 billion</b> to new data center projects. They cannot deploy it fast enough.</p><p>The problem is not money. It is the <b>power grid</b>. Connecting a new 100-megawatt data center to the grid now takes <b>five to eight years</b> in most US markets. Water permits add another <b>two to four years</b> on top.</p><p>An entire generation of AI infrastructure is stuck waiting on permits. This design solves that.</p>',
+    metric: { label: 'Time to power', value: '60+ months  →  24 months' },
+    why: 'Every month a hyperscale tenant waits for grid access is hundreds of millions in delayed revenue. A 24-month turnkey facility is worth a massive premium over anything else on the market.',
+    ref: 'PJM queue: 5.3 yr avg. CAISO: 6.8 yr. ERCOT: 2-3 yr, saturating. Source: FERC/LMP Q4 2025.'
+  },
+  {
+    eyebrow: 'CHAPTER 2 OF 11',
+    title: 'Stranded Fuel, Free For the Taking',
+    duration: 50000,
+    camera: { pos: [-360, 120, 80], target: [-280, 25, -40] },
+    highlight: 'lfg',
+    body: '<p>Every landfill in the United States produces methane for 30 years after it closes. By federal law, most have to capture that gas and <b>burn it off in a flare</b> just to destroy it. That flame you see is pure fuel going up in smoke.</p><p>Methane is <b>28 times more potent</b> than CO2 as a greenhouse gas, so destroying it is better than venting it — but it produces zero revenue. There are <b>580 landfills</b> in the US with gas-capture infrastructure already installed.</p><p>This facility plugs directly into one. The landfill operator currently <b>pays</b> to destroy this gas. MKP buys it for pennies on the dollar through a co-development contract. Both parties win.</p>',
+    metric: { label: 'Fuel cost', value: '$2 per MMBtu  —  90% below market' },
+    why: 'Fuel cost is typically 57% of a data center operator\'s operating expenses. Using stranded landfill gas cuts it to less than 10%. This is the single biggest economic driver of the entire design.',
+    ref: 'Cost $2/MMBtu vs market RNG at $25-30. Source: EPA LMOP 2025 inventory, 580 qualifying sites nationwide.'
+  },
+  {
+    eyebrow: 'CHAPTER 3 OF 11',
+    title: 'The Filter Between Fuel and Fuel Cells',
+    duration: 40000,
+    camera: { pos: [-240, 70, -10], target: [-190, 10, -40] },
+    highlight: 'cleanup',
+    body: '<p>Raw landfill gas contains two things that would destroy a fuel cell in weeks: <b>hydrogen sulfide</b>, which attacks the cell metals, and <b>silicon compounds</b>, which coat the stack surfaces.</p><p>Before the gas can be used, it has to be cleaned to near-pipeline-gas purity. The first tall vessel uses iron media to pull out the sulfur. The second uses activated carbon to trap the silicon.</p><p>This step is unglamorous but <b>critical</b> — it\'s the difference between a facility that runs reliably for a decade and one that fails in year two.</p>',
+    metric: { label: 'Cleanup output spec', value: '<1 ppm sulfur   ·   <0.1 ppmv silicon' },
+    why: 'Gas cleanup is the #1 reason biogas-to-power projects fail. Most competitors underspecify or skip this step. MKP does not.',
+    ref: 'CapEx $30M. OpEx $2M/yr consumables. Source: Bloom Energy biogas deployment guidelines, Guild Associates UPC commercial systems.'
+  },
+  {
+    eyebrow: 'CHAPTER 4 OF 11',
+    title: 'Fuel Cells — Where Gas Becomes Electricity',
+    duration: 60000,
+    camera: { pos: [-140, 80, 30], target: [-60, 10, -50] },
+    highlight: 'sofc',
+    body: '<p>This is the <b>heart of the facility</b>. 100 megawatts of solid oxide fuel cells. These are not engines. There is no combustion. No moving parts.</p><p>They are <b>electrochemical</b>. Methane and steam enter one side. The molecules react at 800 degrees Celsius with oxygen from the air. Electrons come out the other side as clean direct-current electricity.</p><p>Each yellow module is a commercial <b>Bloom Energy Server</b> — the exact same units already powering Apple, Google, eBay, and Walmart corporate campuses today. This facility stacks nine of them. Watch the electrochemical activity pulse across the array.</p><p>They produce three things simultaneously: 100 MW of electricity, a stream of 800-degree exhaust heat that the next stage captures, and <b>pure water</b> as a chemical byproduct.</p>',
+    metric: { label: 'Primary generation', value: '100 MW at 55% electrical efficiency' },
+    why: 'Fuel cells are proven commercial technology shipping in volume. MKP is not inventing them — it is wrapping them in the right economic structure and co-locating them with stranded fuel.',
+    ref: 'Bloom ES-5710 spec. 6-yr stack life, replacement amortized $13M/yr. Source: Bloom Energy 10-K 2024, Mitsubishi MEGAMIE commercial 2022.'
+  },
+  {
+    eyebrow: 'CHAPTER 5 OF 11',
+    title: 'Steam Cascade — Catching the Waste Heat',
+    duration: 50000,
+    camera: { pos: [120, 60, 0], target: [50, 10, -60] },
+    highlight: 'steam',
+    body: '<p>The fuel cell exhaust leaves the array at <b>800 degrees Celsius</b> — hotter than a steel foundry. Venting that heat to the atmosphere would waste nearly half the facility\'s total energy.</p><p>Instead it flows into a conventional <b>steam turbine</b>. This is hundred-year-old technology: boil water into steam, let the steam spin a turbine, let the turbine spin a generator.</p><p>Watch the rotor spinning inside the hall. That\'s the moving part doing the work. An extra <b>25 megawatts of electricity</b>, at zero additional fuel cost.</p><p>The steam leaves the turbine still hot enough to be useful. That heat goes to the next stage.</p>',
+    metric: { label: 'Bonus power', value: '+25 MW  —  zero additional fuel' },
+    why: 'This single component adds 25% more power output with no added fuel cost. Pure margin. It is the difference between a good plant and a great one.',
+    ref: '680C inlet after manifold. 150C outlet. 30% real efficiency (55% of Carnot). Source: Mitsubishi MEGAMIE reference, GE industrial ST curves.'
+  },
+  {
+    eyebrow: 'CHAPTER 6 OF 11',
+    title: 'Kalina Bottoming — One Last Squeeze',
+    duration: 35000,
+    camera: { pos: [170, 40, 10], target: [110, 10, -40] },
+    highlight: 'kalina',
+    body: '<p>Even after the steam turbine, the exhaust has useful energy left. A <b>Kalina cycle</b> — a specialized heat engine using an ammonia-water mixture — captures one last layer of electricity.</p><p>This is not experimental. Kalina plants have been running commercially in Iceland at the Husavik geothermal site and in Japan at Kashima Steel for <b>over 20 years</b>.</p><p>Output here: another <b>4.5 megawatts</b>. Small, but it\'s the discipline that says <b>no energy leaves this site unproductively</b>.</p>',
+    metric: { label: 'Bottoming output', value: '+4.5 MW from the last drop of heat' },
+    why: 'Demonstrates thermodynamic completeness. Investors who understand power plants look for this detail — it signals serious engineering, not a marketing story.',
+    ref: '180C inlet from ST condensate. NH3-H2O working fluid. 45% of Carnot. Source: Husavik Iceland 2000 commercial plant, Mlcak 2002.'
+  },
+  {
+    eyebrow: 'CHAPTER 7 OF 11',
+    title: 'Power Delivery — Behind the Meter',
+    duration: 50000,
+    camera: { pos: [140, 70, 80], target: [70, 10, 15] },
+    highlight: 'substation',
+    body: '<p>Here is where all that electricity comes together. Fuel cells contribute 100 megawatts. Steam turbine adds 25. Kalina adds 4.5. Total gross output: <b>129 megawatts</b>.</p><p>The data center uses 100 of those. Another 4 run pumps, gas handling, and controls. The remaining <b>25 megawatts are sold to the utility grid</b> — pure profit at roughly $13 million per year.</p><p>Watch the arc flashes at the bushings. That is real current transferring onto the bus.</p><p>The critical design feature: this facility generates its own power <b>behind the meter</b>. It does not need the utility to deliver electricity to run. That is the single reason this can be built in 24 months instead of 60.</p>',
+    metric: { label: 'Total system output', value: '129 MW gross  ·  +25 MW to grid  ·  behind-the-meter' },
+    why: 'Behind-the-meter operation is the most important design choice. Without it, this is just another data center stuck in the grid queue.',
+    ref: 'Grid tie required only for 25 MW export — small, fast to approve. Source: FERC standard interconnect rules, PJM Q4 2025.'
+  },
+  {
+    eyebrow: 'CHAPTER 8 OF 11',
+    title: 'Data Center — Who Pays The Bills',
+    duration: 60000,
+    camera: { pos: [-50, 80, 240], target: [-50, 12, 100] },
+    highlight: 'dc',
+    body: '<p>This is where the <b>revenue comes from</b>. A 100 megawatt hyperscale data center — the kind Google, Microsoft, Amazon, and Meta are racing to build today.</p><p>Inside are tens of thousands of servers, each submerged in dielectric cooling fluid. This <b>immersion design</b> packs more computing into less floor space, lowers energy overhead, and uses less water than conventional air cooling.</p><p>A hyperscale tenant signs a 10-to-15-year lease at roughly <b>$170 per kilowatt per month</b>. At 90% occupancy plus the ESG premium this facility commands, that is <b>$184 million of bankable contracted revenue per year</b> — more than enough to cover capital costs and operations.</p><p>The tenant also gets guaranteed uptime regardless of grid disturbances. That reliability is worth a premium on its own.</p>',
+    metric: { label: 'Contracted revenue', value: '$184M per year  ·  10-15 year lease' },
+    why: 'Hyperscale data center leases are bankable cashflow from A-rated counterparties on take-or-pay contracts. This is the most bondable revenue stream in modern infrastructure.',
+    ref: 'PUE 1.15 two-phase immersion. WUE net-negative. $170/kW/mo at 90% occupancy. Source: CBRE H2 2025 NA Data Center Trends.'
+  },
+  {
+    eyebrow: 'CHAPTER 9 OF 11',
+    title: 'Water Production — It Comes Out, Not In',
+    duration: 55000,
+    camera: { pos: [80, 70, 240], target: [0, 8, 175] },
+    highlight: 'md',
+    body: '<p>Fuel cell chemistry produces water as a byproduct. It is the output of burning hydrogen. At 100 megawatts, the fuel cells produce nearly <b>30,000 liters per hour</b> of pure water vapor.</p><p>This facility captures that vapor, condenses it back to liquid, and uses <b>membrane distillation</b> to purify additional water from graywater streams. The droplets you see are the capture happening live.</p><p>Total output: <b>170,000 gallons of clean water per day</b>, stored in those three domed tanks.</p><p>This matters because Arizona, Nevada, and parts of California have started <b>denying new data center permits purely over water usage</b>. MKP does not consume municipal water. It produces municipal water. It can be built in markets where every competitor is blocked.</p>',
+    metric: { label: 'Net water output', value: '+170,000 gallons per day  —  water-positive' },
+    why: 'Water-positive status opens markets — Phoenix, Las Vegas, inland California — that are closed to every traditional data center. This alone is a multi-billion-dollar market access advantage.',
+    ref: 'SOFC stoichiometric water 29,400 L/hr. 68% condenser recovery. MD SEC 1.0 kWh/m3 electrical. Source: npj Clean Water 2023 (Tijing et al.).'
+  },
+  {
+    eyebrow: 'CHAPTER 10 OF 11',
+    title: 'Wetland Polish — Closing the Loop',
+    duration: 40000,
+    camera: { pos: [-220, 80, 220], target: [-170, 3, 160] },
+    highlight: 'wetland',
+    body: '<p>Water that cycles through the data center picks up minor contaminants. Before it leaves the site, it flows through this <b>constructed wetland</b>.</p><p>Native reeds and bacteria polish the water biologically — nature doing the cleanup for free, at zero operating cost. The output meets EPA discharge standards.</p><p>Because this facility produces more clean water than it uses, getting the discharge permit is a <b>formality, not a multi-year regulatory fight</b>.</p><p>Embedded microbial fuel cells also generate a small amount of bonus electricity from the biological activity — a final demonstration of design discipline.</p>',
+    metric: { label: 'Discharge standard', value: 'NPDES-compliant  ·  permit is a formality' },
+    why: 'Treating water in-house with a constructed wetland holds the facility\'s water permit and avoids 2-4 years of state regulatory delay. Also delivers a positive ESG narrative — the facility looks like a nature preserve.',
+    ref: '5,000 m3 wetland. Macrophytes: Typha, Phragmites, Iris. MFC +8kW. Source: EPA constructed wetland BMPs, Logan lab MFC research.'
+  },
+  {
+    eyebrow: 'CHAPTER 11 OF 11',
+    title: 'The Deal On The Table',
+    duration: 60000,
+    camera: { pos: [340, 240, 340], target: [0, 15, 30] },
+    highlight: 'all',
+    body: '<p>Everything you have seen <b>works</b>. Every component has a commercial precedent. Every number has a citable source.</p><p>This is not a research project. It is an engineered, <b>site-ready design</b> ready to be built on one of 580 qualifying landfills across the United States.</p><p>The economics: <b>$1.75 billion</b> capital expenditure. <b>$119 million</b> of annual EBITDA at a 58% margin. <b>15-year payback</b> on a pure standalone basis — institutionally financeable.</p><p>What is being offered: exclusive rights to co-develop this design at a specific site, with the IP principal as a paid partner.</p><p>Five sites across 10 years. Total transaction fee revenue on the table: <b>$220 million</b>.</p>',
+    metric: { label: 'Fees available', value: '$220M  ·  5 deals × 2.5%' },
+    why: 'The operator has done the engineering, sourced the fuel, and mapped the market. The capital partner brings balance sheet and hyperscale tenant relationships. This is the ask.',
+    ref: 'CapEx $1.75B. EBITDA $119M/yr. DSCR 1.8x at 60/40 debt. Source: audited MKP v6 financial model.'
+  }
+];
+
+// ============ TOUR STATE MACHINE ============
+var tourState = {
+  active: false,
+  paused: false,
+  chapter: 0,
+  chapterStart: 0,
+  fromPos: null,
+  fromTarget: null,
+  toPos: null,
+  toTarget: null,
+  camDuration: 3500,
+  pausedAt: 0
+};
+
+function startTour() {
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('progress-bar').classList.add('visible');
+  document.getElementById('narration').classList.add('visible');
+  document.getElementById('tour-controls').classList.add('visible');
+  document.getElementById('cam-bar').classList.remove('visible');
+  document.getElementById('info-panel').classList.remove('visible');
+  controls.autoRotate = false;
+  tourState.active = true;
+  tourState.paused = false;
+  tourState.chapter = 0;
+  goToChapter(0);
+  renderChapterMarkers();
+}
+
+function renderChapterMarkers() {
+  var wrap = document.getElementById('progress-chapters');
+  wrap.innerHTML = '';
+  for (var i = 0; i < TOUR.length; i++) {
+    var m = document.createElement('div');
+    m.className = 'chap-mark';
+    m.setAttribute('data-title', (i + 1) + '. ' + TOUR[i].title);
+    (function(idx) { m.onclick = function() { goToChapter(idx); }; })(i);
+    wrap.appendChild(m);
+  }
+}
+
+function goToChapter(n) {
+  if (n < 0 || n >= TOUR.length) return;
+  tourState.chapter = n;
+  var stg = TOUR[n];
+  tourState.chapterStart = performance.now();
+  tourState.pausedAt = 0;
+  tourState.fromPos = camera.position.clone();
+  tourState.fromTarget = controls.target.clone();
+  tourState.toPos = new THREE.Vector3(stg.camera.pos[0], stg.camera.pos[1], stg.camera.pos[2]);
+  tourState.toTarget = new THREE.Vector3(stg.camera.target[0], stg.camera.target[1], stg.camera.target[2]);
+  renderNarration(stg, n);
+}
+
+function renderNarration(stg, n) {
+  document.getElementById('nar-eyebrow').textContent = stg.eyebrow;
+  document.getElementById('nar-title').textContent = stg.title;
+  document.getElementById('nar-body').innerHTML = stg.body;
+  document.getElementById('nar-metric-val').textContent = stg.metric.value;
+  document.getElementById('nar-metric-box').querySelector('.nar-metric-lbl').textContent = stg.metric.label;
+  document.getElementById('nar-why').textContent = stg.why;
+  document.getElementById('nar-ref').textContent = stg.ref;
+  document.getElementById('tc-chap-num').textContent = (n + 1);
+  document.getElementById('tc-chap-total').textContent = TOUR.length;
+  // Reset narration scroll
+  document.getElementById('narration').scrollTop = 0;
+  // Transition flash
+  var narr = document.getElementById('narration');
+  narr.style.opacity = 0; narr.style.transform = 'translateX(-20px)';
+  setTimeout(function() { narr.style.opacity = 1; narr.style.transform = 'translateX(0)'; }, 100);
+}
+
+function tourNext() {
+  if (tourState.chapter >= TOUR.length - 1) {
+    endTour();
+    showDeal();
+    return;
+  }
+  goToChapter(tourState.chapter + 1);
+}
+
+function tourPrev() {
+  if (tourState.chapter <= 0) return;
+  goToChapter(tourState.chapter - 1);
+}
+
+function tourTogglePause() {
+  tourState.paused = !tourState.paused;
+  var btn = document.getElementById('pause-btn');
+  if (tourState.paused) {
+    btn.textContent = 'RESUME';
+    tourState.pausedAt = performance.now();
+  } else {
+    btn.textContent = 'PAUSE';
+    // Shift chapterStart to account for paused duration
+    tourState.chapterStart += (performance.now() - tourState.pausedAt);
+    tourState.pausedAt = 0;
+  }
+}
+
+function endTour() {
+  tourState.active = false;
+  document.getElementById('progress-bar').classList.remove('visible');
+  document.getElementById('narration').classList.remove('visible');
+  document.getElementById('tour-controls').classList.remove('visible');
+  document.getElementById('cam-bar').classList.add('visible');
+  controls.autoRotate = true;
+}
+
+function restartTour() {
+  document.getElementById('intro').classList.remove('hidden');
+}
+
+function skipToExplore() {
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('cam-bar').classList.add('visible');
+  controls.autoRotate = true;
+}
+
+function showDeal() {
+  document.getElementById('deal').classList.add('visible');
+}
+function hideDeal() {
+  document.getElementById('deal').classList.remove('visible');
+  if (!tourState.active) document.getElementById('cam-bar').classList.add('visible');
+}
+
+// FREE EXPLORE CAMERA PRESETS
 var views = {
   overview: { pos: [340, 240, 340], target: [0, 15, 30] },
   power:    { pos: [30, 80, 80], target: [-20, 10, -30] },
@@ -1834,22 +1718,7 @@ var views = {
   lfg:      { pos: [-400, 100, 80], target: [-280, 20, -30] }
 };
 
-window.MKP = {
-  setView: function(name, btn) {
-    if (!views[name]) return;
-    var v = views[name];
-    animateCamera(v.pos, v.target, 1200);
-    var btns = document.querySelectorAll('.cam-btn');
-    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
-    btn.classList.add('active');
-  },
-  toggleRotate: function(btn) {
-    controls.autoRotate = !controls.autoRotate;
-    btn.classList.toggle('active', controls.autoRotate);
-  }
-};
-
-function animateCamera(toPos, toTarget, dur) {
+function animateCameraTo(toPos, toTarget, dur) {
   var fromPos = camera.position.clone();
   var fromTarget = controls.target.clone();
   var t0 = performance.now();
@@ -1863,23 +1732,71 @@ function animateCamera(toPos, toTarget, dur) {
   step(performance.now());
 }
 
-canvas.addEventListener('pointerdown', function() {
-  if (controls.autoRotate) {
-    controls.autoRotate = false;
-    var btns = document.querySelectorAll('.cam-btn');
-    for (var i = 0; i < btns.length; i++) {
-      if (btns[i].textContent.indexOf('AUTO') >= 0) btns[i].classList.remove('active');
-    }
-  }
+function setView(name, btn) {
+  if (!views[name]) return;
+  animateCameraTo(views[name].pos, views[name].target, 1200);
+  var btns = document.querySelectorAll('.cam-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  if (btn) btn.classList.add('active');
+}
+
+// Expose API for buttons
+window.MKP = {
+  startTour: startTour,
+  tourNext: tourNext,
+  tourPrev: tourPrev,
+  tourTogglePause: tourTogglePause,
+  endTour: endTour,
+  restartTour: restartTour,
+  skipToExplore: skipToExplore,
+  showDeal: showDeal,
+  hideDeal: hideDeal,
+  setView: setView
+};
+
+// Keyboard shortcuts during tour
+document.addEventListener('keydown', function(ev) {
+  if (!tourState.active) return;
+  if (ev.code === 'Space') { ev.preventDefault(); tourTogglePause(); }
+  else if (ev.code === 'ArrowRight') tourNext();
+  else if (ev.code === 'ArrowLeft') tourPrev();
+  else if (ev.code === 'Escape') endTour();
 });
 
-// ============= ANIMATE =============
+// Resize
 window.addEventListener('resize', function() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// ============ LIVE METRICS COUNTERS ============
+var counterState = { power: 0, water: 0, co2: 0, money: 0 };
+function formatNumber(n, decimals) {
+  return n.toLocaleString('en-US', { maximumFractionDigits: decimals || 0 });
+}
+// Metrics animate UP during tour as if accumulating
+function updateCounters(dtMs) {
+  if (tourState.active) {
+    // Power ramps up over first 4 chapters, then holds
+    var phase = tourState.chapter / TOUR.length;
+    var targetPower = Math.min(129, phase * 200);
+    counterState.power += (targetPower - counterState.power) * 0.05;
+    // Water accumulates during chapters 9+
+    if (tourState.chapter >= 8) counterState.water += (170000 / 86400) * (dtMs / 1000) * 60;
+    else counterState.water += 2 * (dtMs / 1000);
+    // CO2 accumulates throughout
+    counterState.co2 += (122000 / 86400) * (dtMs / 1000) * 30;
+    // Money accumulates during tenant stage
+    if (tourState.chapter >= 7) counterState.money += (184000000 / 86400 / 365) * (dtMs / 1000) * 50;
+  }
+  document.getElementById('m-power').textContent = '+' + counterState.power.toFixed(0) + ' MW';
+  document.getElementById('m-water').textContent = formatNumber(counterState.water) + ' gal';
+  document.getElementById('m-co2').textContent = formatNumber(counterState.co2) + ' kg';
+  document.getElementById('m-money').textContent = '$' + formatNumber(counterState.money);
+}
+
+// ============ ANIMATE LOOP ============
 var clock = new THREE.Clock();
 var simSec = 0;
 setInterval(function() {
@@ -1898,16 +1815,40 @@ function animate() {
   var t = clock.getElapsedTime();
   var dt = clock.getDelta();
 
-  // Flow particles along curves
+  // Tour camera animation + auto-advance
+  if (tourState.active && !tourState.paused) {
+    var now = performance.now();
+    var stg = TOUR[tourState.chapter];
+    var camElapsed = now - tourState.chapterStart;
+    if (camElapsed < tourState.camDuration) {
+      var p = camElapsed / tourState.camDuration;
+      var e = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+      camera.position.lerpVectors(tourState.fromPos, tourState.toPos, e);
+      controls.target.lerpVectors(tourState.fromTarget, tourState.toTarget, e);
+    } else {
+      camera.position.copy(tourState.toPos);
+      controls.target.copy(tourState.toTarget);
+    }
+    // Progress bar
+    var chapterElapsed = now - tourState.chapterStart;
+    var localProgress = Math.min(1, chapterElapsed / stg.duration);
+    var globalProgress = (tourState.chapter + localProgress) / TOUR.length * 100;
+    document.getElementById('progress-fill').style.width = globalProgress + '%';
+    // Auto-advance
+    if (chapterElapsed >= stg.duration) {
+      tourNext();
+    }
+  }
+
+  // Flow particles
   for (var i = 0; i < flowParticles.length; i++) {
     var fp = flowParticles[i];
     fp.userData.t += 0.004;
     if (fp.userData.t > 1) fp.userData.t -= 1;
-    var pos = fp.userData.curve.getPoint(fp.userData.t);
-    fp.position.copy(pos);
+    fp.position.copy(fp.userData.curve.getPoint(fp.userData.t));
   }
 
-  // Steam plumes
+  // Steam
   for (var j = 0; j < steamParticles.length; j++) {
     var sp = steamParticles[j];
     sp.position.y += sp.userData.speedY;
@@ -1942,19 +1883,74 @@ function animate() {
   }
 
   // Flame pulse
-  if (flameMesh) {
-    flameMesh.scale.y = 1 + Math.sin(t * 8) * 0.12;
-    flameMesh.scale.x = 1 + Math.cos(t * 6) * 0.08;
-    flameMesh.material.opacity = 0.75 + Math.sin(t * 10) * 0.15;
-    if (flameMesh.userData.light) {
-      flameMesh.userData.light.intensity = 2.5 + Math.sin(t * 9) * 0.8;
-    }
+  if (workingParts.flameMesh) {
+    var fm = workingParts.flameMesh;
+    fm.scale.y = 1 + Math.sin(t * 8) * 0.12;
+    fm.scale.x = 1 + Math.cos(t * 6) * 0.08;
+    fm.material.opacity = 0.75 + Math.sin(t * 10) * 0.15;
+    if (fm.userData.light) fm.userData.light.intensity = 2.5 + Math.sin(t * 9) * 0.8;
   }
 
   // Wetland shimmer
-  if (wetlandObj && wetlandObj.userData.waterMat) {
-    wetlandObj.userData.waterMat.emissiveIntensity = 0.2 + Math.sin(t * 0.6) * 0.08;
+  if (workingParts.wetlandMat) {
+    workingParts.wetlandMat.emissiveIntensity = 0.2 + Math.sin(t * 0.6) * 0.08;
   }
+
+  // TURBINE ROTOR (rotates fast)
+  if (workingParts.turbineRotor) {
+    workingParts.turbineRotor.rotation.x += 0.3;
+  }
+
+  // HVAC FANS (rotate)
+  for (var fi = 0; fi < workingParts.hvacFans.length; fi++) {
+    workingParts.hvacFans[fi].rotation.y += workingParts.hvacFans[fi].userData.speed;
+  }
+
+  // SOFC ELECTROCHEMICAL GLOW CYCLE
+  for (var si = 0; si < workingParts.sofcModules.length; si++) {
+    var sm = workingParts.sofcModules[si];
+    var phase = (t * 1.2 + sm.idx * 0.7) % (Math.PI * 2);
+    var glow = 0.3 + Math.sin(phase) * 0.35;
+    sm.mat.emissiveIntensity = Math.max(0.15, glow);
+  }
+
+  // SUBSTATION ARC FLASHES (random bright flashes at bushings)
+  for (var bi = 0; bi < workingParts.bushingArcs.length; bi++) {
+    var bu = workingParts.bushingArcs[bi];
+    if (t > bu.nextFlash) {
+      bu.mesh.material.opacity = 0.95;
+      bu.mesh.scale.setScalar(1.5);
+      bu.nextFlash = t + 2 + Math.random() * 5;
+    } else {
+      bu.mesh.material.opacity *= 0.88;
+      bu.mesh.scale.setScalar(Math.max(1, bu.mesh.scale.x * 0.95));
+    }
+  }
+
+  // DC WINDOW PULSE (servers "working")
+  for (var wi = 0; wi < workingParts.dcWindows.length; wi++) {
+    workingParts.dcWindows[wi].emissiveIntensity = 1.0 + Math.sin(t * 2.5 + wi) * 0.3;
+  }
+
+  // WATER DROPLETS (fall from condenser)
+  for (var wdi = 0; wdi < workingParts.waterDrops.length; wdi++) {
+    var wd = workingParts.waterDrops[wdi];
+    wd.userData.life += 0.02;
+    wd.position.y = wd.userData.basePos.y - wd.userData.life * 10;
+    wd.material.opacity = Math.max(0, 0.85 - wd.userData.life * 0.6);
+    if (wd.userData.life > 1.3) {
+      wd.userData.life = 0;
+      wd.position.set(
+        wd.userData.basePos.x + (Math.random() - 0.5) * 2,
+        wd.userData.basePos.y,
+        wd.userData.basePos.z + (Math.random() - 0.5) * 2
+      );
+      wd.material.opacity = 0.85;
+    }
+  }
+
+  // Counters
+  updateCounters(dt * 1000);
 
   if (controls) controls.update();
   renderer.render(scene, camera);
