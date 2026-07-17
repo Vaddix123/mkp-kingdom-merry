@@ -1,0 +1,7 @@
+# UE transient / generated
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.log
