@@ -1,0 +1,16 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.0",
+	"Category": "Visualization",
+	"Description": "Meridian Data Infrastructure v9 - self-constructing facility scene. Original concept: Brandon (Vaddix123). Open the project and the Python script builds the entire site on first launch.",
+	"Plugins": [
+		{
+			"Name": "PythonScriptPlugin",
+			"Enabled": true
+		},
+		{
+			"Name": "EditorScriptingUtilities",
+			"Enabled": true
+		}
+	]
+}
